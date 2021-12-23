@@ -33,17 +33,12 @@ class Login extends StatelessWidget {
                   "By signing up, you are agreeing to our Terms & Conditions",
                   style: TextStyle(
                     fontSize: 13
-                  ) ,),
+                  ),
+                ),
               ),
             )
-
           ],
-
         ),
-
     );
-
-
   }
-
 }

@@ -15,7 +15,7 @@ class LoginButtonColored extends StatelessWidget {
       child: TextButton(
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(c!),
-            fixedSize: MaterialStateProperty.all(Size(322, 62))
+            fixedSize: MaterialStateProperty.all(const Size(322, 62))
           ),
           onPressed: () { role; },
         child: Row(
