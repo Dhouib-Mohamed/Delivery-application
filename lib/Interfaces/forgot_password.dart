@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../Widgets/tapped.dart';
 
-class SignUp extends StatelessWidget {
+class ForgotPassword extends StatelessWidget {
   final TextEditingController myController = TextEditingController();
-  SignUp({Key? key}) : super(key: key);
+  ForgotPassword({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +17,7 @@ class SignUp extends StatelessWidget {
                 width: 328,
                 height: 24,
                 child: Text(
-                  "SIGN UP",
+                  "FORGOT PASSWORD",
                   style: TextStyle(
                     fontFamily: "Inter",
                     fontWeight: FontWeight.bold,
@@ -32,7 +32,8 @@ class SignUp extends StatelessWidget {
                 width: 328,
                 height: 24,
                 child: Text(
-                  "Complete this step for best adjustment",
+                  "Enter your Email or phone number to request reset",
+                  textAlign: TextAlign.start,
                   style: TextStyle(
                     fontFamily: "Inter",
                     color: Colors.blueGrey,
@@ -41,15 +42,12 @@ class SignUp extends StatelessWidget {
                 ),
               ),
             ),
-            Input(field: 'Name'),
-            Input(field: 'Email'),
-            Input(field: 'Password'),
-            Input(field: 'Phone Number'),
-            LoginButton(name: "SIGN UP", c: Color(0xffbd2005), role: '/signup'),
+            Input(field: ''),
+            LoginButton(name: "SEND NOW", c: Color(0xffbd2005), role: '/otp'),
             TappedText(
-                text: "Already have An Account ? ",
-                tapped: "Sign In Here",
-                role: '/signin')
+                text: "Having Problem ? ",
+                tapped: "Need Help?",
+                role: '/forgot_password')
           ],
         ),
       ),
