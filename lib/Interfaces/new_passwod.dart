@@ -11,7 +11,7 @@ class NewPassword extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 100),
         child: Column(
-          children: const [
+          children: [
             Padding(
               padding: EdgeInsets.only(left: 35, top: 10, bottom: 80),
               child: SizedBox(
@@ -20,7 +20,6 @@ class NewPassword extends StatelessWidget {
                 child: Text(
                   "CREATE NEW PASSWORD",
                   style: TextStyle(
-                    fontFamily: "Inter",
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -29,7 +28,7 @@ class NewPassword extends StatelessWidget {
             ),
             Input(field: ''),
             LoginButton(
-                name: "CONFIRM", c: Color(0xffbd2005), role: '/new_password'),
+                name: "CONFIRM", c: Color(0xffbd2005), role: '/feed'),
           ],
         ),
       ),
