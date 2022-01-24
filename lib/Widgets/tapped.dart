@@ -146,6 +146,7 @@ class TappedText extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
+
               Navigator.pushNamed(context, role);
             },
             child: Text(

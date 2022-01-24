@@ -1,19 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iac_project/Interfaces/otp.dart';
-import 'package:provider/provider.dart';
+import 'package:iac_project/firebase_options.dart';
 import 'Interfaces/forgot_password.dart';
 import 'Interfaces/new_passwod.dart';
 import 'Interfaces/opening.dart';
 import 'Interfaces/signin.dart';
 import 'Interfaces/signup.dart';
+import 'firebase_options.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
+      .then((_) async {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
     runApp(const MyApp());
   });
 }
