@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:iac_project/Interfaces/otp.dart';
 import 'package:iac_project/firebase_options.dart';
 import 'Interfaces/forgot_password.dart';
+import 'Interfaces/gps.dart';
 import 'Interfaces/new_passwod.dart';
 import 'Interfaces/opening.dart';
 import 'Interfaces/signin.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "App",
-      initialRoute: '/opening',
+      initialRoute: '/gps',
       routes: {
         '/opening': (context) => const Opening(),
         '/signup': (context) => SignUp(),
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/forgot_password': (context) => ForgotPassword(),
         '/otp': (context) => const OTP(),
         '/new_password': (context) => const NewPassword(),
+        '/gps': (context) => const GPS(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
