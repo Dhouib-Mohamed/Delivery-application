@@ -5,7 +5,7 @@ import 'package:iac_project/Interfaces/otp.dart';
 import 'package:iac_project/firebase_options.dart';
 import 'Interfaces/forgot_password.dart';
 import 'Interfaces/gps.dart';
-import 'Interfaces/new_passwod.dart';
+import 'Interfaces/new_password.dart';
 import 'Interfaces/opening.dart';
 import 'Interfaces/signin.dart';
 import 'Interfaces/signup.dart';
@@ -17,6 +17,7 @@ void main() {
       .then((_) async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
+
     runApp(const MyApp());
   });
 }

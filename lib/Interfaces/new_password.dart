@@ -11,7 +11,7 @@ class NewPassword extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 100),
         child: Column(
-          children: [
+          children: const [
             Padding(
               padding: EdgeInsets.only(left: 35, top: 10, bottom: 80),
               child: SizedBox(
@@ -27,8 +27,7 @@ class NewPassword extends StatelessWidget {
               ),
             ),
             Input(field: ''),
-            LoginButton(
-                name: "CONFIRM", c: Color(0xffbd2005), role: '/feed'),
+            LoginButton(name: "CONFIRM", c: Color(0xffbd2005), role: '/feed'),
           ],
         ),
       ),
