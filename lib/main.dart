@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:iac_project/Interfaces/otp.dart';
 import 'package:iac_project/firebase_options.dart';
 import 'Interfaces/forgot_password.dart';
@@ -9,17 +8,12 @@ import 'Interfaces/new_password.dart';
 import 'Interfaces/opening.dart';
 import 'Interfaces/signin.dart';
 import 'Interfaces/signup.dart';
-import 'firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-
-    runApp(const MyApp());
-  });
+  await Firebase.initializeApp(
+      name: 'app', options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -1,17 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Widgets/tapped.dart';
 
 class SignUp extends StatelessWidget {
   final TextEditingController myController = TextEditingController();
   SignUp({Key? key}) : super(key: key);
+  Input i1 =const Input(field: 'Email');
+  Input i2 =const Input(field: 'Password');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 100),
         child: Column(
-          children: const [
-            Padding(
+          children: [
+            const Padding(
               padding: EdgeInsets.only(left: 35),
               child: SizedBox(
                 width: 328,
@@ -26,7 +29,7 @@ class SignUp extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(left: 35, top: 10, bottom: 80),
               child: SizedBox(
                 width: 328,
@@ -41,12 +44,12 @@ class SignUp extends StatelessWidget {
                 ),
               ),
             ),
-            Input(field: 'Name'),
-            Input(field: 'Email'),
-            Input(field: 'Password'),
-            Input(field: 'Phone Number'),
-            LoginButton(name: "SIGN UP", c: Color(0xffbd2005), role: '/signup'),
-            TappedText(
+            const Input(field: 'Name'),
+            i1,
+            i2,
+            const Input(field: 'Phone Number'),
+            AuthLoginButton(name: "SIGN UP", c: const Color(0xffbd2005), role: signUp(context)),
+            const TappedText(
                 text: "Already have An Account ? ",
                 tapped: "Sign In Here",
                 role: '/signin')
@@ -55,4 +58,22 @@ class SignUp extends StatelessWidget {
       ),
     );
   }
+  Future<void> signUp(BuildContext context) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: i1.field,
+          password: i2.field
+      );
+      Navigator.pushNamed(context, '/signin');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+
+}
 }
