@@ -3,7 +3,19 @@ import 'package:flutter/material.dart';
 import '../Widgets/tapped.dart';
 
 class OTP extends StatelessWidget {
-  const OTP({Key? key}) : super(key: key);
+  final TextEditingController codeController = TextEditingController();
+  String? codeValidator(String? value) {
+    RegExp regex = RegExp('^[0-9]');
+    if (value!.isEmpty) {
+      return ("Code is required for login");
+    }
+    if ((!regex.hasMatch(value)) || (value.length != 4)) {
+      return ("Enter Valid Code( 4 Numbers Only)");
+    }
+    return null;
+  }
+
+  OTP({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +23,8 @@ class OTP extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 100),
         child: Column(
-          children: const [
-            Padding(
+          children: [
+            const Padding(
               padding: EdgeInsets.only(left: 35, top: 10, bottom: 80),
               child: SizedBox(
                 width: 328,
@@ -27,12 +39,16 @@ class OTP extends StatelessWidget {
                 ),
               ),
             ),
-            Input(field: ''),
-            TappedText(
+            Input(
+              field: '',
+              control: codeController,
+              valid: codeValidator,
+            ),
+            const TappedText(
                 c: Colors.blueGrey, text: "", tapped: "Resend", role: '/otp'),
-            LoginButton(
+            const LoginButton(
                 name: "CONFIRM", c: Color(0xffbd2005), role: '/new_password'),
-            TappedText(
+            const TappedText(
                 text: "Having Problem ? ", tapped: "Need Help?", role: '/otp')
           ],
         ),

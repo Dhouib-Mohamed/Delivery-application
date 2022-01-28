@@ -63,7 +63,7 @@ class LoginButtonNormal extends StatelessWidget {
 }
 
 class LoginButtonColored extends StatelessWidget {
-  final icon;
+  final ImageProvider<Object>? icon;
   final String? name;
   final Color? c;
   final String role;
@@ -110,7 +110,7 @@ class LoginButtonColored extends StatelessWidget {
 class AuthLoginButton extends StatelessWidget {
   final String? name;
   final Color? c;
-  final role;
+  final void Function()? role;
   const AuthLoginButton(
       {Key? key, required this.name, required this.c, required this.role})
       : super(key: key);
@@ -139,15 +139,24 @@ class AuthLoginButton extends StatelessWidget {
 
 class Input extends StatelessWidget {
   final String field;
+  final TextEditingController control;
+  final String? Function(String?)? valid;
   const Input({
     Key? key,
     required this.field,
+    required this.control,
+    required this.valid,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 32, top: 6, left: 32, bottom: 18),
       child: TextFormField(
+        validator: valid,
+        onSaved: (value) {
+          control.text = value!;
+        },
+        controller: control,
         keyboardType: field == 'Name'
             ? TextInputType.name
             : field == 'Email'
