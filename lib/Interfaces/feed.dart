@@ -13,7 +13,7 @@ class Feed extends StatefulWidget {
 
 class _Feed extends State<Feed> {
   User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
+  UserModel? loggedInUser;
   @override
   void initState() {
     super.initState();
@@ -22,7 +22,7 @@ class _Feed extends State<Feed> {
         .doc(user!.uid)
         .get()
         .then((value) {
-      loggedInUser = UserModel.fromMap(value.data());
+      loggedInUser = UserModel.fromJson(value.data());
       setState(() {});
     });
   }

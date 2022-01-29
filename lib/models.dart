@@ -8,9 +8,22 @@ class UserModel {
   String? name;
   String? phone;
 
-  UserModel({this.uid,this.email, this.name, this.phone});
+  UserModel({this.uid, this.email, this.name, this.phone});
 
   // receiving data from server
-  factory UserModel.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
-  Map<String, Object?> toJson() => _$UserToJson(this);
+  UserModel.fromJson(json)
+      : this(
+          uid: json['uid']! as String,
+          email: json['email']! as String,
+          name: json['name']! as String,
+          phone: json['phone']! as String,
+        );
+  Map<String, Object?> toJson() {
+    return {
+      'uid': uid,
+      'email': email,
+      'name': name,
+      'phone': phone,
+    };
+  }
 }
