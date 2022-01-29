@@ -152,10 +152,6 @@ class Input extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 32, top: 6, left: 32, bottom: 18),
       child: TextFormField(
-        validator: valid,
-        onSaved: (value) {
-          control.text = value!;
-        },
         controller: control,
         keyboardType: field == 'Name'
             ? TextInputType.name
@@ -175,6 +171,10 @@ class Input extends StatelessWidget {
               gapPadding: 4.0,
             ),
             labelText: field),
+        validator: valid,
+        onSaved: (value) {
+          control.text = value!;
+        },
       ),
     );
   }
