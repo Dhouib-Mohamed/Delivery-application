@@ -128,7 +128,7 @@ class AuthLoginButton extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ))),
             onPressed: () {
-              role;
+              if (role != null) role!();
             },
             child: Text(
               name!,

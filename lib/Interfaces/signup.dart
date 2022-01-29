@@ -75,65 +75,70 @@ class _SignUp extends State<SignUp> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 100),
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 35),
-              child: SizedBox(
-                width: 328,
-                height: 24,
-                child: Text(
-                  "SIGN UP",
-                  style: TextStyle(
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 35),
+                  child: SizedBox(
+                    width: 328,
+                    height: 24,
+                    child: Text(
+                      "SIGN UP",
+                      style: TextStyle(
+                        fontFamily: "Inter",
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 35, top: 10, bottom: 80),
-              child: SizedBox(
-                width: 328,
-                height: 24,
-                child: Text(
-                  "Complete this step for best adjustment",
-                  style: TextStyle(
-                    fontFamily: "Inter",
-                    color: Colors.blueGrey,
-                    fontSize: 13,
+                const Padding(
+                  padding: EdgeInsets.only(left: 35, top: 10, bottom: 80),
+                  child: SizedBox(
+                    width: 328,
+                    height: 24,
+                    child: Text(
+                      "Complete this step for best adjustment",
+                      style: TextStyle(
+                        fontFamily: "Inter",
+                        color: Colors.blueGrey,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Input(
+                  field: 'Name',
+                  control: nameController,
+                  valid: nameValidator,
+                ),
+                Input(
+                  field: 'Email',
+                  control: emailController,
+                  valid: emailValidator,
+                ),
+                Input(
+                  field: 'Password',
+                  control: passwordController,
+                  valid: passwordValidator,
+                ),
+                Input(
+                  field: 'Phone Number',
+                  control: phoneController,
+                  valid: phoneValidator,
+                ),
+                AuthLoginButton(
+                    name: "SIGN UP", c: const Color(0xffbd2005), role: signUp),
+                const TappedText(
+                    text: "Already have An Account ? ",
+                    tapped: "Sign In Here",
+                    role: '/signin')
+              ],
             ),
-            Input(
-              field: 'Name',
-              control: nameController,
-              valid: nameValidator,
-            ),
-            Input(
-              field: 'Email',
-              control: emailController,
-              valid: emailValidator,
-            ),
-            Input(
-              field: 'Password',
-              control: passwordController,
-              valid: passwordValidator,
-            ),
-            Input(
-              field: 'Phone Number',
-              control: phoneController,
-              valid: phoneValidator,
-            ),
-            AuthLoginButton(
-                name: "SIGN UP", c: const Color(0xffbd2005), role: signUp),
-            const TappedText(
-                text: "Already have An Account ? ",
-                tapped: "Sign In Here",
-                role: '/signin')
-          ],
+          ),
         ),
       ),
     );
@@ -144,11 +149,8 @@ class _SignUp extends State<SignUp> {
       try {
         await _auth
             .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text)
-            .then((value) => {postDetailsToFirestore()})
-            .catchError((e) {
-          Fluttertoast.showToast(msg: e!.message);
-        });
+                email: emailController.text, password: passwordController.text);
+            postDetailsToFirestore();
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case "invalid-email":
@@ -179,9 +181,6 @@ class _SignUp extends State<SignUp> {
   }
 
   postDetailsToFirestore() async {
-    // calling our firestore
-    // calling our user model
-    // sedning these values
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
