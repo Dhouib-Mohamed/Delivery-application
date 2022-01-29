@@ -187,14 +187,14 @@ class _SignUp extends State<SignUp> {
     UserModel userModel = UserModel();
 
     // writing all the values
-    userModel.email = user!.email;
-    userModel.uid = user.uid;
+    userModel.email = emailController.text;
     userModel.name = nameController.text;
     userModel.phone = phoneController.text;
 
+
     await firebaseFirestore
         .collection("users")
-        .doc(user.uid)
+        .doc(user?.uid)
         .set(userModel.toJson());
     Fluttertoast.showToast(msg: "Account created successfully :) ");
 
