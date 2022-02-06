@@ -2,10 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iac_project/Interfaces/otp.dart';
 import 'package:iac_project/firebase_options.dart';
+import 'Interfaces/adress.dart';
 import 'Interfaces/forgot_password.dart';
 import 'Interfaces/gps.dart';
+import 'Interfaces/help.dart';
 import 'Interfaces/new_password.dart';
 import 'Interfaces/opening.dart';
+import 'Interfaces/profile.dart';
+import 'Interfaces/setting.dart';
 import 'Interfaces/signin.dart';
 import 'Interfaces/signup.dart';
 
@@ -28,10 +32,14 @@ class MyApp extends StatelessWidget {
         '/opening': (context) => const Opening(),
         '/signup': (context) => const SignUp(),
         '/signin': (context) => const SignIn(),
-        '/forgot_password': (context) => ForgotPassword(),
+        '/forgot_password': (context) => const ForgotPassword(),
         '/otp': (context) => OTP(),
         '/new_password': (context) => NewPassword(),
         '/gps': (context) => const GPS(),
+        '/settings': (context) => Setting(),
+        '/adress': (context) => const Adress(),
+        '/help': (context) => Help(),
+        '/profile': (context) => const Profile(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

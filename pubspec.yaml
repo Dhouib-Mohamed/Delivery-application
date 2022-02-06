@@ -41,6 +41,7 @@ dependencies:
   fluttertoast: ^8.0.8
   json_annotation: ^4.4.0
   cloud_firestore_odm: ^1.0.0-dev.7
+  flutter_facebook_auth: ^4.0.1
 
 dev_dependencies:
   flutter_test:
