@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../Widgets/tapped.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../models.dart';
 import 'feed.dart';
 
 class SignIn extends StatefulWidget {
@@ -108,11 +111,11 @@ class _SignIn extends State<SignIn> {
                 const SizedBox(
                   height: 70,
                 ),
-                const LoginButtonColored(
+                AuthLoginButtonColored(
                   name: "SIGN IN WITH FACEBOOK",
-                  icon: AssetImage("assets/icons/Facebook.png"),
-                  c: Color(0xff3B5998),
-                  role: '/signin',
+                  icon: const AssetImage("assets/icons/Facebook.png"),
+                  c: const Color(0xff3B5998),
+                  role: signInWithFacebook,
                 ),
                 const TappedText(
                     text: "Don't have An Account ? ",
@@ -162,8 +165,55 @@ class _SignIn extends State<SignIn> {
             errorMessage = "An undefined Error happened.";
         }
         Fluttertoast.showToast(msg: errorMessage!);
-        print(error.code);
       }
+    }
+  }
+  void signInWithFacebook() async {
+    String? message = "Error";
+    try {
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      final userData = await FacebookAuth.instance.getUserData();
+
+      // Create a credential from the access token
+      final facebookAuthCredential = FacebookAuthProvider.credential(
+          loginResult.accessToken!.token);
+
+      // Once signed in, return the UserCredential
+      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+      User? user = FirebaseAuth.instance.currentUser;
+
+      UserModel userModel = UserModel();
+
+      // writing all the values
+      userModel.email = userData["email"];
+      userModel.name = userData["name"];
+      userModel.phone = null;
+      await FirebaseFirestore.instance.collection("users")
+          .doc(user!.uid).set(userModel.toJson());
+
+      Fluttertoast.showToast(msg: "Connected successfully :) ");
+
+      Navigator.pushAndRemoveUntil(
+          (context),
+          MaterialPageRoute(builder: (context) => const Feed()),
+              (route) => false);
+    }on FirebaseAuthException catch (error) {
+      switch (error.code) {
+        case "invalid-credential":
+          message = "unknown Error have occurred";
+          break;
+        case "operation-not-allowed":
+          message = "Not allowed";
+          break;
+        case "user-disabled":
+          message = "User with this email has been disabled.";
+          break;
+        case "too-many-requests":
+          message = "Too many requests";
+          break;
+
+      }
+      Fluttertoast.showToast(msg: message);
     }
   }
 }
