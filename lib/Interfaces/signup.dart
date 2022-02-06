@@ -147,10 +147,9 @@ class _SignUp extends State<SignUp> {
   Future<void> signUp() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await _auth
-            .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
-            postDetailsToFirestore();
+        await _auth.createUserWithEmailAndPassword(
+            email: emailController.text, password: passwordController.text);
+        postDetailsToFirestore();
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case "invalid-email":
@@ -180,17 +179,14 @@ class _SignUp extends State<SignUp> {
   }
 
   postDetailsToFirestore() async {
-
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
 
-    UserModel userModel = UserModel();
+    UserModel userModel =
+        UserModel(email: emailController.text, name: nameController.text);
 
     // writing all the values
-    userModel.email = emailController.text;
-    userModel.name = nameController.text;
     userModel.phone = phoneController.text;
-
 
     await firebaseFirestore
         .collection("users")
