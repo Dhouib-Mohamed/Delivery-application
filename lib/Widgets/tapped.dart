@@ -114,6 +114,50 @@ class LoginButtonColored extends StatelessWidget {
     );
   }
 }
+class AuthLoginButtonColored extends StatelessWidget {
+  final ImageProvider<Object>? icon;
+  final String? name;
+  final Color? c;
+  final role;
+  const AuthLoginButtonColored(
+      {Key? key,
+        required this.name,
+        required this.icon,
+        required this.c,
+        required this.role})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 32, top: 6, left: 32, bottom: 13),
+      child: TextButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(c!),
+              fixedSize: MaterialStateProperty.all(const Size(330, 48)),
+              shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ))),
+          onPressed: () {
+            if (role != null) role!();
+          },
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ImageIcon(
+                icon,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            Text(
+              name!,
+              style: const TextStyle(color: Colors.white, fontSize: 17),
+            )
+          ])),
+    );
+  }
+}
 
 class AuthLoginButtonColored extends StatelessWidget {
   final ImageProvider<Object>? icon;

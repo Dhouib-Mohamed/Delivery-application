@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../Widgets/tapped.dart';
 import 'otp.dart';
 
@@ -26,7 +28,6 @@ class _ForgotPassword extends State<ForgotPassword> {
     }
     return null;
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,5 +92,13 @@ class _ForgotPassword extends State<ForgotPassword> {
   void password() {
     Navigator.of(context)
         .pushReplacement(MaterialPageRoute(builder: (context) => OTP()));
+  }
+}
+
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
