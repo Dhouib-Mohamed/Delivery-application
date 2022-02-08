@@ -137,10 +137,7 @@ class _SignIn extends State<SignIn> {
                 email: emailController.text, password: passwordController.text)
             .then((uid) => {
                   Fluttertoast.showToast(msg: "Login Successful"),
-                  Navigator.pushAndRemoveUntil(
-                      (context),
-                      MaterialPageRoute(builder: (context) => Feed()),
-                      (route) => false)
+        Navigator.pushNamed(context, '/feed'),
                 });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {

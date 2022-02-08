@@ -31,10 +31,10 @@ class _Feed extends State<Feed> {
       }
     });
     if (a) {
-      return TappedText(
+      return TappedPosition(
           text: "Deliver To :  ", tapped: address!.location, role: '/address');
     } else {
-      return const TappedText(
+      return const TappedPosition(
           text: "", tapped: "Add Location", role: '/address');
     }
   }
@@ -63,6 +63,10 @@ class _Feed extends State<Feed> {
     return Scaffold(
       key: _key,
       appBar: AppBar(
+        bottom: PreferredSize(
+          preferredSize: Size(MediaQuery.of(context).size.width, 100),
+          child: const Input(field: 'Search ', control: null, valid: null,),
+        ),
         title: locationWidget(),
         leading: IconButton(
           color: Colors.blueGrey,

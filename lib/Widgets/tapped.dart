@@ -192,13 +192,13 @@ class AuthLoginButton extends StatelessWidget {
 
 class Input extends StatelessWidget {
   final String field;
-  final TextEditingController control;
+  final TextEditingController? control;
   final String? Function(String?)? valid;
   const Input({
     Key? key,
     required this.field,
-    required this.control,
-    required this.valid,
+    this.control,
+    this.valid,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -226,7 +226,7 @@ class Input extends StatelessWidget {
             labelText: field),
         validator: valid,
         onSaved: (value) {
-          control.text = value!;
+          control?.text = value!;
         },
       ),
     );
@@ -271,6 +271,53 @@ class TappedText extends StatelessWidget {
                 fontFamily: "Inter",
                 color: (c == null) ? const Color(0xffbd2005) : c,
                 fontSize: 13,
+              ),
+            ),
+          )
+        ]),
+      ),
+    );
+  }
+}
+
+class TappedPosition extends StatelessWidget {
+  final String text;
+  final Color? c;
+  final String tapped;
+  final String role;
+  const TappedPosition(
+      {Key? key,
+        this.c,
+        required this.text,
+        required this.tapped,
+        required this.role})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, left: 35, bottom: 20),
+      child: SizedBox(
+        width: 328,
+        height: 24,
+        child: Row(children: [
+          Text(
+            text,
+            style: const TextStyle(
+              fontFamily: "Inter",
+              fontSize: 13,
+              color: Colors.black,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, role);
+            },
+            child: Text(
+              tapped,
+              style: TextStyle(
+                fontFamily: "Inter",
+                color: (c == null) ? const Color(0xffbd2005) : c,
+                fontSize: 17,
               ),
             ),
           )
