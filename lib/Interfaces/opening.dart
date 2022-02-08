@@ -1,11 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 
 import '../Widgets/tapped.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'feed.dart';
 
@@ -52,7 +48,7 @@ class _Opening extends State<Opening> {
   void signInWithFacebook() {
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => const Feed()),
+        MaterialPageRoute(builder: (context) => Feed()),
         (route) => false);
   }
 }

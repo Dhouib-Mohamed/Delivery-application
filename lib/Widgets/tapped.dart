@@ -258,6 +258,7 @@ class TappedText extends StatelessWidget {
             style: const TextStyle(
               fontFamily: "Inter",
               fontSize: 13,
+              color: Colors.black,
             ),
           ),
           GestureDetector(
@@ -278,3 +279,4 @@ class TappedText extends StatelessWidget {
     );
   }
 }
+

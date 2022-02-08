@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:iac_project/Interfaces/feed.dart';
 import 'package:iac_project/Interfaces/otp.dart';
 import 'package:iac_project/firebase_options.dart';
-import 'Interfaces/adress.dart';
+import 'Interfaces/address.dart';
 import 'Interfaces/forgot_password.dart';
 import 'Interfaces/gps.dart';
 import 'Interfaces/help.dart';
@@ -36,10 +37,11 @@ class MyApp extends StatelessWidget {
         '/otp': (context) => OTP(),
         '/new_password': (context) => NewPassword(),
         '/gps': (context) => const GPS(),
-        '/settings': (context) => Setting(),
-        '/adress': (context) => const Adress(),
-        '/help': (context) => Help(),
+        '/settings': (context) => const Setting(),
+        '/address': (context) => const Address(),
+        '/help': (context) => const Help(),
         '/profile': (context) => const Profile(),
+        '/feed': (context) => Feed(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

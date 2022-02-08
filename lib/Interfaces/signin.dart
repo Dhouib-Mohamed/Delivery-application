@@ -137,8 +137,10 @@ class _SignIn extends State<SignIn> {
                 email: emailController.text, password: passwordController.text)
             .then((uid) => {
                   Fluttertoast.showToast(msg: "Login Successful"),
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => const Feed())),
+                  Navigator.pushAndRemoveUntil(
+                      (context),
+                      MaterialPageRoute(builder: (context) => Feed()),
+                      (route) => false)
                 });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
@@ -194,10 +196,7 @@ class _SignIn extends State<SignIn> {
 
       Fluttertoast.showToast(msg: "Connected successfully :) ");
 
-      Navigator.pushAndRemoveUntil(
-          (context),
-          MaterialPageRoute(builder: (context) => const Feed()),
-          (route) => false);
+      Navigator.pushNamed(context, '/feed');
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case "invalid-credential":

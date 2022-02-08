@@ -49,22 +49,19 @@ class RestaurantModel {
 }
 
 @JsonSerializable()
-class AdressModel {
-  String? name;
-  String? location;
+class AddressModel {
+  String location;
 
-  AdressModel({this.name, this.location});
+  AddressModel({required this.location});
 
   // receiving data from server
-  AdressModel.fromJson(json)
+  AddressModel.fromJson(json)
       : this(
-          name: json['name']! as String,
           location: json['location']! as String,
         );
   Map<String, Object?> toJson() {
     return {
       'location': location,
-      'name': name,
     };
   }
 }

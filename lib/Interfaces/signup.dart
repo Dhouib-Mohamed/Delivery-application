@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../Widgets/tapped.dart';
 import '../models.dart';
-import 'feed.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -194,9 +193,6 @@ class _SignUp extends State<SignUp> {
         .set(userModel.toJson());
     Fluttertoast.showToast(msg: "Account created successfully :) ");
 
-    Navigator.pushAndRemoveUntil(
-        (context),
-        MaterialPageRoute(builder: (context) => const Feed()),
-        (route) => false);
+    Navigator.pushNamed(context, '/feed');
   }
 }
