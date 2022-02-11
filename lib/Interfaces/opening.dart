@@ -19,10 +19,10 @@ class _Opening extends State<Opening> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(
-            width: double.infinity,
-            height: 560,
-            child: Image(
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height*0.65,
+            child: const Image(
               image: AssetImage("assets/Images/img1.png"),
             ),
           ),

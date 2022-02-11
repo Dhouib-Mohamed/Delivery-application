@@ -26,11 +26,11 @@ class UserModel {
 
 @JsonSerializable()
 class RestaurantModel {
-  String? name;
-  String? photoUrl;
-  String? location;
+  String name;
+  String photoUrl;
+  String location;
 
-  RestaurantModel({this.name, this.photoUrl, this.location});
+  RestaurantModel({required this.name, required this.photoUrl, required this.location});
 
   // receiving data from server
   RestaurantModel.fromJson(json)
@@ -62,27 +62,6 @@ class AddressModel {
   Map<String, Object?> toJson() {
     return {
       'location': location,
-    };
-  }
-}
-
-@JsonSerializable()
-class TypeModel {
-  String? name;
-  String? photoUrl;
-
-  TypeModel({this.name, this.photoUrl});
-
-  // receiving data from server
-  TypeModel.fromJson(json)
-      : this(
-          name: json['name']! as String,
-          photoUrl: json['photoUrl']! as String,
-        );
-  Map<String, Object?> toJson() {
-    return {
-      'name': name,
-      'photoUrl': photoUrl,
     };
   }
 }

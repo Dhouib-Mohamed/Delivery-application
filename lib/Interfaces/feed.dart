@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iac_project/Widgets/contents.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import '../models.dart';
 import 'signin.dart';
@@ -14,7 +15,20 @@ class Feed extends StatefulWidget {
 class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   User? user = FirebaseAuth.instance.currentUser;
-  late UserModel loggedInUser;
+  UserModel loggedInUser = UserModel(email: "", name: "");
+  List<RestaurantModel> popularPlaces = [];
+  Widget PopularPlaces() {
+    if(popularPlaces.isNotEmpty) {
+      return Row(
+        children: [
+          for(int x = 0; x < 5; x++) ListElement(
+              url: popularPlaces[x].photoUrl, name: popularPlaces[x].name, location: popularPlaces[x].location),
+        ],
+      );
+    }
+    return Row();
+
+  }
   Widget locationWidget() {
     bool a = false;
     AddressModel? address;
@@ -49,6 +63,17 @@ class _Feed extends State<Feed> {
       loggedInUser = UserModel.fromJson(value.data());
       setState(() {});
     });
+    FirebaseFirestore.instance
+        .collection("restaurants")
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+          var x;
+          for(x in querySnapshot.docs) {
+            popularPlaces.add(RestaurantModel.fromJson(x));
+          }
+        setState(() {});
+
+    });
     super.initState();
   }
 
@@ -63,6 +88,18 @@ class _Feed extends State<Feed> {
     return Scaffold(
       key: _key,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            color: Colors.blueGrey,
+            onPressed: () {
+              _key.currentState!.openEndDrawer();
+            },
+            icon: const Icon(
+              Icons.wrap_text_rounded,
+            ),
+          ),
+
+        ],
         bottom: PreferredSize(
           preferredSize: Size(MediaQuery.of(context).size.width, 100),
           child: const Input(field: 'Search ', control: null, valid: null,),
@@ -78,7 +115,33 @@ class _Feed extends State<Feed> {
           ),
         ),
       ),
-      body: ListView(),
+      body: ListView(
+        children: [
+          Column(
+            children: [
+              Row(
+                children: const [
+                  Text("Popular Places"),
+                  Icon(Icons.arrow_forward_rounded),
+                ],
+              ),
+              PopularPlaces(),
+            ],
+          ),
+          Column(
+            children: [
+              Row(
+                children: const [
+                  Text("Nearby Places"),
+                  Icon(Icons.arrow_forward_rounded),
+                ],
+              ),
+              PopularPlaces(),
+            ],
+          ),
+
+        ],
+      ),
       drawer: Container(
         color: Colors.white,
         width: MediaQuery.of(context).size.width * 0.9,
@@ -134,14 +197,11 @@ class _Feed extends State<Feed> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Padding(
-                            padding: EdgeInsets.only(right: 8.0),
-                            child: Icon(
+                          Icon(
                               Icons.power_settings_new,
                               color: Colors.white,
                               size: 30,
                             ),
-                          ),
                           Text(
                             "Log Out",
                             style: TextStyle(color: Colors.white, fontSize: 17),
@@ -149,6 +209,10 @@ class _Feed extends State<Feed> {
                         ])))
           ],
         ),
+      ),
+      endDrawer: Container(
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width * 0.9,
       ),
     );
   }

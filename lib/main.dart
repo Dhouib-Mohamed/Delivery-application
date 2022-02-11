@@ -7,6 +7,7 @@ import 'Interfaces/address.dart';
 import 'Interfaces/forgot_password.dart';
 import 'Interfaces/gps.dart';
 import 'Interfaces/help.dart';
+import 'Interfaces/map.dart';
 import 'Interfaces/new_password.dart';
 import 'Interfaces/opening.dart';
 import 'Interfaces/profile.dart';
@@ -41,7 +42,8 @@ class MyApp extends StatelessWidget {
         '/address': (context) => const Address(),
         '/help': (context) => const Help(),
         '/profile': (context) => const Profile(),
-        '/feed': (context) => Feed(),
+        '/feed': (context) => const Feed(),
+        '/map': (context) => const Mapp(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

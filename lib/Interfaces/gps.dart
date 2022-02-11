@@ -10,17 +10,17 @@ class GPS extends StatelessWidget {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: const [
+        children: [
           SizedBox(
-            width: double.infinity,
-            height: 560,
-            child: Image(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height*0.65,
+            child: const Image(
               image: AssetImage("assets/Images/img1.png"),
             ),
           ),
-          LoginButton(
-              name: "ADD LOCATION", c: Color(0xffbd2005), role: '/signin'),
-          TappedText(text: "", tapped: "Skip for now", role: '/opening')
+          const LoginButton(
+              name: "ADD LOCATION", c: Color(0xffbd2005), role: '/map'),
+          const TappedText(text: "", tapped: "Skip for now", role: '/opening')
         ],
       ),
     );
