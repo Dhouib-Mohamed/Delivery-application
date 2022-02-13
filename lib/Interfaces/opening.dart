@@ -21,7 +21,7 @@ class _Opening extends State<Opening> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height*0.65,
+            height: MediaQuery.of(context).size.height * 0.65,
             child: const Image(
               image: AssetImage("assets/Images/img1.png"),
             ),
@@ -48,7 +48,7 @@ class _Opening extends State<Opening> {
   void signInWithFacebook() {
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => Feed()),
+        MaterialPageRoute(builder: (context) => const Feed()),
         (route) => false);
   }
 }

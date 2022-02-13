@@ -30,6 +30,7 @@ class _MappState extends State<Mapp> {
           target: _center,
           zoom: 11.0,
         ),
+        myLocationEnabled: true,
       ),
     );
   }

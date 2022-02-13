@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
@@ -28,16 +29,17 @@ class UserModel {
 class RestaurantModel {
   String name;
   String photoUrl;
-  String location;
+  GeoPoint location;
 
-  RestaurantModel({required this.name, required this.photoUrl, required this.location});
+  RestaurantModel(
+      {required this.name, required this.photoUrl, required this.location});
 
   // receiving data from server
   RestaurantModel.fromJson(json)
       : this(
-          name: json['name']! as String,
-          photoUrl: json['photoUrl']! as String,
-          location: json['location']! as String,
+          name: json["name"]! as String,
+          photoUrl: json["url"]! as String,
+          location: json["location"]! as GeoPoint,
         );
   Map<String, Object?> toJson() {
     return {
@@ -68,12 +70,12 @@ class AddressModel {
 
 @JsonSerializable()
 class DealModel {
-  String? name;
-  String? photoUrl;
-  String? price;
-  String? description;
+  String name;
+  String photoUrl;
+  String price;
+  String description;
 
-  DealModel({this.name, this.photoUrl, this.description, this.price});
+  DealModel({required this.name, required this.photoUrl, required this.description, required this.price});
 
   // receiving data from server
   DealModel.fromJson(json)

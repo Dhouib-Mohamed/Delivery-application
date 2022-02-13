@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:iac_project/Interfaces/restaurant.dart';
 
 class SimplAppBar extends AppBar {
   final String text;
@@ -46,7 +48,8 @@ class RestaurantElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
+      child: Container(
+          color: Color.fromARGB(255, 232, 237, 240),
           height: 110,
           child: Row(
             children: [
@@ -89,9 +92,15 @@ class RestaurantElement extends StatelessWidget {
 }
 
 class FeedElement extends StatelessWidget {
-  final String url, name, location;
+  final String url, name;
+  final GeoPoint location;
+  final id;
   const FeedElement(
-      {Key? key, required this.url, required this.name, required this.location})
+      {Key? key,
+      required this.url,
+      required this.name,
+      required this.location,
+      required this.id})
       : super(key: key);
 
   @override
@@ -99,45 +108,69 @@ class FeedElement extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
-        child: SizedBox(
-            height: 214,
-            width: 328,
-            child: Row(
-              children: [
-                SizedBox(
-                  child: Image.network(url, width: 328, height: 160),
-                ),
-                Column(
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
+        child: GestureDetector(
+          onTap: () =>
+              {Navigator.push(context,MaterialPageRoute(builder: (context) => Restaurant(id: id,)))},
+          child: Container(
+              color: Color.fromARGB(255, 232, 237, 240),
+              height: 90,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Row(
+                children: [
+                  SizedBox(
+                    child: Image.network(
+                      url,
+                      width: 90,
+                      height: 90,
+                      fit: BoxFit.cover,
                     ),
-                    Text(
-                      location,
-                      style: const TextStyle(
-                        color: Color(0x008e8e93),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            )),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          location.toString(),
+                          style: const TextStyle(
+                            color: Color(0x008e8e93),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }
 }
 
 class ListElement extends StatelessWidget {
-  final String url, name, location;
+  final GeoPoint location;
+  final String name, url;
+  final id;
   const ListElement(
-      {Key? key, required this.url, required this.name, required this.location})
+      {Key? key,
+      required this.url,
+      required this.name,
+      required this.location,
+      required this.id})
       : super(key: key);
 
   @override
@@ -145,36 +178,45 @@ class ListElement extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
-        child: SizedBox(
-            height: 214,
-            width: 240,
-            child: Row(
-              children: [
-                SizedBox(
-                  child: Image.network(url, width: 240, height: 160),
-                ),
-                Column(
-                  children: [
-                    Text(
+        child: GestureDetector(
+          onTap: () =>
+          {Navigator.push(context,MaterialPageRoute(builder: (context) => Restaurant(id: id,)))},
+          child: Container(
+              color: const Color.fromARGB(255, 232, 237, 240),
+              height: 240,
+              width: 260,
+              child: Column(
+                children: [
+                  SizedBox(
+                    child: Image.network(
+                      url,
+                      width: 220,
+                      height: 160,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
                       name,
                       style: const TextStyle(
                         color: Colors.black,
-                        fontSize: 17,
+                        fontSize: 22,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Text(
-                      location,
-                      style: const TextStyle(
-                        color: Color(0x008e8e93),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
+                  ),
+                  Text(
+                    location.toString(),
+                    style: const TextStyle(
+                      color: Color(0x008e8e93),
+                      fontSize: 17,
+                      fontWeight: FontWeight.w400,
                     ),
-                  ],
-                ),
-              ],
-            )),
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }

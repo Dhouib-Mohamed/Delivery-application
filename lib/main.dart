@@ -1,7 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:iac_project/Interfaces/cart.dart';
+import 'package:iac_project/Interfaces/end_order.dart';
 import 'package:iac_project/Interfaces/feed.dart';
 import 'package:iac_project/Interfaces/otp.dart';
+import 'package:iac_project/Interfaces/saved.dart';
+import 'package:iac_project/Interfaces/search.dart';
 import 'package:iac_project/firebase_options.dart';
 import 'Interfaces/address.dart';
 import 'Interfaces/forgot_password.dart';
@@ -17,19 +23,23 @@ import 'Interfaces/signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       name: 'app', options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+  final String init = (FirebaseAuth.instance.currentUser != null) ? '/feed' : '/gps';
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "App",
-      initialRoute: '/gps',
+      initialRoute: init,
       routes: {
         '/opening': (context) => const Opening(),
         '/signup': (context) => const SignUp(),
@@ -44,6 +54,10 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => const Profile(),
         '/feed': (context) => const Feed(),
         '/map': (context) => const Mapp(),
+        '/end_order': (context) => const EndOrder(),
+        '/cart': (context) => const Cart(),
+        '/search': (context) => const Search(),
+        '/saved': (context) => const Saved(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

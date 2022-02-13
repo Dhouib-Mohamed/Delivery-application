@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-class Cart extends StatefulWidget {
-  const Cart({Key? key}) : super(key: key);
+import '../Widgets/tapped.dart';
+
+class Search extends StatefulWidget {
+  const Search({Key? key}) : super(key: key);
 
   @override
-  State<Cart> createState() => _CartState();
+  State<Search> createState() => _SearchState();
 }
 
-class _CartState extends State<Cart> {
+class _SearchState extends State<Search> {
   void onItem(index) {
     switch (index) {
       case 0:
@@ -15,9 +17,9 @@ class _CartState extends State<Cart> {
           Navigator.pushNamed(context, '/feed');
         });
         break;
-      case 1:
+      case 2:
         setState(() {
-          Navigator.pushNamed(context, '/search');
+          Navigator.pushNamed(context, '/cart');
         });
         break;
       case 3:
@@ -36,12 +38,23 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Row(
+        children: const [
+          Expanded(
+            child: FeedInput(
+              field: 'Search ',
+              control: null,
+              valid: null,
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
           onTap: onItem,
           unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),
           unselectedItemColor: Colors.blueGrey,
           selectedItemColor: const Color(0xffbd2005),
-          currentIndex: 2,
+          currentIndex: 1,
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(
@@ -72,12 +85,9 @@ class _CartState extends State<Cart> {
       appBar: AppBar(
         backgroundColor: const Color(0xffbd2005),
         title: const Text(
-          "Cart",
+          "Search",
           style: TextStyle(color: Colors.white, fontSize: 23),
         ),
-      ),
-      body: Column(
-        children: const [],
       ),
     );
   }

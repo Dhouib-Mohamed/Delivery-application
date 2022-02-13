@@ -13,7 +13,7 @@ class GPS extends StatelessWidget {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height*0.65,
+            height: MediaQuery.of(context).size.height*0.75,
             child: const Image(
               image: AssetImage("assets/Images/img1.png"),
             ),

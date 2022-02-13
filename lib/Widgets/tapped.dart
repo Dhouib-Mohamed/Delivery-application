@@ -233,6 +233,40 @@ class Input extends StatelessWidget {
   }
 }
 
+class FeedInput extends StatelessWidget {
+  final String field;
+  final TextEditingController? control;
+  final String? Function(String?)? valid;
+  const FeedInput({
+    Key? key,
+    required this.field,
+    this.control,
+    this.valid,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16, top: 28, left: 16, bottom: 18),
+      child: TextFormField(
+        controller: control,
+        autofocus: true,
+        strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
+        decoration: InputDecoration(
+            border: const OutlineInputBorder(
+              borderSide: BorderSide(),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              gapPadding: 4.0,
+            ),
+            labelText: field),
+        validator: valid,
+        onSaved: (value) {
+          control?.text = value!;
+        },
+      ),
+    );
+  }
+}
+
 class TappedText extends StatelessWidget {
   final String text;
   final Color? c;
@@ -287,10 +321,10 @@ class TappedPosition extends StatelessWidget {
   final String role;
   const TappedPosition(
       {Key? key,
-        this.c,
-        required this.text,
-        required this.tapped,
-        required this.role})
+      this.c,
+      required this.text,
+      required this.tapped,
+      required this.role})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -326,4 +360,3 @@ class TappedPosition extends StatelessWidget {
     );
   }
 }
-

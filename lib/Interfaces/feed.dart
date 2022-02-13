@@ -15,20 +15,7 @@ class Feed extends StatefulWidget {
 class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel(email: "", name: "");
-  List<RestaurantModel> popularPlaces = [];
-  Widget PopularPlaces() {
-    if(popularPlaces.isNotEmpty) {
-      return Row(
-        children: [
-          for(int x = 0; x < 5; x++) ListElement(
-              url: popularPlaces[x].photoUrl, name: popularPlaces[x].name, location: popularPlaces[x].location),
-        ],
-      );
-    }
-    return Row();
-
-  }
+  UserModel? loggedInUser;
   Widget locationWidget() {
     bool a = false;
     AddressModel? address;
@@ -55,26 +42,16 @@ class _Feed extends State<Feed> {
 
   @override
   void initState() {
+    super.initState();
     FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .get()
         .then((value) {
-      loggedInUser = UserModel.fromJson(value.data());
-      setState(() {});
+      setState(() {
+        loggedInUser = UserModel.fromJson(value.data());
+      });
     });
-    FirebaseFirestore.instance
-        .collection("restaurants")
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-          var x;
-          for(x in querySnapshot.docs) {
-            popularPlaces.add(RestaurantModel.fromJson(x));
-          }
-        setState(() {});
-
-    });
-    super.initState();
   }
 
   Future<void> logout(BuildContext context) async {
@@ -83,10 +60,78 @@ class _Feed extends State<Feed> {
         MaterialPageRoute(builder: (context) => const SignIn()));
   }
 
+  void onItem(index) {
+    switch (index) {
+      case 1:
+        setState(() {
+          Navigator.pushNamed(context, '/search');
+        });
+        break;
+      case 2:
+        setState(() {
+          Navigator.pushNamed(context, '/cart');
+        });
+        break;
+      case 3:
+        setState(() {
+          Navigator.pushNamed(context, '/saved');
+        });
+        break;
+      case 4:
+        setState(() {
+          Navigator.pushNamed(context, '/profile');
+        });
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _key,
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: onItem,
+          unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),
+          unselectedItemColor: Colors.blueGrey,
+          selectedItemColor: const Color(0xffbd2005),
+          currentIndex: 0,
+          items: const [
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home,
+                ),
+                label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.search,
+                ),
+                label: "Search"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.shopping_cart_rounded,
+                ),
+                label: "Cart"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.heart_broken,
+                ),
+                label: "Saved"),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.person,
+                ),
+                label: "Profile"),
+          ]),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xffbd2005),
+        onPressed: () {
+          Navigator.pushNamed(context, '/cart');
+        },
+        child: const Icon(
+          Icons.shopping_cart_rounded,
+          color: Colors.white,
+        ),
+      ),
       appBar: AppBar(
         actions: [
           IconButton(
@@ -96,13 +141,24 @@ class _Feed extends State<Feed> {
             },
             icon: const Icon(
               Icons.wrap_text_rounded,
+              color: Color(0xffbd2005),
             ),
           ),
-
         ],
         bottom: PreferredSize(
           preferredSize: Size(MediaQuery.of(context).size.width, 100),
-          child: const Input(field: 'Search ', control: null, valid: null,),
+          child: GestureDetector(
+            onTap: () => {
+              setState(() {
+                Navigator.pushNamed(context, '/search');
+              })
+            },
+            child: const Input(
+              field: 'Search ',
+              control: null,
+              valid: null,
+            ),
+          ),
         ),
         title: locationWidget(),
         leading: IconButton(
@@ -112,6 +168,7 @@ class _Feed extends State<Feed> {
           },
           icon: const Icon(
             Icons.menu,
+            color: Color(0xffbd2005),
           ),
         ),
       ),
@@ -120,26 +177,132 @@ class _Feed extends State<Feed> {
           Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Popular Places"),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "Close Places",
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  ),
                   Icon(Icons.arrow_forward_rounded),
                 ],
               ),
-              PopularPlaces(),
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("restaurants")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Column(
+                            children: snapshot.data!.docs.map((document) {
+                          RestaurantModel r =
+                              RestaurantModel.fromJson(document.data());
+                          return FeedElement(
+                              url: r.photoUrl,
+                              name: r.name,
+                              location: r.location,
+                              id:document.reference.id ,);
+                        }).toList()),
+                      );
+                    }
+                  }),
             ],
           ),
           Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Nearby Places"),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "Popular Restaurants",
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  ),
                   Icon(Icons.arrow_forward_rounded),
                 ],
               ),
-              PopularPlaces(),
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("restaurants")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                            children: snapshot.data!.docs.map((document) {
+                          RestaurantModel r =
+                              RestaurantModel.fromJson(document.data());
+                          return ListElement(
+                              url: r.photoUrl,
+                              name: r.name,
+                              location: r.location,
+                              id:document.reference.id ,);
+                        }).toList()),
+                      );
+                    }
+                  }),
             ],
           ),
-
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "All Restaurants",
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  ),
+                  Icon(Icons.arrow_forward_rounded),
+                ],
+              ),
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("restaurants")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Column(
+                            children: snapshot.data!.docs.map((document) {
+                          RestaurantModel r =
+                              RestaurantModel.fromJson(document.data());
+                          return FeedElement(
+                              url: r.photoUrl,
+                              name: r.name,
+                              location: r.location,
+                              id:document.reference.id ,);
+                        }).toList()),
+                      );
+                    }
+                  }),
+            ],
+          ),
         ],
       ),
       drawer: Container(
@@ -150,7 +313,7 @@ class _Feed extends State<Feed> {
             Padding(
               padding: const EdgeInsets.only(top: 100.0, right: 10),
               child: Text(
-                loggedInUser.name[0].toUpperCase()+loggedInUser.name.substring(1),
+                "${loggedInUser!.name[0].toUpperCase()}${loggedInUser!.name.substring(1)}",
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 25,
@@ -159,9 +322,9 @@ class _Feed extends State<Feed> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only( right: 10 ,bottom: 40),
+              padding: const EdgeInsets.only(right: 10, bottom: 40),
               child: Text(
-                loggedInUser.email,
+                loggedInUser!.email,
                 style: const TextStyle(
                   color: Colors.blueGrey,
                   fontSize: 20,
@@ -174,16 +337,21 @@ class _Feed extends State<Feed> {
                 role: "/profile",
                 icon: Icons.account_circle_outlined),
             const ProfileButton(
-                name: "My Adresses", role: "/adress", icon: Icons.location_on),
+                name: "My Addresses",
+                role: "/address",
+                icon: Icons.location_on),
             const ProfileButton(
-                name: "Settings", role: "/settings", icon: Icons.settings_sharp),
+                name: "Settings",
+                role: "/settings",
+                icon: Icons.settings_sharp),
             const ProfileButton(
                 name: "Help & FAQ", role: "/help", icon: Icons.help_rounded),
             Padding(
                 padding: const EdgeInsets.only(top: 100, bottom: 13),
                 child: TextButton(
                     style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(const Size(200, 48)),
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(200, 48)),
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color(0xffbd2005)),
                         shape: MaterialStateProperty.all(
@@ -198,10 +366,10 @@ class _Feed extends State<Feed> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Icon(
-                              Icons.power_settings_new,
-                              color: Colors.white,
-                              size: 30,
-                            ),
+                            Icons.power_settings_new,
+                            color: Colors.white,
+                            size: 30,
+                          ),
                           Text(
                             "Log Out",
                             style: TextStyle(color: Colors.white, fontSize: 17),
