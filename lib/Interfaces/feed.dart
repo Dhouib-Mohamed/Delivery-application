@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:iac_project/Widgets/contents.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import '../models.dart';
-import 'signin.dart';
 
 class Feed extends StatefulWidget {
   const Feed({Key? key}) : super(key: key);
@@ -56,8 +55,7 @@ class _Feed extends State<Feed> {
 
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignIn()));
+    Navigator.pushNamed(context, '/opening');
   }
 
   void onItem(index) {
