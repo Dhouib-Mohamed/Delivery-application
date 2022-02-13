@@ -13,14 +13,14 @@ class GPS extends StatelessWidget {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height*0.75,
+            height: MediaQuery.of(context).size.height * 0.75,
             child: const Image(
               image: AssetImage("assets/Images/img1.png"),
             ),
           ),
           const LoginButton(
               name: "ADD LOCATION", c: Color(0xffbd2005), role: '/map'),
-          const TappedText(text: "", tapped: "Skip for now", role: '/opening')
+          const TappedText(text: "", tapped: "Skip for now", role: '/feed')
         ],
       ),
     );

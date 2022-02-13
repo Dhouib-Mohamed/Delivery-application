@@ -193,6 +193,6 @@ class _SignUp extends State<SignUp> {
         .set(userModel.toJson());
     Fluttertoast.showToast(msg: "Account created successfully :) ");
 
-    Navigator.pushNamed(context, '/feed');
+    Navigator.pushNamed(context, '/gps');
   }
 }

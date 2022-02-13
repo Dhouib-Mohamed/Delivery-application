@@ -52,14 +52,14 @@ class RestaurantModel {
 
 @JsonSerializable()
 class AddressModel {
-  String location;
+  GeoPoint location;
 
   AddressModel({required this.location});
 
   // receiving data from server
   AddressModel.fromJson(json)
       : this(
-          location: json['location']! as String,
+          location: json['location']! as GeoPoint,
         );
   Map<String, Object?> toJson() {
     return {
@@ -75,7 +75,11 @@ class DealModel {
   String price;
   String description;
 
-  DealModel({required this.name, required this.photoUrl, required this.description, required this.price});
+  DealModel(
+      {required this.name,
+      required this.photoUrl,
+      required this.description,
+      required this.price});
 
   // receiving data from server
   DealModel.fromJson(json)

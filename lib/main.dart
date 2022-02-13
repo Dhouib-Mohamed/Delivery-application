@@ -32,7 +32,8 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
-  final String init = (FirebaseAuth.instance.currentUser != null) ? '/feed' : '/gps';
+  final String init =
+      (FirebaseAuth.instance.currentUser != null) ? '/feed' : '/opening';
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
         '/help': (context) => const Help(),
         '/profile': (context) => const Profile(),
         '/feed': (context) => const Feed(),
-        '/map': (context) => const Mapp(),
+        '/map': (context) => Mapp(),
         '/end_order': (context) => const EndOrder(),
         '/cart': (context) => const Cart(),
         '/search': (context) => const Search(),

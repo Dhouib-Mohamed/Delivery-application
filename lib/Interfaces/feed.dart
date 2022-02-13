@@ -14,7 +14,7 @@ class Feed extends StatefulWidget {
 class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   User? user = FirebaseAuth.instance.currentUser;
-  UserModel? loggedInUser;
+  late UserModel loggedInUser;
   Widget locationWidget() {
     bool a = false;
     AddressModel? address;
@@ -32,7 +32,9 @@ class _Feed extends State<Feed> {
     });
     if (a) {
       return TappedPosition(
-          text: "Deliver To :  ", tapped: address!.location, role: '/address');
+          text: "Deliver To :  ",
+          tapped: address!.location.toString(),
+          role: '/address');
     } else {
       return const TappedPosition(
           text: "", tapped: "Add Location", role: '/address');
@@ -205,10 +207,11 @@ class _Feed extends State<Feed> {
                           RestaurantModel r =
                               RestaurantModel.fromJson(document.data());
                           return FeedElement(
-                              url: r.photoUrl,
-                              name: r.name,
-                              location: r.location,
-                              id:document.reference.id ,);
+                            url: r.photoUrl,
+                            name: r.name,
+                            location: r.location,
+                            id: document.reference.id,
+                          );
                         }).toList()),
                       );
                     }
@@ -248,10 +251,11 @@ class _Feed extends State<Feed> {
                           RestaurantModel r =
                               RestaurantModel.fromJson(document.data());
                           return ListElement(
-                              url: r.photoUrl,
-                              name: r.name,
-                              location: r.location,
-                              id:document.reference.id ,);
+                            url: r.photoUrl,
+                            name: r.name,
+                            location: r.location,
+                            id: document.reference.id,
+                          );
                         }).toList()),
                       );
                     }
@@ -291,10 +295,11 @@ class _Feed extends State<Feed> {
                           RestaurantModel r =
                               RestaurantModel.fromJson(document.data());
                           return FeedElement(
-                              url: r.photoUrl,
-                              name: r.name,
-                              location: r.location,
-                              id:document.reference.id ,);
+                            url: r.photoUrl,
+                            name: r.name,
+                            location: r.location,
+                            id: document.reference.id,
+                          );
                         }).toList()),
                       );
                     }
@@ -311,7 +316,7 @@ class _Feed extends State<Feed> {
             Padding(
               padding: const EdgeInsets.only(top: 100.0, right: 10),
               child: Text(
-                "${loggedInUser!.name[0].toUpperCase()}${loggedInUser!.name.substring(1)}",
+                "${loggedInUser.name[0].toUpperCase()}${loggedInUser.name.substring(1)}",
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 25,
@@ -322,7 +327,7 @@ class _Feed extends State<Feed> {
             Padding(
               padding: const EdgeInsets.only(right: 10, bottom: 40),
               child: Text(
-                loggedInUser!.email,
+                loggedInUser.email,
                 style: const TextStyle(
                   color: Colors.blueGrey,
                   fontSize: 20,
