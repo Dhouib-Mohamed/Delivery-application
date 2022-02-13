@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         '/new_password': (context) => NewPassword(),
         '/gps': (context) => const GPS(),
         '/settings': (context) => const Setting(),
-        '/address': (context) => const Address(),
+        '/address': (context) => Address(),
         '/help': (context) => const Help(),
         '/profile': (context) => const Profile(),
         '/feed': (context) => const Feed(),
