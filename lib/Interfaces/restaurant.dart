@@ -13,7 +13,7 @@ class Restaurant extends StatefulWidget {
 }
 
 class _RestaurantState extends State<Restaurant> {
-  late final RestaurantModel? restaurant ;
+  late final RestaurantModel? restaurant;
 
   @override
   void initState() {
@@ -49,12 +49,16 @@ class _RestaurantState extends State<Restaurant> {
                     Text(
                       restaurant!.name,
                       style: const TextStyle(
-                          fontSize: 27, fontWeight: FontWeight.w800 , color: Colors.blueGrey),
+                          fontSize: 27,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.blueGrey),
                     ),
                     Text(
                       restaurant!.location.toString(),
                       style: const TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.w500 , color: Colors.blueGrey),
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blueGrey),
                     ),
                   ],
                 ),
@@ -74,8 +78,8 @@ class _RestaurantState extends State<Restaurant> {
             actions: const [
               Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.heart_broken,
+                child: ImageIcon(
+                  AssetImage("assets/icons/heart.png"),
                   color: Colors.white,
                 ),
               ),
@@ -89,7 +93,8 @@ class _RestaurantState extends State<Restaurant> {
             ],
           ),
           const SliverToBoxAdapter(
-            child: Padding(padding: EdgeInsets.all(8), child: Text("All Deals")),
+            child:
+                Padding(padding: EdgeInsets.all(8), child: Text("All Deals")),
           ),
           SliverToBoxAdapter(
             child: StreamBuilder(

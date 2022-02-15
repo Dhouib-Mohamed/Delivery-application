@@ -66,9 +66,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 label: "Cart"),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.heart_broken,
-                ),
+                icon: ImageIcon(AssetImage("assets/icons/heart.png")),
                 label: "Saved"),
             BottomNavigationBarItem(
                 icon: Icon(

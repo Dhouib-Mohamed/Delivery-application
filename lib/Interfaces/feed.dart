@@ -112,9 +112,7 @@ class _Feed extends State<Feed> {
                 ),
                 label: "Cart"),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.heart_broken,
-                ),
+                icon: ImageIcon(AssetImage("assets/icons/heart.png")),
                 label: "Saved"),
             BottomNavigationBarItem(
                 icon: Icon(
