@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iac_project/models.dart';
 
+import '../Widgets/contents.dart';
+
 class Restaurant extends StatefulWidget {
   const Restaurant({Key? key, required this.id}) : super(key: key);
   final String id;
@@ -11,7 +13,7 @@ class Restaurant extends StatefulWidget {
 }
 
 class _RestaurantState extends State<Restaurant> {
-  late RestaurantModel? restaurant;
+  late final RestaurantModel? restaurant ;
 
   @override
   void initState() {
@@ -41,17 +43,28 @@ class _RestaurantState extends State<Restaurant> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(restaurant!.name),
-                    Text(restaurant!.location.toString()),
+                    Text(
+                      restaurant!.name,
+                      style: const TextStyle(
+                          fontSize: 27, fontWeight: FontWeight.w800 , color: Colors.blueGrey),
+                    ),
+                    Text(
+                      restaurant!.location.toString(),
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.w500 , color: Colors.blueGrey),
+                    ),
                   ],
                 ),
               ),
             ),
             flexibleSpace: Container(
               decoration: BoxDecoration(
-                image: DecorationImage(image: NetworkImage(restaurant!.photoUrl),fit: BoxFit.cover),
+                image: DecorationImage(
+                    image: NetworkImage(restaurant!.photoUrl),
+                    fit: BoxFit.cover),
               ),
             ),
             leading: const Icon(
@@ -74,39 +87,40 @@ class _RestaurantState extends State<Restaurant> {
                 ),
               ),
             ],
-
           ),
-          // StreamBuilder(
-          //     stream: FirebaseFirestore
-          //         .instance
-          //         .collection('restaurants')
-          //         .doc(widget.id)
-          //         .collection("deals")
-          //         .snapshots(),
-          //
-          //     builder: (BuildContext context,
-          //         AsyncSnapshot<QuerySnapshot> snapshot) {
-          //       if (!snapshot.hasData) {
-          //         return const Center(
-          //           child: CircularProgressIndicator(),
-          //         );
-          //       } else {
-          //         return SingleChildScrollView(
-          //           scrollDirection: Axis.horizontal,
-          //           child: Column(
-          //               children: snapshot.data!.docs.map((document) {
-          //                 DealModel d =
-          //                 DealModel.fromJson(document.data());
-          //                 return RestaurantElement(
-          //                   url: d.photoUrl,
-          //                   name: d.name,
-          //                   description: d.description,
-          //                   price: d.price ,);
-          //               }).toList()),
-          //         );
-          //       }
-          //     }),
-
+          const SliverToBoxAdapter(
+            child: Padding(padding: EdgeInsets.all(8), child: Text("All Deals")),
+          ),
+          SliverToBoxAdapter(
+            child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('restaurants')
+                    .doc(widget.id)
+                    .collection('deals')
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Column(
+                          children: snapshot.data!.docs.map((document) {
+                        DealModel d = DealModel.fromJson(document.data());
+                        return RestaurantElement(
+                          url: d.photoUrl,
+                          name: d.name,
+                          description: d.description,
+                          price: d.price,
+                        );
+                      }).toList()),
+                    );
+                  }
+                }),
+          ),
         ],
       ),
     );

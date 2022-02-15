@@ -14,7 +14,7 @@ class Feed extends StatefulWidget {
 class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   User? user = FirebaseAuth.instance.currentUser;
-  late UserModel loggedInUser;
+  late final UserModel loggedInUser;
   Widget locationWidget() {
     bool a = false;
     AddressModel? address;

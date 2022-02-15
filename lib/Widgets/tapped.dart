@@ -119,7 +119,7 @@ class AuthLoginButtonColored extends StatelessWidget {
   final ImageProvider<Object>? icon;
   final String? name;
   final Color? c;
-  final role;
+  final void Function()? role;
   const AuthLoginButtonColored(
       {Key? key,
       required this.name,
@@ -283,33 +283,29 @@ class TappedText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 35, bottom: 20),
-      child: SizedBox(
-        width: 328,
-        height: 24,
-        child: Row(children: [
-          Text(
-            text,
-            style: const TextStyle(
+      child: Row(children: [
+        Text(
+          text,
+          style: const TextStyle(
+            fontFamily: "Inter",
+            fontSize: 13,
+            color: Colors.black,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, role);
+          },
+          child: Text(
+            tapped,
+            style: TextStyle(
               fontFamily: "Inter",
+              color: (c == null) ? const Color(0xffbd2005) : c,
               fontSize: 13,
-              color: Colors.black,
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, role);
-            },
-            child: Text(
-              tapped,
-              style: TextStyle(
-                fontFamily: "Inter",
-                color: (c == null) ? const Color(0xffbd2005) : c,
-                fontSize: 13,
-              ),
-            ),
-          )
-        ]),
-      ),
+        )
+      ]),
     );
   }
 }
@@ -329,7 +325,7 @@ class TappedPosition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5, left: 35, bottom: 20),
+      padding: const EdgeInsets.only(top: 5, left: 25, bottom: 15),
       child: SizedBox(
         width: 328,
         height: 24,
@@ -356,6 +352,41 @@ class TappedPosition extends StatelessWidget {
             ),
           )
         ]),
+      ),
+    );
+  }
+}
+
+class TappedBox extends StatefulWidget {
+  final String text;
+  const TappedBox({Key? key, required this.text}) : super(key: key);
+
+  @override
+  State<TappedBox> createState() => _TappedBoxState();
+}
+
+class _TappedBoxState extends State<TappedBox> {
+  bool val = true;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, left: 0, bottom: 15, right: 0),
+      child: Row(
+        children: [
+          Checkbox(
+            activeColor: const Color(0xffbd2005),
+            onChanged: (bool? value) {
+              setState(() {
+                val = value!;
+              });
+            },
+            value: val,
+          ),
+          Text(
+            widget.text,
+            style: const TextStyle(color: Color(0xffbd2005)),
+          ),
+        ],
       ),
     );
   }

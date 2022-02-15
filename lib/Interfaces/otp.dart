@@ -2,8 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../Widgets/tapped.dart';
 
-class OTP extends StatelessWidget {
+class OTP extends StatefulWidget {
+  const OTP({Key? key}) : super(key: key);
+
+  @override
+  State<OTP> createState() => _OTPState();
+}
+
+class _OTPState extends State<OTP> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController codeController = TextEditingController();
+
   String? codeValidator(String? value) {
     RegExp regex = RegExp('^[0-9]');
     if (value!.isEmpty) {
@@ -14,8 +24,6 @@ class OTP extends StatelessWidget {
     }
     return null;
   }
-
-  OTP({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,5 +62,11 @@ class OTP extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void otp() {
+    if (_formKey.currentState!.validate()) {
+      Navigator.pushNamed(context, '/new_password');
+    }
   }
 }

@@ -7,14 +7,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Mapp extends StatefulWidget {
-  Mapp({Key? key}) : super(key: key);
+  const Mapp({Key? key}) : super(key: key);
 
   @override
   State<Mapp> createState() => _MappState();
 }
 
 class _MappState extends State<Mapp> {
-  late Marker marker;
+  Set<Marker> markers = {};
   late GoogleMapController mapController;
   LatLng center = const LatLng(34.739847607277355, 10.75993983379422);
 
@@ -25,12 +25,16 @@ class _MappState extends State<Mapp> {
   @override
   void initState() {
     super.initState();
+    getLocationPermission();
   }
 
   getLocationPermission() async {
     var location = Location();
     try {
-      location.requestPermission();
+      await location.requestPermission();
+      if (!await location.serviceEnabled()) {
+        location.requestService();
+      }
       setState(() {});
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
@@ -44,23 +48,35 @@ class _MappState extends State<Mapp> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: TextButton(
-          onPressed: () {
-            FirebaseFirestore.instance
+        onPressed: () async {
+          if (markers.isEmpty) {
+            Fluttertoast.showToast(msg: 'No position Chosen');
+          } else {
+            await FirebaseFirestore.instance
                 .collection("users")
                 .doc(FirebaseAuth.instance.currentUser!.uid)
                 .collection("addresses")
-                .add({"position": marker.position});
-          },
-          child: const Text("ADD ADDRESS")),
+                .doc()
+                .set({
+              "location": GeoPoint(markers.first.position.latitude,
+                  markers.first.position.longitude)
+            });
+            Navigator.pushNamed(context, "/address");
+          }
+        },
+        child: const Text("ADD ADDRESS", style: TextStyle(fontSize: 20)),
+      ),
       appBar: AppBar(
         title: const Text('ADD LOCATION'),
         backgroundColor: const Color(0xffbd2005),
       ),
       body: GoogleMap(
+        markers: markers,
         onLongPress: (argument) {
           setState(() {
-            marker = Marker(
-                markerId: const MarkerId("location"), position: argument);
+            markers.clear();
+            markers.add(Marker(
+                markerId: const MarkerId("location"), position: argument));
           });
         },
         onMapCreated: _onMapCreated,

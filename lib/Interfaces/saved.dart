@@ -36,6 +36,13 @@ class _SavedState extends State<Saved> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xffbd2005),
+        title: const Text(
+          "Saved Items",
+          style: TextStyle(color: Colors.white, fontSize: 23),
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
           onTap: onItem,
           unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),

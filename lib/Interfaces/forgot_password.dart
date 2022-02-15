@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../Widgets/tapped.dart';
-import 'otp.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -89,7 +88,8 @@ class _ForgotPassword extends State<ForgotPassword> {
   }
 
   void password() {
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => OTP()));
+    if (_formKey.currentState!.validate()) {
+      Navigator.pushNamed(context, '/otp');
+    }
   }
 }

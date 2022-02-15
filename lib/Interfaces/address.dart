@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models.dart';
@@ -13,8 +14,12 @@ class Address extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xffbd2005),
         title: const Text(
-          "My Adresses",
+          "My Addresses",
           style: TextStyle(color: Colors.white, fontSize: 23),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () { Navigator.pushNamed(context, '/feed'); },
         ),
       ),
       floatingActionButton: TextButton(
@@ -45,7 +50,7 @@ class Address extends StatelessWidget {
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection("users")
-              .doc()
+              .doc(FirebaseAuth.instance.currentUser!.uid)
               .collection("addresses")
               .snapshots(),
           builder:
@@ -68,8 +73,10 @@ class Address extends StatelessWidget {
                               child: Container(
                             color: const Color.fromARGB(255, 232, 237, 240),
                             height: 90,
-                            width: MediaQuery.of(context).size.width * 0.9,
+                            width: MediaQuery.of(context).size.width * 0.95,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8.0),
@@ -77,7 +84,7 @@ class Address extends StatelessWidget {
                                     "ADDRESS $i :",
                                     style: const TextStyle(
                                       color: Colors.black,
-                                      fontSize: 26,
+                                      fontSize: 22,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -88,7 +95,7 @@ class Address extends StatelessWidget {
                                     address.location.toString(),
                                     style: const TextStyle(
                                       color: Colors.black,
-                                      fontSize: 25,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),

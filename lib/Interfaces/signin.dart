@@ -99,11 +99,19 @@ class _SignIn extends State<SignIn> {
                   control: passwordController,
                   valid: passwordValidator,
                 ),
-                const TappedText(
-                    c: Colors.black,
-                    text: "",
-                    tapped: "Forgot Password ?",
-                    role: '/forgot_password'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: const [
+                    TappedBox(
+                      text: 'Stay Signed in',
+                    ),
+                    TappedText(
+                        c: Colors.black,
+                        text: "",
+                        tapped: "Forgot Password ?",
+                        role: '/forgot_password'),
+                  ],
+                ),
                 AuthLoginButton(
                     name: "SIGN IN", c: const Color(0xffbd2005), role: signIn),
                 const SizedBox(
@@ -135,7 +143,7 @@ class _SignIn extends State<SignIn> {
                 email: emailController.text, password: passwordController.text)
             .then((uid) => {
                   Fluttertoast.showToast(msg: "Login Successful"),
-        Navigator.pushNamed(context, '/feed'),
+                  Navigator.pushNamed(context, '/feed'),
                 });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {

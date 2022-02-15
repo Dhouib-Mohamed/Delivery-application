@@ -59,7 +59,7 @@ class AddressModel {
   // receiving data from server
   AddressModel.fromJson(json)
       : this(
-          location: json['location']! as GeoPoint,
+          location: json['location'] as GeoPoint,
         );
   Map<String, Object?> toJson() {
     return {

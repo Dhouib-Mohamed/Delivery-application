@@ -36,6 +36,13 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xffbd2005),
+        title: const Text(
+          "Profile",
+          style: TextStyle(color: Colors.white, fontSize: 23),
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
           onTap: onItem,
           unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),

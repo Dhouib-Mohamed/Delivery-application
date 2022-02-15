@@ -49,7 +49,7 @@ class RestaurantElement extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-          color: Color.fromARGB(255, 232, 237, 240),
+          color: const Color.fromARGB(255, 232, 237, 240),
           height: 110,
           child: Row(
             children: [
@@ -94,7 +94,7 @@ class RestaurantElement extends StatelessWidget {
 class FeedElement extends StatelessWidget {
   final String url, name;
   final GeoPoint location;
-  final id;
+  final String id;
   const FeedElement(
       {Key? key,
       required this.url,
@@ -109,10 +109,16 @@ class FeedElement extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Center(
         child: GestureDetector(
-          onTap: () =>
-              {Navigator.push(context,MaterialPageRoute(builder: (context) => Restaurant(id: id,)))},
+          onTap: () => {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Restaurant(
+                          id: id,
+                        )))
+          },
           child: Container(
-              color: Color.fromARGB(255, 232, 237, 240),
+              color: const Color.fromARGB(255, 232, 237, 240),
               height: 90,
               width: MediaQuery.of(context).size.width * 0.9,
               child: Row(
@@ -164,7 +170,7 @@ class FeedElement extends StatelessWidget {
 class ListElement extends StatelessWidget {
   final GeoPoint location;
   final String name, url;
-  final id;
+  final String id;
   const ListElement(
       {Key? key,
       required this.url,
@@ -179,8 +185,14 @@ class ListElement extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Center(
         child: GestureDetector(
-          onTap: () =>
-          {Navigator.push(context,MaterialPageRoute(builder: (context) => Restaurant(id: id,)))},
+          onTap: () => {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Restaurant(
+                          id: id,
+                        )))
+          },
           child: Container(
               color: const Color.fromARGB(255, 232, 237, 240),
               height: 240,

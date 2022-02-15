@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/Widgets/tapped.dart';
-
 import '../Widgets/tapped.dart';
-
-import 'feed.dart';
+import '../models.dart';
 
 class Opening extends StatefulWidget {
   const Opening({Key? key}) : super(key: key);
@@ -45,10 +47,50 @@ class _Opening extends State<Opening> {
     );
   }
 
-  void signInWithFacebook() {
-    Navigator.pushAndRemoveUntil(
-        (context),
-        MaterialPageRoute(builder: (context) => const Feed()),
-        (route) => false);
+  Future<void> signInWithFacebook() async {
+    String? message = "Error";
+    try {
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      final userData = await FacebookAuth.instance.getUserData();
+
+      // Create a credential from the access token
+      final facebookAuthCredential =
+      FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+      // Once signed in, return the UserCredential
+      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+      User? user = FirebaseAuth.instance.currentUser;
+
+      UserModel userModel =
+      UserModel(email: userData["email"], name: userData["name"]);
+
+      userModel.phone = "";
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user!.uid)
+          .set(userModel.toJson());
+
+      Fluttertoast.showToast(msg: "Connected successfully :) ");
+
+      Navigator.pushNamed(context, '/feed');
+    } on FirebaseAuthException catch (error) {
+      switch (error.code) {
+        case "invalid-credential":
+          message = "unknown Error have occurred";
+          break;
+        case "operation-not-allowed":
+          message = "Not allowed";
+          break;
+        case "user-disabled":
+          message = "User with this email has been disabled.";
+          break;
+        case "too-many-requests":
+          message = "Too many requests";
+          break;
+        default :
+          message = "Unknown Error";
+      }
+      Fluttertoast.showToast(msg: message);
+    }
   }
 }
