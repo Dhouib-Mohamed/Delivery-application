@@ -47,48 +47,85 @@ class RestaurantElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-          color: const Color.fromARGB(255, 232, 237, 240),
-          height: 110,
-          child: Row(
-            children: [
-              Image.network(url, width: 64, height: 64),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0, left: 2.0),
-                child: Column(
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                      ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Container(
+            color: const Color.fromARGB(255, 232, 237, 240),
+            height: 150,
+            width: MediaQuery.of(context).size.width * 0.96,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.network(url, width: 120, height: 120),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0, left: 2.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.96 - 135,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          name,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          description,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              price + " TND",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            OutlinedButton(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.white),
+                                    fixedSize: MaterialStateProperty.all(
+                                        const Size(110, 40)),
+                                    shape: MaterialStateProperty.all(
+                                        const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                    ))),
+                                onPressed: () {
+                                  addInCart();
+                                },
+                                child: const Text(
+                                  "Add in Cart",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14),
+                                )),
+                          ],
+                        ),
+                      ],
                     ),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        color: Color(0x008e8e93),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      price + "\$",
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )),
+                  ),
+                )
+              ],
+            )),
+      ),
     );
   }
+
+  void addInCart() {}
 }
 
 class FeedElement extends StatelessWidget {

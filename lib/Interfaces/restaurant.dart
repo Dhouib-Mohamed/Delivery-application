@@ -37,31 +37,31 @@ class _RestaurantState extends State<Restaurant> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 200,
-            bottom: PreferredSize(
-              preferredSize: Size(MediaQuery.of(context).size.width, 100),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      restaurant!.name,
-                      style: const TextStyle(
-                          fontSize: 27,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.blueGrey),
-                    ),
-                    Text(
-                      restaurant!.location.toString(),
-                      style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.blueGrey),
-                    ),
-                  ],
-                ),
+            toolbarHeight: 80,
+            expandedHeight: 230,
+            pinned: true,
+            elevation: 0,
+            title: Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    restaurant!.name,
+                    style: const TextStyle(
+                        fontSize: 27,
+                        fontWeight: FontWeight.w800,
+                        color: Color.fromARGB(255, 63, 11, 4)),
+                  ),
+                  Text(
+                    restaurant!.location.toString(),
+                    style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromARGB(255, 63, 11, 4)),
+                  ),
+                ],
               ),
             ),
             flexibleSpace: Container(
@@ -71,23 +71,19 @@ class _RestaurantState extends State<Restaurant> {
                     fit: BoxFit.cover),
               ),
             ),
-            leading: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
             actions: const [
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: ImageIcon(
                   AssetImage("assets/icons/heart.png"),
-                  color: Colors.white,
+                  color: Color(0xffbd2005),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Icon(
                   Icons.share,
-                  color: Colors.white,
+                  color: Color(0xffbd2005),
                 ),
               ),
             ],
