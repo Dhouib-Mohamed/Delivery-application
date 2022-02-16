@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iac_project/models.dart';
+import '../Widgets/contents.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -75,8 +80,50 @@ class _CartState extends State<Cart> {
         ),
       ),
       body: Column(
-        children: const [],
+        children: [
+          StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection('cart')
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                        children: snapshot.data!.docs.map((document) {
+                      DealModel d = DealModel.fromJson(document.data());
+                      return RestaurantElement(
+                          url: d.photoUrl,
+                          name: d.name,
+                          description: d.description,
+                          price: d.price,
+                          buttonText: "remove from cart",
+                          buttonRole: () {
+                            removeFromCart(document.id);
+                          });
+                    }).toList()),
+                  );
+                }
+              }),
+        ],
       ),
     );
+  }
+
+  removeFromCart(String id) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("cart")
+        .doc(id)
+        .delete();
+    Fluttertoast.showToast(msg: "Item removed Successfully from cart :) ");
   }
 }

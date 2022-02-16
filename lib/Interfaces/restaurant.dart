@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/models.dart';
 
 import '../Widgets/contents.dart';
@@ -34,6 +36,16 @@ class _RestaurantState extends State<Restaurant> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xffbd2005),
+        onPressed: () {
+          Navigator.pushNamed(context, '/cart');
+        },
+        child: const Icon(
+          Icons.shopping_cart_rounded,
+          color: Colors.white,
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -112,11 +124,19 @@ class _RestaurantState extends State<Restaurant> {
                           children: snapshot.data!.docs.map((document) {
                         DealModel d = DealModel.fromJson(document.data());
                         return RestaurantElement(
-                          url: d.photoUrl,
-                          name: d.name,
-                          description: d.description,
-                          price: d.price,
-                        );
+                            url: d.photoUrl,
+                            name: d.name,
+                            description: d.description,
+                            price: d.price,
+                            buttonText: "Add in Cart",
+                            buttonRole: () {
+                              addInCart(
+                                d.photoUrl,
+                                d.name,
+                                d.description,
+                                d.price,
+                              );
+                            });
                       }).toList()),
                     );
                   }
@@ -125,5 +145,20 @@ class _RestaurantState extends State<Restaurant> {
         ],
       ),
     );
+  }
+
+  Future<void> addInCart(url, name, description, price) async {
+    DealModel d = DealModel.fromJson({
+      'photoUrl': url,
+      'name': name,
+      'description': description,
+      'price': price,
+    });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("cart")
+        .add(d.toJson());
+    Fluttertoast.showToast(msg: "Item added Successfully to cart :) ");
   }
 }

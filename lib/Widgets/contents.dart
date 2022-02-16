@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iac_project/Interfaces/restaurant.dart';
+import 'package:iac_project/Widgets/tapped.dart';
 
 class SimplAppBar extends AppBar {
   final String text;
@@ -36,13 +37,16 @@ class SimplAppBar extends AppBar {
 }
 
 class RestaurantElement extends StatelessWidget {
-  final String url, description, name, price;
+  final String url, description, name, price, buttonText;
+  final buttonRole;
   const RestaurantElement(
       {Key? key,
       required this.url,
       required this.description,
       required this.name,
-      required this.price})
+      required this.price,
+      required this.buttonText,
+      required this.buttonRole})
       : super(key: key);
 
   @override
@@ -93,26 +97,8 @@ class RestaurantElement extends StatelessWidget {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            OutlinedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.white),
-                                    fixedSize: MaterialStateProperty.all(
-                                        const Size(110, 40)),
-                                    shape: MaterialStateProperty.all(
-                                        const RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                    ))),
-                                onPressed: () {
-                                  addInCart();
-                                },
-                                child: const Text(
-                                  "Add in Cart",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 14),
-                                )),
+                            SimplButton(
+                                buttonRole: buttonRole, buttonText: buttonText),
                           ],
                         ),
                       ],
@@ -124,8 +110,6 @@ class RestaurantElement extends StatelessWidget {
       ),
     );
   }
-
-  void addInCart() {}
 }
 
 class FeedElement extends StatelessWidget {

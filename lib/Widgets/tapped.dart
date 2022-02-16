@@ -391,3 +391,31 @@ class _TappedBoxState extends State<TappedBox> {
     );
   }
 }
+
+class SimplButton extends StatelessWidget {
+  final buttonRole;
+
+  final String buttonText;
+
+  const SimplButton(
+      {Key? key, required this.buttonRole, required this.buttonText})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            fixedSize: MaterialStateProperty.all(const Size(141, 40)),
+            shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ))),
+        onPressed: () {
+          if (buttonRole != null) buttonRole!();
+        },
+        child: Text(
+          buttonText,
+          style: const TextStyle(color: Colors.black, fontSize: 14),
+        ));
+  }
+}

@@ -52,17 +52,18 @@ class _Opening extends State<Opening> {
     try {
       final LoginResult loginResult = await FacebookAuth.instance.login();
       final userData = await FacebookAuth.instance.getUserData();
+      Fluttertoast.showToast(msg: "Connected successfully :) ");
 
       // Create a credential from the access token
       final facebookAuthCredential =
-      FacebookAuthProvider.credential(loginResult.accessToken!.token);
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
       // Once signed in, return the UserCredential
       await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
       User? user = FirebaseAuth.instance.currentUser;
 
       UserModel userModel =
-      UserModel(email: userData["email"], name: userData["name"]);
+          UserModel(email: userData["email"], name: userData["name"]);
 
       userModel.phone = "";
       await FirebaseFirestore.instance
@@ -87,7 +88,7 @@ class _Opening extends State<Opening> {
         case "too-many-requests":
           message = "Too many requests";
           break;
-        default :
+        default:
           message = "Unknown Error";
       }
       Fluttertoast.showToast(msg: message);

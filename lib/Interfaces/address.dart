@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import '../Widgets/tapped.dart';
 import '../models.dart';
+import 'address_map.dart';
 
 class Address extends StatelessWidget {
   Address({Key? key}) : super(key: key);
@@ -19,7 +22,9 @@ class Address extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () { Navigator.pushNamed(context, '/feed'); },
+          onPressed: () {
+            Navigator.pushNamed(context, '/feed');
+          },
         ),
       ),
       floatingActionButton: TextButton(
@@ -60,6 +65,7 @@ class Address extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else {
+              i = 0;
               return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Column(
@@ -70,37 +76,59 @@ class Address extends StatelessWidget {
                       return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
-                              child: Container(
-                            color: const Color.fromARGB(255, 232, 237, 240),
-                            height: 90,
-                            width: MediaQuery.of(context).size.width * 0.95,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    "ADDRESS $i :",
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w700,
+                              child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddressMap(
+                                          location: address.location)));
+                            },
+                            child: Container(
+                              color: const Color.fromARGB(255, 232, 237, 240),
+                              height: 90,
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          "ADDRESS $i :",
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                      SimplButton(
+                                          buttonRole: () {
+                                            removeAdress(document.id);
+                                          },
+                                          buttonText: "Remove address"),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      address.location.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    address.location.toString(),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           )));
                     }).toList(),
@@ -108,5 +136,15 @@ class Address extends StatelessWidget {
             }
           }),
     );
+  }
+
+  removeAdress(String id) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("addresses")
+        .doc(id)
+        .delete();
+    Fluttertoast.showToast(msg: "Item removed Successfully from cart :) ");
   }
 }

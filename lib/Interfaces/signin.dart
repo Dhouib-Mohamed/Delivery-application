@@ -191,7 +191,7 @@ class _SignIn extends State<SignIn> {
       UserModel userModel =
           UserModel(email: userData["email"], name: userData["name"]);
 
-      userModel.phone = null;
+      userModel.phone = "";
       await FirebaseFirestore.instance
           .collection("users")
           .doc(user!.uid)
@@ -214,6 +214,8 @@ class _SignIn extends State<SignIn> {
         case "too-many-requests":
           message = "Too many requests";
           break;
+        default:
+          message = "I just don't know :(";
       }
       Fluttertoast.showToast(msg: message);
     }
