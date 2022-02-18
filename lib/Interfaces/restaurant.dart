@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/models.dart';
 
 import '../Widgets/contents.dart';
+// TODO heart init
 
 class Restaurant extends StatefulWidget {
   const Restaurant({Key? key, required this.id}) : super(key: key);
@@ -16,6 +17,7 @@ class Restaurant extends StatefulWidget {
 
 class _RestaurantState extends State<Restaurant> {
   late final RestaurantModel? restaurant;
+  String source = "assets/icons/heart.png";
 
   @override
   void initState() {
@@ -83,15 +85,34 @@ class _RestaurantState extends State<Restaurant> {
                     fit: BoxFit.cover),
               ),
             ),
-            actions: const [
+            actions: [
               Padding(
-                padding: EdgeInsets.all(8.0),
-                child: ImageIcon(
-                  AssetImage("assets/icons/heart.png"),
-                  color: Color(0xffbd2005),
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    if (source == "assets/icons/heart.png") {
+                      setState(() {
+                                  source = "assets/icons/heart1.png";
+                                });
+                      addToSaved(
+                        restaurant!.photoUrl,
+                        restaurant!.name,
+                        restaurant!.location,
+                      );
+                    } else {
+                      setState(() {
+                                    source = "assets/icons/heart.png";
+                                  });
+                      removeFromSaved(widget.id);
+                    }
+                  },
+                  child: ImageIcon(
+                    AssetImage(source),
+                    color: const Color(0xffbd2005),
+                  ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Icon(
                   Icons.share,
@@ -128,6 +149,7 @@ class _RestaurantState extends State<Restaurant> {
                             name: d.name,
                             description: d.description,
                             price: d.price,
+                            id: document.id,
                             buttonText: "Add in Cart",
                             buttonRole: () {
                               addInCart(
@@ -145,6 +167,32 @@ class _RestaurantState extends State<Restaurant> {
         ],
       ),
     );
+  }
+
+  removeFromSaved(String id) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("cart")
+        .doc()
+        .collection("restaurants")
+        .doc(id)
+        .delete();
+  }
+
+  addToSaved(url, name, location) async {
+    RestaurantModel d = RestaurantModel.fromJson({
+      'photoUrl': url,
+      'name': name,
+      'location': location,
+    });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("saved")
+        .doc()
+        .collection("restaurants")
+        .add(d.toJson());
   }
 
   Future<void> addInCart(url, name, description, price) async {
