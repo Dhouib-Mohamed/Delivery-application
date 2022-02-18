@@ -393,7 +393,7 @@ class _TappedBoxState extends State<TappedBox> {
 }
 
 class SimplButton extends StatelessWidget {
-  final buttonRole;
+  final void Function()? buttonRole;
 
   final String buttonText;
 

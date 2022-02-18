@@ -104,6 +104,7 @@ class _CartState extends State<Cart> {
                           name: d.name,
                           description: d.description,
                           price: d.price,
+                          id: document.id,
                           buttonText: "remove from cart",
                           buttonRole: () {
                             removeFromCart(document.id);
