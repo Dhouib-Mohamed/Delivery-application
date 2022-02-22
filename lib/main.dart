@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:iac_project/Interfaces/otp.dart';
 import 'package:iac_project/Interfaces/saved.dart';
 import 'package:iac_project/Interfaces/search.dart';
 import 'package:iac_project/firebase_options.dart';
+import 'package:iac_project/models.dart';
 import 'Interfaces/address.dart';
 import 'Interfaces/forgot_password.dart';
 import 'Interfaces/gps.dart';
@@ -32,6 +34,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
+
   final String init =
       (FirebaseAuth.instance.currentUser != null) ? '/feed' : '/opening';
 
@@ -51,13 +54,12 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => const Setting(),
         '/address': (context) => Address(),
         '/help': (context) => const Help(),
-        '/profile': (context) => const Profile(),
-        '/feed': (context) => const Feed(),
         '/map': (context) => const Mapp(),
         '/end_order': (context) => const EndOrder(),
         '/cart': (context) => const Cart(),
         '/search': (context) => const Search(),
         '/saved': (context) => const Saved(),
+        '/feed':(context) => const Feed()
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iac_project/Widgets/parts.dart';
 import '../Widgets/contents.dart';
 import '../models.dart';
 
@@ -13,30 +14,6 @@ class Saved extends StatefulWidget {
 }
 
 class _SavedState extends State<Saved> {
-  void onItem(index) {
-    switch (index) {
-      case 0:
-        setState(() {
-          Navigator.pushNamed(context, '/feed');
-        });
-        break;
-      case 1:
-        setState(() {
-          Navigator.pushNamed(context, '/search');
-        });
-        break;
-      case 2:
-        setState(() {
-          Navigator.pushNamed(context, '/cart');
-        });
-        break;
-      case 4:
-        setState(() {
-          Navigator.pushNamed(context, '/profile');
-        });
-        break;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,37 +25,7 @@ class _SavedState extends State<Saved> {
           style: TextStyle(color: Colors.white, fontSize: 23),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: onItem,
-          unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),
-          unselectedItemColor: Colors.blueGrey,
-          selectedItemColor: const Color(0xffbd2005),
-          currentIndex: 3,
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                ),
-                label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.search,
-                ),
-                label: "Search"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.shopping_cart_rounded,
-                ),
-                label: "Cart"),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage("assets/icons/heart.png")),
-                label: "Saved"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.person,
-                ),
-                label: "Profile"),
-          ]),
+      bottomNavigationBar: const BotBar(i: 3),
       body: Column(
         children: [
           StreamBuilder(
@@ -103,9 +50,7 @@ class _SavedState extends State<Saved> {
                       RestaurantModel d =
                           RestaurantModel.fromJson(document.data());
                       return FeedElement(
-                        url: d.photoUrl,
-                        name: d.name,
-                        location: d.location,
+                        restaurant: d,
                         id: document.id,
                       );
                     }).toList()),
@@ -133,10 +78,7 @@ class _SavedState extends State<Saved> {
                         children: snapshot.data!.docs.map((document) {
                       DealModel d = DealModel.fromJson(document.data());
                       return RestaurantElement(
-                          url: d.photoUrl,
-                          name: d.name,
-                          description: d.description,
-                          price: d.price,
+                          deal: d,
                           id: document.id,
                           buttonText: "remove from cart",
                           buttonRole: () {

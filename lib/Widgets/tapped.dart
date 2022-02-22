@@ -359,14 +359,15 @@ class TappedPosition extends StatelessWidget {
 
 class TappedBox extends StatefulWidget {
   final String text;
-  const TappedBox({Key? key, required this.text}) : super(key: key);
+  bool val = true;
+  TappedBox({Key? key, required this.text}) : super(key: key);
 
   @override
   State<TappedBox> createState() => _TappedBoxState();
 }
 
 class _TappedBoxState extends State<TappedBox> {
-  bool val = true;
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -377,10 +378,10 @@ class _TappedBoxState extends State<TappedBox> {
             activeColor: const Color(0xffbd2005),
             onChanged: (bool? value) {
               setState(() {
-                val = value!;
+                widget.val = value!;
               });
             },
-            value: val,
+            value: widget.val,
           ),
           Text(
             widget.text,

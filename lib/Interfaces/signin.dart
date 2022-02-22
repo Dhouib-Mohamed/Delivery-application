@@ -102,11 +102,11 @@ class _SignIn extends State<SignIn> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: const [
+                  children: [
                     TappedBox(
                       text: 'Stay Signed in',
                     ),
-                    TappedText(
+                    const TappedText(
                         c: Colors.black,
                         text: "",
                         tapped: "Forgot Password ?",

@@ -1,40 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:iac_project/Widgets/parts.dart';
+import 'package:iac_project/models.dart';
+
+import '../Widgets/tapped.dart';
 // TODO all
 
-
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  final UserModel user;
+  const Profile({Key? key, required this.user}) : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
-  void onItem(index) {
-    switch (index) {
-      case 0:
-        setState(() {
-          Navigator.pushNamed(context, '/feed');
-        });
-        break;
-      case 1:
-        setState(() {
-          Navigator.pushNamed(context, '/search');
-        });
-        break;
-      case 2:
-        setState(() {
-          Navigator.pushNamed(context, '/cart');
-        });
-        break;
-      case 3:
-        setState(() {
-          Navigator.pushNamed(context, '/saved');
-        });
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,37 +24,45 @@ class _ProfileState extends State<Profile> {
           style: TextStyle(color: Colors.white, fontSize: 23),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: onItem,
-          unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),
-          unselectedItemColor: Colors.blueGrey,
-          selectedItemColor: const Color(0xffbd2005),
-          currentIndex: 4,
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
+      bottomNavigationBar: const BotBar(i: 4),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+                "NAME : ${widget.user.name[0].toUpperCase()}${widget.user.name.substring(1)}",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
                 ),
-                label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.search,
+              ),
+              Text(
+                "EMAIL : "+widget.user.email,
+                style: const TextStyle(
+                  color: Colors.blueGrey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
                 ),
-                label: "Search"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.shopping_cart_rounded,
+              ),
+              Text(
+                "PHONE NUMBER : "+widget.user.phone!,
+                style: const TextStyle(
+                  color: Colors.blueGrey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
                 ),
-                label: "Cart"),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage("assets/icons/heart.png")),
-                label: "Saved"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.person,
-                ),
-                label: "Profile"),
-          ]),
+              ),
+            const ProfileButton(
+                name: "My Addresses", role: "/address", icon: Icons.location_on),
+            const ProfileButton(
+                name: "Settings", role: "/settings", icon: Icons.settings_sharp),
+            const ProfileButton(
+                name: "Help & FAQ", role: "/help", icon: Icons.help_rounded),
+          ],
+        ),
+      ),
     );
   }
 }

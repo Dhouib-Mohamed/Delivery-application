@@ -43,9 +43,6 @@ dependencies:
   cloud_firestore_odm: ^1.0.0-dev.7
   flutter_facebook_auth: ^4.0.1
   google_maps_flutter: ^2.1.1
-  json_serializable: ^6.1.4
-  geolocator: ^8.1.1
-  location: ^4.3.0
 
 
 dev_dependencies:

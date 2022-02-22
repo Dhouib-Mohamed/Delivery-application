@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,22 +23,6 @@ class _MappState extends State<Mapp> {
   @override
   void initState() {
     super.initState();
-    getLocationPermission();
-  }
-
-  getLocationPermission() async {
-    var location = Location();
-    try {
-      await location.requestPermission();
-      if (!await location.serviceEnabled()) {
-        location.requestService();
-      }
-      setState(() {});
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        Fluttertoast.showToast(msg: 'Permission denied');
-      }
-    }
   }
 
   @override

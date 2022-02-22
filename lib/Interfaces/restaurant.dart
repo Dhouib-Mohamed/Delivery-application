@@ -145,10 +145,7 @@ class _RestaurantState extends State<Restaurant> {
                           children: snapshot.data!.docs.map((document) {
                         DealModel d = DealModel.fromJson(document.data());
                         return RestaurantElement(
-                            url: d.photoUrl,
-                            name: d.name,
-                            description: d.description,
-                            price: d.price,
+                            deal: d,
                             id: document.id,
                             buttonText: "Add in Cart",
                             buttonRole: () {
