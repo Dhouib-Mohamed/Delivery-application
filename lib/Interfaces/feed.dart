@@ -65,7 +65,8 @@ class _Feed extends State<Feed> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(key: _key,
+    return Scaffold(
+      key: _key,
       bottomNavigationBar: BotBar(i: 0, loggedInUser: loggedInUser,),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xffbd2005),
@@ -346,10 +347,7 @@ class _Feed extends State<Feed> {
           ],
         ),
       ),
-      endDrawer: Container(
-        color: Colors.white,
-        width: MediaQuery.of(context).size.width * 0.9,
-      ),
+      endDrawer: const EndDrawer(),
     );
   }
 }

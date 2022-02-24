@@ -12,10 +12,12 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       body: Row(
         children: const [
           Expanded(
@@ -28,6 +30,18 @@ class _SearchState extends State<Search> {
         ],
       ),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            color: Colors.blueGrey,
+            onPressed: () {
+              _key.currentState!.openEndDrawer();
+            },
+            icon: const Icon(
+              Icons.wrap_text_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ],
         backgroundColor: const Color(0xffbd2005),
         title: const Text(
           "Search",
@@ -35,6 +49,7 @@ class _SearchState extends State<Search> {
         ),
       ),
       bottomNavigationBar: const BotBar(i: 1),
+      endDrawer: const EndDrawer(),
     );
   }
 }

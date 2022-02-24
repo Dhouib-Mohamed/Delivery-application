@@ -123,7 +123,7 @@ class _RestaurantState extends State<Restaurant> {
           ),
           const SliverToBoxAdapter(
             child:
-                Padding(padding: EdgeInsets.all(8), child: Text("All Deals")),
+                Padding(padding: EdgeInsets.all(8), child: Text("All Deals :",style: TextStyle(fontSize: 22,color: Color(0xffbd2005)),)),
           ),
           SliverToBoxAdapter(
             child: StreamBuilder(

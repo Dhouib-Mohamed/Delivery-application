@@ -7,7 +7,8 @@ class BotBar extends StatefulWidget {
   final UserModel? loggedInUser;
   final int i;
 
-  const BotBar({Key? key, required this.i, this.loggedInUser}) : super(key: key);
+  const BotBar({Key? key, required this.i, this.loggedInUser})
+      : super(key: key);
   @override
   State<BotBar> createState() => _BotBarState();
 }
@@ -82,5 +83,17 @@ class _BotBarState extends State<BotBar> {
               ),
               label: "Profile"),
         ]);
+  }
+}
+
+class EndDrawer extends StatelessWidget {
+  const EndDrawer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      width: MediaQuery.of(context).size.width * 0.9,
+    );
   }
 }
