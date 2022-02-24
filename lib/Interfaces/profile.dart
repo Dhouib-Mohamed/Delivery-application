@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iac_project/Widgets/parts.dart';
 import 'package:iac_project/models.dart';
-
 import '../Widgets/tapped.dart';
-// TODO all
 
 class Profile extends StatefulWidget {
   final UserModel user;

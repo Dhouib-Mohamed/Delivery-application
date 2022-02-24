@@ -117,9 +117,7 @@ class _Feed extends State<Feed> {
           ),
         ),
       ),
-      body: Container(
-        color: const Color.fromARGB(255, 230, 226, 225),
-        child: ListView(
+      body: ListView(
           children: [
             Column(
               children: [
@@ -249,7 +247,6 @@ class _Feed extends State<Feed> {
             ),
           ],
         ),
-      ),
       drawer: Container(
         color: Colors.white,
         width: MediaQuery.of(context).size.width * 0.9,
@@ -342,7 +339,10 @@ class _Feed extends State<Feed> {
                             "Log Out",
                             style: TextStyle(color: Colors.white, fontSize: 17),
                           )
-                        ])))
+                        ]
+                      )
+                    )
+                  )
           ],
         ),
       ),

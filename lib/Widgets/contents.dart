@@ -31,7 +31,11 @@ class _RestaurantElementState extends State<RestaurantElement> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-          color: const Color.fromARGB(255, 232, 237, 240),
+        
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 232, 237, 240),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
           height: 150,
           width: MediaQuery.of(context).size.width * 0.96,
           child: Row(
@@ -90,7 +94,7 @@ class _RestaurantElementState extends State<RestaurantElement> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
-                            widget.deal.price + " TND",
+                            "${widget.deal.price} TND",
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 15,
@@ -164,7 +168,11 @@ class _FeedElementState extends State<FeedElement> {
                       )))
         },
         child: Container(
-            color: const Color.fromARGB(255, 232, 237, 240),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 232, 237, 240),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+            
             height: 90,
             width: MediaQuery.of(context).size.width * 0.9,
             child: Row(
@@ -286,7 +294,11 @@ class _ListElementState extends State<ListElement> {
                       )))
         },
         child: Container(
+          decoration: BoxDecoration(
             color: const Color.fromARGB(255, 232, 237, 240),
+          borderRadius: BorderRadius.all(Radius.circular(20))
+        ),
+            
             height: 240,
             width: 260,
             child: Column(

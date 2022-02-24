@@ -29,6 +29,32 @@ class LoginButton extends StatelessWidget {
             )));
   }
 }
+class PaiementButton extends StatelessWidget {
+  final String? name;
+  final Color? c;
+  final String role;
+  const PaiementButton(
+      {Key? key, required this.name, required this.c, required this.role})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(c!),
+                fixedSize: MaterialStateProperty.all(const Size(250, 43)),
+                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ))),
+            onPressed: () {
+              Navigator.pushNamed(context, role);
+            },
+            child: Text(
+              name!,
+              style: const TextStyle(color: Colors.white, fontSize: 17),
+            ));
+  }
+}
 
 class ProfileButton extends StatelessWidget {
   final String? name;

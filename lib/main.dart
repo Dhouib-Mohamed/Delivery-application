@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iac_project/Interfaces/cart.dart';
+import 'package:iac_project/Interfaces/checkout.dart';
 import 'package:iac_project/Interfaces/end_order.dart';
 import 'package:iac_project/Interfaces/feed.dart';
 import 'package:iac_project/Interfaces/otp.dart';
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
         '/cart': (context) => const Cart(),
         '/search': (context) => const Search(),
         '/saved': (context) => const Saved(),
-        '/feed':(context) => const Feed()
+        '/feed':(context) => const Feed(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

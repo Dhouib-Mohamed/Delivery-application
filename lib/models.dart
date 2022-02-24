@@ -72,7 +72,7 @@ class AddressModel {
 class DealModel {
   String name;
   String photoUrl;
-  String price;
+  num price;
   String description;
 
   DealModel(
@@ -86,7 +86,7 @@ class DealModel {
       : this(
           name: json['name']! as String,
           photoUrl: json['photoUrl']! as String,
-          price: json['price']! as String,
+          price: json['price']! as num,
           description: json['description']! as String,
         );
   Map<String, Object?> toJson() {
