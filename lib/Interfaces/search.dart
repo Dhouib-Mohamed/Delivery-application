@@ -22,7 +22,7 @@ class _SearchState extends State<Search> {
         children: const [
           Expanded(
             child: FeedInput(
-              field: 'Search ',
+              field: 'Search In Restaurants',
               control: null,
               valid: null,
             ),
@@ -48,7 +48,7 @@ class _SearchState extends State<Search> {
           style: TextStyle(color: Colors.white, fontSize: 23),
         ),
       ),
-      bottomNavigationBar: const BotBar(i: 1),
+      bottomNavigationBar: BotBar(i: 1),
       endDrawer: const EndDrawer(),
     );
   }

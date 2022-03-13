@@ -19,12 +19,6 @@ class _MappState extends State<Mapp> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

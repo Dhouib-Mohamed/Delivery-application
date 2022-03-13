@@ -26,8 +26,9 @@ class _SavedState extends State<Saved> {
         ),
       ),
       bottomNavigationBar: const BotBar(i: 3),
-      body: Column(
+      body: ListView(
         children: [
+          const Padding(padding: EdgeInsets.all(8), child: Text("Restaurants :",style: TextStyle(fontSize: 22,color: Color(0xffbd2005)),)),
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('users')
@@ -43,9 +44,7 @@ class _SavedState extends State<Saved> {
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Column(
+                  return (Column(
                         children: snapshot.data!.docs.map((document) {
                       RestaurantModel d =
                           RestaurantModel.fromJson(document.data());
@@ -53,10 +52,10 @@ class _SavedState extends State<Saved> {
                         restaurant: d,
                         id: document.id,
                       );
-                    }).toList()),
-                  );
+                    }).toList()));
                 }
               }),
+              const Padding(padding: EdgeInsets.all(8), child: Text("Deals :",style: TextStyle(fontSize: 22,color: Color(0xffbd2005)),)),
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('users')
@@ -72,9 +71,7 @@ class _SavedState extends State<Saved> {
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Column(
+                  return Column(
                         children: snapshot.data!.docs.map((document) {
                       DealModel d = DealModel.fromJson(document.data());
                       return RestaurantElement(
@@ -87,8 +84,7 @@ class _SavedState extends State<Saved> {
                           d.description,
                           d.price,);
                           });
-                    }).toList()),
-                  );
+                    }).toList());
                 }
               }),
         ],

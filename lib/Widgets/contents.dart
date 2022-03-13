@@ -31,17 +31,16 @@ class _RestaurantElementState extends State<RestaurantElement> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 232, 237, 240),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
           height: 150,
           width: MediaQuery.of(context).size.width * 0.96,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.network(widget.deal.photoUrl, width: 120, height: 120),
+              Image.network(widget.deal.photoUrl, width: 110, height: 110),
               Padding(
                 padding: const EdgeInsets.only(right: 8.0, left: 2.0),
                 child: SizedBox(
@@ -67,12 +66,12 @@ class _RestaurantElementState extends State<RestaurantElement> {
                                 setState(() {
                                   source = "assets/icons/heart1.png";
                                 });
-                                addToSaved(widget.deal);
+                                addToSavedDeal(widget.deal);
                               } else {
                                 setState(() {
                                   source = "assets/icons/heart.png";
                                 });
-                                removeFromSaved(widget.id);
+                                removeFromSavedDeal(widget.id);
                               }
                             },
                             child: ImageIcon(
@@ -115,26 +114,7 @@ class _RestaurantElementState extends State<RestaurantElement> {
     );
   }
 
-  Future<void> addToSaved(deal) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("deals")
-        .add(deal.toJson());
-  }
-
-  removeFromSaved(String id) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("deals")
-        .doc(id)
-        .delete();
-  }
+  
 }
 
 class FeedElement extends StatefulWidget {
@@ -170,7 +150,7 @@ class _FeedElementState extends State<FeedElement> {
         child: Container(
           decoration: const BoxDecoration(
             color: Color.fromARGB(255, 232, 237, 240),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
             
             height: 90,
@@ -181,7 +161,7 @@ class _FeedElementState extends State<FeedElement> {
                   widget.restaurant.photoUrl,
                   width: 90,
                   height: 90,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9 - 100,
@@ -243,27 +223,6 @@ class _FeedElementState extends State<FeedElement> {
       ),
     );
   }
-
-  Future<void> addToSaved(restaurant) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("restaurants")
-        .add(restaurant.toJson());
-  }
-
-  removeFromSaved(String id) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("restaurants")
-        .doc(id)
-        .delete();
-  }
 }
 
 class ListElement extends StatefulWidget {
@@ -294,8 +253,8 @@ class _ListElementState extends State<ListElement> {
                       )))
         },
         child: Container(
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 232, 237, 240),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 232, 237, 240),
           borderRadius: BorderRadius.all(Radius.circular(20))
         ),
             
@@ -359,7 +318,27 @@ class _ListElementState extends State<ListElement> {
       ),
     );
   }
+}
+Future<void> addToSavedDeal(deal) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("saved")
+        .doc()
+        .collection("deals")
+        .add(deal.toJson());
+  }
 
+  removeFromSavedDeal(String id) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("saved")
+        .doc()
+        .collection("deals")
+        .doc(id)
+        .delete();
+  }
   Future<void> addToSaved(restaurant) async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -380,4 +359,3 @@ class _ListElementState extends State<ListElement> {
         .doc(id)
         .delete();
   }
-}

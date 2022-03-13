@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/models.dart';
-
 import '../Widgets/contents.dart';
 // TODO heart init
 
@@ -95,9 +94,7 @@ class _RestaurantState extends State<Restaurant> {
                                   source = "assets/icons/heart1.png";
                                 });
                       addToSaved(
-                        restaurant!.photoUrl,
-                        restaurant!.name,
-                        restaurant!.location,
+                        restaurant
                       );
                     } else {
                       setState(() {
@@ -139,24 +136,24 @@ class _RestaurantState extends State<Restaurant> {
                       child: CircularProgressIndicator(),
                     );
                   } else {
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Column(
-                          children: snapshot.data!.docs.map((document) {
-                        DealModel d = DealModel.fromJson(document.data());
-                        return RestaurantElement(
-                            deal: d,
-                            id: document.id,
-                            buttonText: "Add in Cart",
-                            buttonRole: () {
-                              addInCart(
-                                d.photoUrl,
-                                d.name,
-                                d.description,
-                                d.price,
-                              );
-                            });
-                      }).toList()),
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom:45),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Column(
+                            children: snapshot.data!.docs.map((document) {
+                          DealModel d = DealModel.fromJson(document.data());
+                          return RestaurantElement(
+                              deal: d,
+                              id: document.id,
+                              buttonText: "Add in Cart",
+                              buttonRole: () {
+                                addInCart(
+                                  d
+                                );
+                              });
+                        }).toList()),
+                      ),
                     );
                   }
                 }),
@@ -177,12 +174,7 @@ class _RestaurantState extends State<Restaurant> {
         .delete();
   }
 
-  addToSaved(url, name, location) async {
-    RestaurantModel d = RestaurantModel.fromJson({
-      'photoUrl': url,
-      'name': name,
-      'location': location,
-    });
+  addToSaved(d) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -192,13 +184,7 @@ class _RestaurantState extends State<Restaurant> {
         .add(d.toJson());
   }
 
-  Future<void> addInCart(url, name, description, price) async {
-    DealModel d = DealModel.fromJson({
-      'photoUrl': url,
-      'name': name,
-      'description': description,
-      'price': price,
-    });
+  Future<void> addInCart(d) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)

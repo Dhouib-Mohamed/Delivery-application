@@ -27,31 +27,79 @@ class _ProfileState extends State<Profile> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-                "NAME : ${widget.user.name[0].toUpperCase()}${widget.user.name.substring(1)}",
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
+            Padding(
+              padding: const EdgeInsets.only(left:20,bottom: 15),
+              child: Row(
+                children: [
+                  const Text(
+                      "NAME : ",
+                      style: TextStyle(
+                        color: Color(0xffbd2005),
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      "${widget.user.name[0].toUpperCase()}${widget.user.name.substring(1)}",
+                      style: const TextStyle(
+                        color: Colors.blueGrey,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+              Padding(
+                padding: const EdgeInsets.only(left:20,bottom: 15),
+                child: Row(
+                  children: [
+                    const Text(
+                      "EMAIL : ",
+                      style: TextStyle(
+                        color: Color(0xffbd2005),
+                        fontSize: 21,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      widget.user.email,
+                      style: const TextStyle(
+                        color: Colors.blueGrey,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                "EMAIL : "+widget.user.email,
-                style: const TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
+              Padding(
+                padding: const EdgeInsets.only(left:20,bottom:15),
+                child: Row(
+                  children: [
+                    const Text(
+                      "PHONE NUMBER : ",
+                      style: TextStyle(
+                        color: Color(0xffbd2005),
+                        fontSize: 21,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      widget.user.phone!,
+                      style: const TextStyle(
+                        color: Colors.blueGrey,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                "PHONE NUMBER : "+widget.user.phone!,
-                style: const TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              const ProfileButton(
+                name: "Change Password", role: "/forgot_password", icon: Icons.password),
             const ProfileButton(
                 name: "My Addresses", role: "/address", icon: Icons.location_on),
             const ProfileButton(

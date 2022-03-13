@@ -4,14 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iac_project/Interfaces/cart.dart';
-import 'package:iac_project/Interfaces/checkout.dart';
 import 'package:iac_project/Interfaces/end_order.dart';
 import 'package:iac_project/Interfaces/feed.dart';
 import 'package:iac_project/Interfaces/otp.dart';
 import 'package:iac_project/Interfaces/saved.dart';
 import 'package:iac_project/Interfaces/search.dart';
 import 'package:iac_project/firebase_options.dart';
-import 'package:iac_project/models.dart';
 import 'Interfaces/address.dart';
 import 'Interfaces/forgot_password.dart';
 import 'Interfaces/gps.dart';
@@ -19,10 +17,10 @@ import 'Interfaces/help.dart';
 import 'Interfaces/map.dart';
 import 'Interfaces/new_password.dart';
 import 'Interfaces/opening.dart';
-import 'Interfaces/profile.dart';
 import 'Interfaces/setting.dart';
 import 'Interfaces/signin.dart';
 import 'Interfaces/signup.dart';
+import "gobals.dart" as globals;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,20 +28,35 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp(
       name: 'app', options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  final String init =
-      (FirebaseAuth.instance.currentUser != null) ? '/feed' : '/opening';
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  String init() {
+    if (FirebaseAuth.instance.currentUser == null) {
+      globals.getsign();
+      if (!globals.signedIn!) {
+        return '/opening';
+      }
+      return '/feed';
+    } else {
+      return '/feed';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "App",
-      initialRoute: init,
+      initialRoute: init(),
       routes: {
         '/opening': (context) => const Opening(),
         '/signup': (context) => const SignUp(),
@@ -60,7 +73,7 @@ class MyApp extends StatelessWidget {
         '/cart': (context) => const Cart(),
         '/search': (context) => const Search(),
         '/saved': (context) => const Saved(),
-        '/feed':(context) => const Feed(),
+        '/feed': (context) => const Feed(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

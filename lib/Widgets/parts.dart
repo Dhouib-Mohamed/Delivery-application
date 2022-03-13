@@ -1,19 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iac_project/models.dart';
 
 import '../Interfaces/profile.dart';
 
 class BotBar extends StatefulWidget {
-  final UserModel? loggedInUser;
   final int i;
 
-  const BotBar({Key? key, required this.i, this.loggedInUser})
+   const BotBar({Key? key, required this.i})
       : super(key: key);
   @override
   State<BotBar> createState() => _BotBarState();
 }
 
 class _BotBarState extends State<BotBar> {
+  
+  User? user = FirebaseAuth.instance.currentUser;
+  late final UserModel loggedInUser;
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        loggedInUser = UserModel.fromJson(value.data());
+      });
+    });
+  }
   void onItem(index) {
     if (index != widget.i) {
       switch (index) {
@@ -42,7 +59,7 @@ class _BotBarState extends State<BotBar> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Profile(user: widget.loggedInUser!),
+                  builder: (context) => Profile(user: loggedInUser),
                 ));
           });
           break;

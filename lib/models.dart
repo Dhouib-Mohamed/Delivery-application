@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:geocoding/geocoding.dart';
 
 @JsonSerializable()
 class UserModel {
   String email;
   String name;
   String? phone;
-
   UserModel({required this.email, required this.name, this.phone});
 
   // receiving data from server
@@ -30,9 +30,19 @@ class RestaurantModel {
   String name;
   String photoUrl;
   GeoPoint location;
+  String? description;
 
   RestaurantModel(
-      {required this.name, required this.photoUrl, required this.location});
+      {required this.name, required this.photoUrl, required this.location}) {
+    getLocation();
+  }
+  getLocation() {
+    placemarkFromCoordinates(location.latitude, location.longitude)
+        .then((value) {
+      description =
+          "${value[0].locality} ${value[0].street} ${value.first.country}";
+    });
+  }
 
   // receiving data from server
   RestaurantModel.fromJson(json)
@@ -53,8 +63,16 @@ class RestaurantModel {
 @JsonSerializable()
 class AddressModel {
   GeoPoint location;
+  String? description;
 
   AddressModel({required this.location});
+  getLocation() async {
+    await placemarkFromCoordinates(location.latitude, location.longitude)
+        .then((value) {
+      description=
+          "${value[0].locality} ${value[0].street} ${value.first.country}";
+    });
+  }
 
   // receiving data from server
   AddressModel.fromJson(json)

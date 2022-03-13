@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 
 import '../models.dart';
-import 'address_map.dart';
 
 class Checkout extends StatefulWidget {
   final num price;
