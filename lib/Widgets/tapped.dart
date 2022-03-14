@@ -351,7 +351,7 @@ class TappedPosition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5, left: 25, bottom: 15),
+      padding: const EdgeInsets.only(top: 5, bottom: 15,right: 1),
       child: SizedBox(
         width: 328,
         height: 24,
@@ -364,16 +364,21 @@ class TappedPosition extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, role);
-            },
-            child: Text(
-              tapped,
-              style: TextStyle(
-                fontFamily: "Inter",
-                color: (c == null) ? const Color(0xffbd2005) : c,
-                fontSize: 17,
+          Flexible(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, role);
+              },
+              child: Text(
+                tapped,
+                overflow:TextOverflow.fade,
+                softWrap: false,
+                maxLines: 2,
+                style: TextStyle(
+                  fontFamily: "Inter",
+                  color: (c == null) ? const Color(0xffbd2005) : c,
+                  fontSize: 17,
+                ),
               ),
             ),
           )

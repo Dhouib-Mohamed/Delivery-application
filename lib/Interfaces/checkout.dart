@@ -69,13 +69,18 @@ class _CheckoutState extends State<Checkout> {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          address.location.toString(),
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                        child: FutureBuilder<void>(
+                                          future: address.getLocation(),
+                                          builder: (context, snapshot) {
+                                            return Text(
+                                              address.description!,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            );
+                                          }
                                         ),
                                       ),
                                     ],

@@ -10,6 +10,7 @@ import 'address_map.dart';
 class Address extends StatelessWidget {
   Address({Key? key}) : super(key: key);
   int i = 0;
+  int x = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -66,71 +67,84 @@ class Address extends StatelessWidget {
               );
             } else {
               i = 0;
+              x = 0;
               return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Column(
                     children: snapshot.data!.docs.map((document) {
                       AddressModel address =
                           AddressModel.fromJson(document.data());
-                      i++;
-                      return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                              child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddressMap(
-                                          location: address.location)));
-                            },
-                            child: Container(
-                              color: const Color.fromARGB(255, 232, 237, 240),
-                              height: 90,
-                              width: MediaQuery.of(context).size.width * 0.95,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          "ADDRESS $i :",
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w700,
+                      x++;
+                      return FutureBuilder<void>(
+                          future: address.getLocation(),
+                          builder: (context, snapshot) {
+                            i++;
+                            return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => AddressMap(
+                                                location: address.location)));
+                                  },
+                                  child: Container(
+                                    color: const Color.fromARGB(
+                                        255, 232, 237, 240),
+                                    height: 90,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.95,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Text(
+                                                "ADDRESS ${i - x} :",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                            SimplButton(
+                                                buttonRole: () {
+                                                  removeAdress(document.id);
+                                                },
+                                                buttonText: "Remove address"),
+                                          ],
+                                        ),
+                                        Flexible(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Text(
+                                              address.description!,
+                                              overflow: TextOverflow.clip,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      SimplButton(
-                                          buttonRole: () {
-                                            removeAdress(document.id);
-                                          },
-                                          buttonText: "Remove address"),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                      address.location.toString(),
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          )));
+                                )));
+                          });
                     }).toList(),
                   ));
             }
@@ -145,6 +159,6 @@ class Address extends StatelessWidget {
         .collection("addresses")
         .doc(id)
         .delete();
-    Fluttertoast.showToast(msg: "Item removed Successfully from cart :) ");
+    Fluttertoast.showToast(msg: "Address Successfully removed ");
   }
 }

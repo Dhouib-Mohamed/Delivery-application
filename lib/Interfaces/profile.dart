@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:iac_project/Widgets/parts.dart';
-import 'package:iac_project/models.dart';
 import '../Widgets/tapped.dart';
+import '../gobals.dart' as globals;
 
 class Profile extends StatefulWidget {
-  final UserModel user;
-  const Profile({Key? key, required this.user}) : super(key: key);
+  const Profile({Key? key}) : super(key: key);
 
+  
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -42,7 +42,7 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                     Text(
-                      "${widget.user.name[0].toUpperCase()}${widget.user.name.substring(1)}",
+                      "${globals.user!.name[0].toUpperCase()}${globals.user!.name.substring(1)}",
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontSize: 21,
@@ -65,7 +65,7 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                     Text(
-                      widget.user.email,
+                      globals.user!.email,
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontSize: 20,
@@ -88,7 +88,7 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                     Text(
-                      widget.user.phone!,
+                      globals.user!.phone!,
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontSize: 20,

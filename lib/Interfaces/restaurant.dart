@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/models.dart';
 import '../Widgets/contents.dart';
-// TODO heart init
+import '../gobals.dart' as globals;
 
 class Restaurant extends StatefulWidget {
   const Restaurant({Key? key, required this.id}) : super(key: key);
@@ -67,12 +65,17 @@ class _RestaurantState extends State<Restaurant> {
                         fontWeight: FontWeight.w800,
                         color: Color.fromARGB(255, 63, 11, 4)),
                   ),
-                  Text(
-                    restaurant!.location.toString(),
-                    style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500,
-                        color: Color.fromARGB(255, 63, 11, 4)),
+                  FutureBuilder<void>(
+                    future: restaurant!.getLocation(),
+                    builder: (context, snapshot) {
+                      return Text(
+                        restaurant!.description!,
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromARGB(255, 63, 11, 4)),
+                      );
+                    }
                   ),
                 ],
               ),
@@ -93,14 +96,14 @@ class _RestaurantState extends State<Restaurant> {
                       setState(() {
                                   source = "assets/icons/heart1.png";
                                 });
-                      addToSaved(
+                      globals.addRestaurantToSaved(
                         restaurant
                       );
                     } else {
                       setState(() {
                                     source = "assets/icons/heart.png";
                                   });
-                      removeFromSaved(widget.id);
+                      globals.removeRestaurantFromSaved(widget.id);
                     }
                   },
                   child: ImageIcon(
@@ -148,7 +151,7 @@ class _RestaurantState extends State<Restaurant> {
                               id: document.id,
                               buttonText: "Add in Cart",
                               buttonRole: () {
-                                addInCart(
+                                globals.addToCart(
                                   d
                                 );
                               });
@@ -161,35 +164,5 @@ class _RestaurantState extends State<Restaurant> {
         ],
       ),
     );
-  }
-
-  removeFromSaved(String id) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("cart")
-        .doc()
-        .collection("restaurants")
-        .doc(id)
-        .delete();
-  }
-
-  addToSaved(d) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("restaurants")
-        .add(d.toJson());
-  }
-
-  Future<void> addInCart(d) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("cart")
-        .add(d.toJson());
-    Fluttertoast.showToast(msg: "Item added Successfully to cart :) ");
   }
 }

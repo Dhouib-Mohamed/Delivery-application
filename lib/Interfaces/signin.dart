@@ -16,12 +16,15 @@ class SignIn extends StatefulWidget {
 
 class _SignIn extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
+  final _boxKey = const Key("box");
 
   // editing controller
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // firebase
+  final t = TappedBox(
+    text: 'Stay Signed in',
+  );
   final _auth = FirebaseAuth.instance;
   String? emailValidator(String? value) {
     if (value!.isEmpty) {
@@ -103,9 +106,7 @@ class _SignIn extends State<SignIn> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TappedBox(
-                      text: 'Stay Signed in',
-                    ),
+                    t,
                     const TappedText(
                         c: Colors.black,
                         text: "",
@@ -146,6 +147,10 @@ class _SignIn extends State<SignIn> {
                   Fluttertoast.showToast(msg: "Login Successful"),
                   Navigator.pushNamed(context, '/feed'),
                 });
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .update({"autoSigned": t.val});
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case "invalid-email":

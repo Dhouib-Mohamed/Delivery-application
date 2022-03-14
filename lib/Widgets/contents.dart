@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iac_project/Interfaces/restaurant.dart';
 import 'package:iac_project/Widgets/tapped.dart';
-
 import '../models.dart';
+import '../gobals.dart' as globals;
 
 class RestaurantElement extends StatefulWidget {
   final String buttonText, id;
@@ -25,16 +23,30 @@ class RestaurantElement extends StatefulWidget {
 
 class _RestaurantElementState extends State<RestaurantElement> {
   String source = "assets/icons/heart.png";
+  Future<void> setDealSource(String photoUrl) async {
+    
+        if (await globals.exist("savedDeals", photoUrl)) {
+          setState(() {
+            source = "assets/icons/heart1.png";
+          });
+        } 
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setDealSource(widget.deal.photoUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 232, 237, 240),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 232, 237, 240),
             borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
+          ),
           height: 150,
           width: MediaQuery.of(context).size.width * 0.96,
           child: Row(
@@ -61,22 +73,27 @@ class _RestaurantElementState extends State<RestaurantElement> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               if (source == "assets/icons/heart.png") {
                                 setState(() {
                                   source = "assets/icons/heart1.png";
                                 });
-                                addToSavedDeal(widget.deal);
+                                globals.addDealToSaved(widget.deal);
                               } else {
                                 setState(() {
                                   source = "assets/icons/heart.png";
                                 });
-                                removeFromSavedDeal(widget.id);
+                                globals.removeDealFromSaved(widget.id);
                               }
                             },
-                            child: ImageIcon(
-                              AssetImage(source),
-                              color: const Color(0xffbd2005),
+                            child: FutureBuilder<void>(
+                              future: setDealSource(widget.deal.photoUrl),
+                              builder: (context, snapshot) {
+                                return ImageIcon(
+                                  AssetImage(source),
+                                  color: const Color(0xffbd2005),
+                                );
+                              }
                             ),
                           ),
                         ],
@@ -113,8 +130,6 @@ class _RestaurantElementState extends State<RestaurantElement> {
           )),
     );
   }
-
-  
 }
 
 class FeedElement extends StatefulWidget {
@@ -132,7 +147,20 @@ class FeedElement extends StatefulWidget {
 }
 
 class _FeedElementState extends State<FeedElement> {
-  String source = "assets/icons/heart.png";
+  String source ="assets/icons/heart.png";
+  Future<void> setRestaurantSource(String photoUrl) async {
+    if (await globals.exist("savedRestaurants", photoUrl)) {
+          setState(() {
+            source = "assets/icons/heart1.png";
+          });
+        } 
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setRestaurantSource(widget.restaurant.photoUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,11 +176,10 @@ class _FeedElementState extends State<FeedElement> {
                       )))
         },
         child: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 232, 237, 240),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-            
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 232, 237, 240),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
             height: 90,
             width: MediaQuery.of(context).size.width * 0.9,
             child: Row(
@@ -184,34 +211,47 @@ class _FeedElementState extends State<FeedElement> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               if (source == "assets/icons/heart.png") {
                                 setState(() {
                                   source = "assets/icons/heart1.png";
                                 });
-                                addToSaved(widget.restaurant);
+                                globals.addRestaurantToSaved(widget.restaurant);
                               } else {
                                 setState(() {
                                   source = "assets/icons/heart.png";
                                 });
-                                removeFromSaved(widget.id);
+                                globals.removeRestaurantFromSaved(widget.id);
                               }
                             },
-                            child: ImageIcon(
-                              AssetImage(source),
-                              color: const Color(0xffbd2005),
+                            child: FutureBuilder<void>(
+                              future: setRestaurantSource(widget.restaurant.photoUrl),
+                              builder: (context, snapshot) {
+                                return ImageIcon(
+                                  AssetImage(source),
+                                  color: const Color(0xffbd2005),
+                                );
+                              }
                             ),
                           ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(
-                          widget.restaurant.location.toString(),
-                          style: const TextStyle(
-                            color: Color(0x008e8e93),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: FutureBuilder<void>(
+                            future: widget.restaurant.getLocation(),
+                            builder: (context, snapshot) {
+                              return Text(
+                                widget.restaurant.description!,
+                                overflow: TextOverflow.clip,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              );
+                            }
                           ),
                         ),
                       ),
@@ -228,9 +268,7 @@ class _FeedElementState extends State<FeedElement> {
 class ListElement extends StatefulWidget {
   final RestaurantModel restaurant;
   final String id;
-  const ListElement(
-      {Key? key,
-      required this.id, required this.restaurant})
+  const ListElement({Key? key, required this.id, required this.restaurant})
       : super(key: key);
 
   @override
@@ -238,11 +276,24 @@ class ListElement extends StatefulWidget {
 }
 
 class _ListElementState extends State<ListElement> {
-  String source = "assets/icons/heart.png";
+  late String source = "assets/icons/heart.png";
+  Future<void> setRestaurantSource(String photoUrl) async {
+    if (await globals.exist("savedRestaurants", photoUrl)) {
+          setState(() {
+            source = "assets/icons/heart1.png";
+          });
+        } 
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(right: 8.0),
       child: GestureDetector(
         onTap: () => {
           Navigator.push(
@@ -253,11 +304,9 @@ class _ListElementState extends State<ListElement> {
                       )))
         },
         child: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 232, 237, 240),
-          borderRadius: BorderRadius.all(Radius.circular(20))
-        ),
-            
+            decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 232, 237, 240),
+                borderRadius: BorderRadius.all(Radius.circular(20))),
             height: 240,
             width: 260,
             child: Column(
@@ -270,47 +319,67 @@ class _ListElementState extends State<ListElement> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        widget.restaurant.name,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
+                Padding(
+                  padding: const EdgeInsets.only(top:8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left:8.0),
+                        child: Text(
+                          widget.restaurant.name,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (source == "assets/icons/heart.png") {
-                          setState(() {
-                            source = "assets/icons/heart1.png";
-                          });
-                          addToSaved(widget.restaurant);
-                        } else {
-                          setState(() {
-                            source = "assets/icons/heart.png";
-                          });
-                          removeFromSaved(widget.id);
-                        }
-                      },
-                      child: ImageIcon(
-                        AssetImage(source),
-                        color: const Color(0xffbd2005),
+                      GestureDetector(
+                        onTap: () async {
+                          if (source == "assets/icons/heart.png") {
+                            setState(() {
+                              source = "assets/icons/heart1.png";
+                            });
+                            globals.addRestaurantToSaved(widget.restaurant);
+                          } else {
+                            setState(() {
+                              source = "assets/icons/heart.png";
+                            });
+                            globals.removeRestaurantFromSaved(widget.id);
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: FutureBuilder<void>(
+                            future: setRestaurantSource(widget.restaurant.photoUrl),
+                            builder: (context, snapshot) {
+                              return ImageIcon(
+                                AssetImage(source),
+                                color: const Color(0xffbd2005),
+                              );
+                            }
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                Text(
-                  widget.restaurant.location.toString(),
-                  style: const TextStyle(
-                    color: Color(0x008e8e93),
-                    fontSize: 17,
-                    fontWeight: FontWeight.w400,
+                Flexible(
+                  child: FutureBuilder<void>(
+                    future: widget.restaurant.getLocation(),
+                    builder: (context, snapshot) {
+                      return Text(
+                        widget.restaurant.description!,
+                        overflow: TextOverflow.clip,
+                        maxLines: 2,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      );
+                    }
                   ),
                 ),
               ],
@@ -319,43 +388,3 @@ class _ListElementState extends State<ListElement> {
     );
   }
 }
-Future<void> addToSavedDeal(deal) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("deals")
-        .add(deal.toJson());
-  }
-
-  removeFromSavedDeal(String id) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("deals")
-        .doc(id)
-        .delete();
-  }
-  Future<void> addToSaved(restaurant) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("restaurants")
-        .add(restaurant.toJson());
-  }
-
-  removeFromSaved(String id) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved")
-        .doc()
-        .collection("restaurants")
-        .doc(id)
-        .delete();
-  }

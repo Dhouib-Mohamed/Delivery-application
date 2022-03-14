@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Mapp extends StatefulWidget {
   const Mapp({Key? key}) : super(key: key);
@@ -19,6 +20,17 @@ class _MappState extends State<Mapp> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
+
+  gpsPermission() async {
+    await Geolocator.requestPermission();
+  }
+
+  @override
+  void initState() {
+    gpsPermission();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -7,7 +7,9 @@ class UserModel {
   String email;
   String name;
   String? phone;
-  UserModel({required this.email, required this.name, this.phone});
+  bool? autoSigned = false;
+  UserModel(
+      {required this.email, required this.name, this.phone, this.autoSigned});
 
   // receiving data from server
   UserModel.fromJson(json)
@@ -15,12 +17,14 @@ class UserModel {
           email: json['email']! as String,
           name: json['name']! as String,
           phone: json['phone']! as String,
+          autoSigned: json['autoSigned']! as bool,
         );
   Map<String, Object?> toJson() {
     return {
       'email': email,
       'name': name,
       'phone': phone,
+      'autoSigned': autoSigned,
     };
   }
 }
@@ -33,14 +37,12 @@ class RestaurantModel {
   String? description;
 
   RestaurantModel(
-      {required this.name, required this.photoUrl, required this.location}) {
-    getLocation();
-  }
-  getLocation() {
-    placemarkFromCoordinates(location.latitude, location.longitude)
+      {required this.name, required this.photoUrl, required this.location});
+  Future<void> getLocation() async {
+    await placemarkFromCoordinates(location.latitude, location.longitude)
         .then((value) {
       description =
-          "${value[0].locality} ${value[0].street} ${value.first.country}";
+          "${value[0].subLocality} ${value[0].subAdministrativeArea} ${value.first.administrativeArea}";
     });
   }
 
@@ -69,8 +71,8 @@ class AddressModel {
   getLocation() async {
     await placemarkFromCoordinates(location.latitude, location.longitude)
         .then((value) {
-      description=
-          "${value[0].locality} ${value[0].street} ${value.first.country}";
+      description =
+          "${value[0].subLocality} ${value[0].subAdministrativeArea} ${value.first.administrativeArea}";
     });
   }
 

@@ -17,28 +17,6 @@ class Feed extends StatefulWidget {
 
 class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
-  Widget locationWidget() {
-    return StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection("users")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection("addresses")
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.data!.docs.isNotEmpty) {
-            AddressModel address =
-                AddressModel.fromJson(snapshot.data!.docs.first.data());
-            address.getLocation();
-            return TappedPosition(
-                text: "Deliver To :  ",
-                tapped: address.location.toString(),
-                role: '/address');
-          } else {
-            return const TappedPosition(
-                text: "", tapped: "Add Location", role: '/address');
-          }
-        });
-  }
 
   @override
   void initState() {
@@ -57,6 +35,7 @@ class _Feed extends State<Feed> {
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamed(context, '/opening');
+    globals.user = null;
   }
 
   @override
@@ -88,7 +67,30 @@ class _Feed extends State<Feed> {
             ),
           ),
         ],
-        title: locationWidget(),
+        title: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection("addresses")
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.data!.docs.isNotEmpty) {
+            AddressModel address =
+                AddressModel.fromJson(snapshot.data!.docs.first.data());
+            return FutureBuilder<void>(
+              future: address.getLocation(),
+              builder: (context, snapshot) {
+                return TappedPosition(
+                    text: "Deliver To :  ",
+                    tapped: address.description!,
+                    role: '/address');
+              }
+            );
+          } else {
+            return const TappedPosition(
+                text: "", tapped: "Add Location", role: '/address');
+          }
+        }),
         leading: IconButton(
           color: Colors.blueGrey,
           onPressed: () {
@@ -102,13 +104,11 @@ class _Feed extends State<Feed> {
       ),
       body: CustomScrollView(slivers: [
         const SliverAppBar(
+          automaticallyImplyLeading: false,
           toolbarHeight: 0,
           expandedHeight: 80,
           collapsedHeight: 0,
           pinned: true,
-          elevation: 100,
-          title: null,
-          leading: null,
           flexibleSpace: Padding(
             padding: EdgeInsets.only(top: 8.0),
             child: SearchButton(),
@@ -121,6 +121,7 @@ class _Feed extends State<Feed> {
                 StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("restaurants")
+                        .orderBy("location")
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -186,6 +187,7 @@ class _Feed extends State<Feed> {
                 StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("restaurants")
+                        .orderBy("name")
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -194,12 +196,9 @@ class _Feed extends State<Feed> {
                           child: CircularProgressIndicator(),
                         );
                       } else {
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
+                        return Column(
+                          children: [
+                            SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: Row(
                                     mainAxisAlignment:
@@ -236,23 +235,26 @@ class _Feed extends State<Feed> {
                                       ),
                                     ]),
                               ),
-                              Row(
-                                  children: snapshot.data!.docs.map((document) {
-                                RestaurantModel r =
-                                    RestaurantModel.fromJson(document.data());
-                                return ListElement(
-                                  restaurant: r,
-                                  id: document.reference.id,
-                                );
-                              }).toList()),
-                            ],
-                          ),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                      children: snapshot.data!.docs.map((document) {
+                                    RestaurantModel r =
+                                        RestaurantModel.fromJson(document.data());
+                                    return ListElement(
+                                      restaurant: r,
+                                      id: document.reference.id,
+                                    );
+                                  }).toList()),
+                            ),
+                          ],
                         );
                       }
                     }),
                 StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("restaurants")
+                        .orderBy("name")
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -363,7 +365,7 @@ class _Feed extends State<Feed> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Profile(user: globals.user!),
+                          builder: (context) => const Profile(),
                         ));
                   },
                   child: Row(
@@ -436,10 +438,10 @@ class SearchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 32, top: 6, left: 32, bottom: 13),
-      child: OutlinedButton(
+        padding: const EdgeInsets.only(right: 32, top: 6, left: 32, bottom: 13),
+        child: OutlinedButton(
           style: ButtonStyle(
-            alignment: Alignment.centerLeft,
+              alignment: Alignment.centerLeft,
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
               fixedSize: MaterialStateProperty.all(const Size(300, 65)),
               shape: MaterialStateProperty.all(const RoundedRectangleBorder(
@@ -452,14 +454,13 @@ class SearchButton extends StatelessWidget {
           onPressed: () {
             Navigator.pushNamed(context, '/search');
           },
-              child: const Padding(
-                padding: EdgeInsets.only(left:8.0),
-                child: Text(
-                  "Search",
-                  style: TextStyle(color: Colors.blueGrey, fontSize: 14),
-                ),
-              ),
-          )
-    );
+          child: const Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Text(
+              "Search",
+              style: TextStyle(color: Colors.blueGrey, fontSize: 14),
+            ),
+          ),
+        ));
   }
 }

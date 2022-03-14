@@ -7,7 +7,7 @@ import '../models.dart';
 //TODO buttoncross
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+   const SignUp({Key? key}) : super(key: key);
 
   @override
   State<SignUp> createState() => _SignUp();
@@ -15,6 +15,9 @@ class SignUp extends StatefulWidget {
 
 class _SignUp extends State<SignUp> {
   final _auth = FirebaseAuth.instance;
+  final t = TappedBox(
+    text: 'Stay Signed in',
+  );
 
   // string for displaying the error Message
   String? errorMessage;
@@ -132,6 +135,17 @@ class _SignUp extends State<SignUp> {
                 ),
                 AuthLoginButton(
                     name: "SIGN UP", c: const Color(0xffbd2005), role: signUp),
+                    Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    t,
+                    const TappedText(
+                        c: Colors.black,
+                        text: "",
+                        tapped: "Forgot Password ?",
+                        role: '/forgot_password'),
+                  ],
+                ),
                 const TappedText(
                     text: "Already have An Account ? ",
                     tapped: "Sign In Here",
@@ -187,6 +201,9 @@ class _SignUp extends State<SignUp> {
 
     // writing all the values
     userModel.phone = phoneController.text;
+    if (t.val) {
+      userModel.autoSigned = true;
+    }
 
     await firebaseFirestore
         .collection("users")

@@ -15,6 +15,34 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  num price = 0;
+  num deliveryFee = 3;
+  setPrice() async {
+    price = 0;
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('cart')
+        .snapshots()
+        .forEach((element) {
+      element.docs.forEach((element) {
+        element.data().forEach((key, value) {
+          if (key == 'price') {
+            setState(() {
+              price += value;
+            });
+          }
+        });
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setPrice();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,22 +90,9 @@ class _CartState extends State<Cart> {
           ),
           Center(
               child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.95,
-            height: 170,
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .collection('cart')
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  num price = 0;
-                  snapshot.data!.docs.map((document) {
-                    DealModel d = DealModel.fromJson(document.data());
-                    price += d.price;
-                  });
-                  return Column(
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  height: 170,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Row(
@@ -88,27 +103,27 @@ class _CartState extends State<Cart> {
                             style: TextStyle(fontSize: 18),
                           ),
                           Text(
-                            "$price TND",
+                            "${num.parse(price.toStringAsFixed(2))} TND",
                             style: const TextStyle(fontSize: 14),
                           )
                         ],
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
+                          children: [
+                            const Text(
                               "DELIVERY FEE :",
                               style: TextStyle(fontSize: 18),
                             ),
                             Text(
-                              "3 TND",
-                              style: TextStyle(fontSize: 14),
+                              "$deliveryFee TND",
+                              style: const TextStyle(fontSize: 14),
                             )
                           ]),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("${price + 3} TND",
+                            Text("${num.parse(price.toStringAsFixed(2)) + deliveryFee} TND",
                                 style: const TextStyle(fontSize: 14)),
                             TextButton(
                                 style: ButtonStyle(
@@ -127,7 +142,7 @@ class _CartState extends State<Cart> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Checkout(
-                                                price: price,
+                                                price: num.parse(price.toStringAsFixed(2)),
                                               )));
                                 },
                                 child: const Text(
@@ -137,9 +152,7 @@ class _CartState extends State<Cart> {
                                 )),
                           ]),
                     ],
-                  );
-                }),
-          ))
+                  )))
         ]));
   }
 
@@ -150,6 +163,7 @@ class _CartState extends State<Cart> {
         .collection("cart")
         .doc(id)
         .delete();
+        setPrice();
     Fluttertoast.showToast(msg: "Item removed Successfully from cart :) ");
   }
 }

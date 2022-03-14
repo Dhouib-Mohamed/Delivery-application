@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -39,55 +38,80 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late String initialisation;
 
-  String init() {
-    if (FirebaseAuth.instance.currentUser == null) {
-      globals.getsign();
-      if (!globals.signedIn!) {
-        return '/opening';
+  init() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      await globals.getsign();
+      if (globals.signedIn == true) {
+        setState(() {
+          initialisation = '/feed';
+        });
+      } else {
+        setState(() {
+          initialisation = '/opening';
+        });
       }
-      return '/feed';
     } else {
-      return '/feed';
+      setState(() {
+        initialisation = '/opening';
+      });
     }
   }
 
   @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "App",
-      initialRoute: init(),
-      routes: {
-        '/opening': (context) => const Opening(),
-        '/signup': (context) => const SignUp(),
-        '/signin': (context) => const SignIn(),
-        '/forgot_password': (context) => const ForgotPassword(),
-        '/otp': (context) => const OTP(),
-        '/new_password': (context) => const NewPassword(),
-        '/gps': (context) => const GPS(),
-        '/settings': (context) => const Setting(),
-        '/address': (context) => Address(),
-        '/help': (context) => const Help(),
-        '/map': (context) => const Mapp(),
-        '/end_order': (context) => const EndOrder(),
-        '/cart': (context) => const Cart(),
-        '/search': (context) => const Search(),
-        '/saved': (context) => const Saved(),
-        '/feed': (context) => const Feed(),
-      },
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        appBarTheme: const AppBarTheme(
-          color: Colors.white,
-          iconTheme: IconThemeData(
-            color: Colors.black,
+    try {
+      return MaterialApp(
+        title: "App",
+        initialRoute: initialisation,
+        routes: {
+          '/opening': (context) => const Opening(),
+          '/signup': (context) => const SignUp(),
+          '/signin': (context) => const SignIn(),
+          '/forgot_password': (context) => const ForgotPassword(),
+          '/otp': (context) => const OTP(),
+          '/new_password': (context) => const NewPassword(),
+          '/gps': (context) => const GPS(),
+          '/settings': (context) => const Setting(),
+          '/address': (context) => Address(),
+          '/help': (context) => const Help(),
+          '/map': (context) => const Mapp(),
+          '/end_order': (context) => const EndOrder(),
+          '/cart': (context) => const Cart(),
+          '/search': (context) => const Search(),
+          '/saved': (context) => const Saved(),
+          '/feed': (context) => const Feed(),
+        },
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          brightness: Brightness.light,
+          appBarTheme: const AppBarTheme(
+            color: Colors.white,
+            iconTheme: IconThemeData(
+              color: Colors.black,
+            ),
+          ),
+          iconTheme: const IconThemeData(
+            color: Colors.black87,
           ),
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.black87,
+      );
+    } on Exception {
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
