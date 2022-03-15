@@ -16,7 +16,6 @@ class SignIn extends StatefulWidget {
 
 class _SignIn extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
-  final _boxKey = const Key("box");
 
   // editing controller
   final TextEditingController emailController = TextEditingController();

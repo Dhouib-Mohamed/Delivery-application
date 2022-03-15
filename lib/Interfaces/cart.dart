@@ -15,6 +15,7 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  bool x = false;
   num price = 0;
   num deliveryFee = 3;
   setPrice() async {
@@ -25,7 +26,7 @@ class _CartState extends State<Cart> {
         .collection('cart')
         .snapshots()
         .forEach((element) {
-      element.docs.forEach((element) {
+      for (var element in element.docs) {
         element.data().forEach((key, value) {
           if (key == 'price') {
             setState(() {
@@ -33,6 +34,19 @@ class _CartState extends State<Cart> {
             });
           }
         });
+      }
+    });
+  }
+
+  setX() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('cart')
+        .get()
+        .then((QuerySnapshot documentSnapshot) {
+      setState(() {
+        x = documentSnapshot.size != 0;
       });
     });
   }
@@ -41,6 +55,7 @@ class _CartState extends State<Cart> {
   void initState() {
     super.initState();
     setPrice();
+    setX();
   }
 
   @override
@@ -88,71 +103,75 @@ class _CartState extends State<Cart> {
                   }),
             ],
           ),
-          Center(
-              child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.95,
-                  height: 170,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          x
+              ? Center(
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      height: 170,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text(
-                            "SUBTOTAL :",
-                            style: TextStyle(fontSize: 18),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "SUBTOTAL :",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              Text(
+                                "${num.parse(price.toStringAsFixed(2))} TND",
+                                style: const TextStyle(fontSize: 14),
+                              )
+                            ],
                           ),
-                          Text(
-                            "${num.parse(price.toStringAsFixed(2))} TND",
-                            style: const TextStyle(fontSize: 14),
-                          )
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "DELIVERY FEE :",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                Text(
+                                  "$deliveryFee TND",
+                                  style: const TextStyle(fontSize: 14),
+                                )
+                              ]),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                    "${num.parse(price.toStringAsFixed(2)) + deliveryFee} TND",
+                                    style: const TextStyle(fontSize: 14)),
+                                TextButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                const Color(0xffbd2005)),
+                                        fixedSize: MaterialStateProperty.all(
+                                            const Size(250, 43)),
+                                        shape: MaterialStateProperty.all(
+                                            const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                        ))),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Checkout(
+                                                    price: num.parse(price
+                                                        .toStringAsFixed(2)),
+                                                  )));
+                                    },
+                                    child: const Text(
+                                      "GO TO CHECKOUT",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 17),
+                                    )),
+                              ]),
                         ],
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "DELIVERY FEE :",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              "$deliveryFee TND",
-                              style: const TextStyle(fontSize: 14),
-                            )
-                          ]),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("${num.parse(price.toStringAsFixed(2)) + deliveryFee} TND",
-                                style: const TextStyle(fontSize: 14)),
-                            TextButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            const Color(0xffbd2005)),
-                                    fixedSize: MaterialStateProperty.all(
-                                        const Size(250, 43)),
-                                    shape: MaterialStateProperty.all(
-                                        const RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                    ))),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Checkout(
-                                                price: num.parse(price.toStringAsFixed(2)),
-                                              )));
-                                },
-                                child: const Text(
-                                  "GO TO CHECKOUT",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 17),
-                                )),
-                          ]),
-                    ],
-                  )))
+                      )))
+              : const Center(),
         ]));
   }
 
@@ -162,8 +181,11 @@ class _CartState extends State<Cart> {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("cart")
         .doc(id)
-        .delete();
-        setPrice();
+        .delete()
+        .whenComplete(() {
+      setPrice();
+      setX();
+    });
     Fluttertoast.showToast(msg: "Item removed Successfully from cart :) ");
   }
 }

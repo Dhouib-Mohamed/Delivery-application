@@ -172,6 +172,7 @@ class _FeedElementState extends State<FeedElement> {
               context,
               MaterialPageRoute(
                   builder: (context) => Restaurant(
+                    restaurant: widget.restaurant,
                         id: widget.id,
                       )))
         },
@@ -300,6 +301,7 @@ class _ListElementState extends State<ListElement> {
               context,
               MaterialPageRoute(
                   builder: (context) => Restaurant(
+                        restaurant: widget.restaurant,
                         id: widget.id,
                       )))
         },
@@ -309,7 +311,8 @@ class _ListElementState extends State<ListElement> {
                 borderRadius: BorderRadius.all(Radius.circular(20))),
             height: 240,
             width: 260,
-            child: Column(
+            child: 
+            Column(
               children: [
                 SizedBox(
                   child: Image.network(

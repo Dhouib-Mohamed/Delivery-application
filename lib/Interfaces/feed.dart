@@ -290,7 +290,7 @@ class _Feed extends State<Feed> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) => List(
-                                                      text: "All Restaurantsx",
+                                                      text: "All Restaurants",
                                                       snapshot:
                                                           FirebaseFirestore
                                                               .instance

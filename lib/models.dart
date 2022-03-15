@@ -35,6 +35,7 @@ class RestaurantModel {
   String photoUrl;
   GeoPoint location;
   String? description;
+  String? id;
 
   RestaurantModel(
       {required this.name, required this.photoUrl, required this.location});

@@ -92,9 +92,7 @@ class _SavedState extends State<Saved> {
                             id: document.id,
                             buttonText: "remove from cart",
                             buttonRole: () {
-                              globals.addToCart(
-                                d
-                              );
+                              globals.addToCart(d);
                             });
                       }).toList()),
                     ],

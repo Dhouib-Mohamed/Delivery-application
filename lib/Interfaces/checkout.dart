@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 
 import '../models.dart';
@@ -14,7 +15,6 @@ class Checkout extends StatefulWidget {
 }
 
 class _CheckoutState extends State<Checkout> {
-  
   Color c = const Color.fromARGB(255, 232, 237, 240);
   @override
   Widget build(BuildContext context) {
@@ -52,8 +52,7 @@ class _CheckoutState extends State<Checkout> {
                               child: Center(
                                   child: GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                  });
+                                  setState(() {});
                                 },
                                 child: Container(
                                   color: c,
@@ -70,18 +69,17 @@ class _CheckoutState extends State<Checkout> {
                                         padding:
                                             const EdgeInsets.only(left: 8.0),
                                         child: FutureBuilder<void>(
-                                          future: address.getLocation(),
-                                          builder: (context, snapshot) {
-                                            return Text(
-                                              address.description!,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            );
-                                          }
-                                        ),
+                                            future: address.getLocation(),
+                                            builder: (context, snapshot) {
+                                              return Text(
+                                                address.description!,
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              );
+                                            }),
                                       ),
                                     ],
                                   ),
@@ -91,9 +89,46 @@ class _CheckoutState extends State<Checkout> {
                       ));
                 }
               }),
-              PaiementButton(name: "PAY NOW", c: c, role: '/end_order')
+          PaiementButton(name: "PAY NOW", c: c, role: '/end_order')
         ],
       ),
     );
+  }
+}
+
+class PaiementButton extends StatelessWidget {
+  final String? name;
+  final Color? c;
+  final String role;
+  const PaiementButton(
+      {Key? key, required this.name, required this.c, required this.role})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(c!),
+            fixedSize: MaterialStateProperty.all(const Size(250, 43)),
+            shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ))),
+        onPressed: () async {
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection("cart")
+              .get()
+              .then((value) {
+            for (var element in value.docs) {
+              element.reference.delete();
+            }
+          });
+          Navigator.pushNamed(context, role);
+        },
+        child: Text(
+          name!,
+          style: const TextStyle(color: Colors.white, fontSize: 17),
+        ));
   }
 }

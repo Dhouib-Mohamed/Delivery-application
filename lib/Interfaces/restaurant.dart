@@ -5,32 +5,18 @@ import '../Widgets/contents.dart';
 import '../gobals.dart' as globals;
 
 class Restaurant extends StatefulWidget {
-  const Restaurant({Key? key, required this.id}) : super(key: key);
-  final String id;
+  final RestaurantModel restaurant;
+    final String id;
+
+  const Restaurant({Key? key, required this.id, required this.restaurant}) : super(key: key);
+
 
   @override
   State<Restaurant> createState() => _RestaurantState();
 }
 
 class _RestaurantState extends State<Restaurant> {
-  late final RestaurantModel? restaurant;
   String source = "assets/icons/heart.png";
-
-  @override
-  void initState() {
-    FirebaseFirestore.instance
-        .collection('restaurants')
-        .doc(widget.id)
-        .get()
-        .then((value) => {
-              setState(
-                () {
-                  restaurant = RestaurantModel.fromJson(value);
-                },
-              )
-            });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,17 +45,17 @@ class _RestaurantState extends State<Restaurant> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
-                    restaurant!.name,
+                    widget.restaurant.name,
                     style: const TextStyle(
                         fontSize: 27,
                         fontWeight: FontWeight.w800,
                         color: Color.fromARGB(255, 63, 11, 4)),
                   ),
                   FutureBuilder<void>(
-                    future: restaurant!.getLocation(),
+                    future: widget.restaurant.getLocation(),
                     builder: (context, snapshot) {
                       return Text(
-                        restaurant!.description!,
+                        widget.restaurant.description!,
                         style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w500,
@@ -83,7 +69,7 @@ class _RestaurantState extends State<Restaurant> {
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: NetworkImage(restaurant!.photoUrl),
+                    image: NetworkImage(widget.restaurant.photoUrl),
                     fit: BoxFit.cover),
               ),
             ),
@@ -97,7 +83,7 @@ class _RestaurantState extends State<Restaurant> {
                                   source = "assets/icons/heart1.png";
                                 });
                       globals.addRestaurantToSaved(
-                        restaurant
+                        widget.restaurant
                       );
                     } else {
                       setState(() {
