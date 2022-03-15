@@ -6,7 +6,7 @@ import 'package:iac_project/Widgets/contents.dart';
 import 'package:iac_project/Widgets/parts.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import '../models.dart';
-import '../list.dart';
+import 'restaurant_list.dart';
 import "../gobals.dart" as globals;
 
 class Feed extends StatefulWidget {
@@ -157,7 +157,7 @@ class _Feed extends State<Feed> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => List(
+                                                  builder: (context) => RestaurantList(
                                                       text: "Close Places",
                                                       snapshot:
                                                           FirebaseFirestore
@@ -224,7 +224,7 @@ class _Feed extends State<Feed> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => List(
+                                                    builder: (context) => RestaurantList(
                                                         text:
                                                             "Popular Restaurants",
                                                         snapshot:
@@ -294,7 +294,7 @@ class _Feed extends State<Feed> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => List(
+                                                  builder: (context) => RestaurantList(
                                                       text: "All Restaurants",
                                                       snapshot:
                                                           FirebaseFirestore

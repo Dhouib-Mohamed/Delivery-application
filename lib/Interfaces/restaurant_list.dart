@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../Widgets/contents.dart';
-import '../models.dart';
+import '../../Widgets/contents.dart';
+import '../../models.dart';
 
-class List extends StatefulWidget {
+class RestaurantList extends StatefulWidget {
   final String text;
   final Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
-  const List({Key? key, required this.text, required this.snapshot})
+  const RestaurantList({Key? key, required this.text, required this.snapshot})
       : super(key: key);
 
   @override
-  State<List> createState() => _ListState();
+  State<RestaurantList> createState() => _RestaurantListState();
 }
 
-class _ListState extends State<List> {
+class _RestaurantListState extends State<RestaurantList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

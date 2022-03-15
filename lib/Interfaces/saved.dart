@@ -41,6 +41,7 @@ class _SavedState extends State<Saved> {
                   );
                 } else {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
                           padding: EdgeInsets.all(8),
@@ -49,15 +50,17 @@ class _SavedState extends State<Saved> {
                             style: TextStyle(
                                 fontSize: 22, color: Color(0xffbd2005)),
                           )),
-                      (Column(
-                          children: snapshot.data!.docs.map((document) {
-                        RestaurantModel restaurant =
-                            RestaurantModel.fromJson(document.data());
-                        return FeedElement(
-                          restaurant: restaurant,
-                          id: document.id,
-                        );
-                      }).toList())),
+                      Center(
+                        child: Column(
+                            children: snapshot.data!.docs.map((document) {
+                          RestaurantModel restaurant =
+                              RestaurantModel.fromJson(document.data());
+                          return FeedElement(
+                            restaurant: restaurant,
+                            id: document.id,
+                          );
+                        }).toList()),
+                      ),
                     ],
                   );
                 }
@@ -76,6 +79,7 @@ class _SavedState extends State<Saved> {
                   );
                 } else {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
                           padding: EdgeInsets.all(8),
@@ -84,17 +88,19 @@ class _SavedState extends State<Saved> {
                             style: TextStyle(
                                 fontSize: 22, color: Color(0xffbd2005)),
                           )),
-                      Column(
-                          children: snapshot.data!.docs.map((document) {
-                        DealModel d = DealModel.fromJson(document.data());
-                        return RestaurantElement(
-                            deal: d,
-                            id: document.id,
-                            buttonText: "remove from cart",
-                            buttonRole: () {
-                              globals.addToCart(d);
-                            });
-                      }).toList()),
+                      Center(
+                        child: Column(
+                            children: snapshot.data!.docs.map((document) {
+                          DealModel d = DealModel.fromJson(document.data());
+                          return RestaurantElement(
+                              deal: d,
+                              id: document.id,
+                              buttonText: "Add to cart",
+                              buttonRole: () {
+                                globals.addToCart(d);
+                              });
+                        }).toList()),
+                      ),
                     ],
                   );
                 }

@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iac_project/models.dart';
 import '../Widgets/contents.dart';
+import 'deal_list.dart';
 import '../gobals.dart' as globals;
 
 class Restaurant extends StatefulWidget {
   final RestaurantModel restaurant;
-    final String id;
+  final String id;
 
-  const Restaurant({Key? key, required this.id, required this.restaurant}) : super(key: key);
-
+  const Restaurant({Key? key, required this.id, required this.restaurant})
+      : super(key: key);
 
   @override
   State<Restaurant> createState() => _RestaurantState();
@@ -52,17 +53,16 @@ class _RestaurantState extends State<Restaurant> {
                         color: Color.fromARGB(255, 63, 11, 4)),
                   ),
                   FutureBuilder<void>(
-                    future: widget.restaurant.getLocation(),
-                    builder: (context, snapshot) {
-                      return Text(
-                        widget.restaurant.description!,
-                        style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
-                            color: Color.fromARGB(255, 63, 11, 4)),
-                      );
-                    }
-                  ),
+                      future: widget.restaurant.getLocation(),
+                      builder: (context, snapshot) {
+                        return Text(
+                          widget.restaurant.description!,
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromARGB(255, 63, 11, 4)),
+                        );
+                      }),
                 ],
               ),
             ),
@@ -80,15 +80,13 @@ class _RestaurantState extends State<Restaurant> {
                   onTap: () {
                     if (source == "assets/icons/heart.png") {
                       setState(() {
-                                  source = "assets/icons/heart1.png";
-                                });
-                      globals.addRestaurantToSaved(
-                        widget.restaurant
-                      );
+                        source = "assets/icons/heart1.png";
+                      });
+                      globals.addRestaurantToSaved(widget.restaurant);
                     } else {
                       setState(() {
-                                    source = "assets/icons/heart.png";
-                                  });
+                        source = "assets/icons/heart.png";
+                      });
                       globals.removeRestaurantFromSaved(widget.id);
                     }
                   },
@@ -107,16 +105,12 @@ class _RestaurantState extends State<Restaurant> {
               ),
             ],
           ),
-          const SliverToBoxAdapter(
-            child:
-                Padding(padding: EdgeInsets.all(8), child: Text("All Deals :",style: TextStyle(fontSize: 22,color: Color(0xffbd2005)),)),
-          ),
           SliverToBoxAdapter(
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('restaurants')
                     .doc(widget.id)
-                    .collection('deals')
+                    .collection('category')
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -126,21 +120,95 @@ class _RestaurantState extends State<Restaurant> {
                     );
                   } else {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom:45),
+                      padding: const EdgeInsets.only(bottom: 45),
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Column(
                             children: snapshot.data!.docs.map((document) {
-                          DealModel d = DealModel.fromJson(document.data());
-                          return RestaurantElement(
-                              deal: d,
-                              id: document.id,
-                              buttonText: "Add in Cart",
-                              buttonRole: () {
-                                globals.addToCart(
-                                  d
-                                );
-                              });
+                          CategoryModel c =
+                              CategoryModel.fromJson(document.data());
+                          return SingleChildScrollView(
+                            child: StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection("restaurants")
+                                    .doc(widget.id)
+                                    .collection('category')
+                                    .doc(document.reference.id)
+                                    .collection("deals")
+                                    .snapshots(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else {
+                                    return SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                 Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(left: 15),
+                                                  child: Text(
+                                                    c.name,
+                                                    style:
+                                                        const TextStyle(fontSize: 25),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 20),
+                                                  child: IconButton(
+                                                    icon: const Icon(Icons
+                                                        .arrow_forward_rounded),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => DealList(
+                                                                  text:
+                                                                      c.name,
+                                                                  snapshot: FirebaseFirestore.instance
+                                    .collection("restaurants")
+                                    .doc(widget.id)
+                                    .collection('category')
+                                    .doc(document.reference.id)
+                                    .collection("deals")
+                                    .snapshots())));
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Column(
+                                              children: snapshot.data!.docs
+                                                  .map((document) {
+                                            DealModel d =
+                                                DealModel.fromJson(
+                                                    document.data());
+                                            return RestaurantElement(
+                                              deal: d,
+                                              id: document.reference.id, buttonRole: () { globals.addToCart(d); }, buttonText: 'Add To Cart',
+                                            );
+                                          }).toList()),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }),
+                          );
                         }).toList()),
                       ),
                     );

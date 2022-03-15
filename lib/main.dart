@@ -33,12 +33,13 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  late String initialisation;
+  String? initialisation;
 
   init() async {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -67,10 +68,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    try {
       return MaterialApp(
         title: "App",
-        initialRoute: initialisation,
+        initialRoute: initialisation!,
         routes: {
           '/opening': (context) => const Opening(),
           '/signup': (context) => const SignUp(),
@@ -103,15 +103,5 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       );
-    } on Exception {
-      return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      );
-    }
   }
 }

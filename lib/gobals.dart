@@ -25,8 +25,9 @@ Future<void> addToCart(DealModel deal) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("cart")
-        .add(deal.toJson());
-    Fluttertoast.showToast(msg: "Item added Successfully to cart :) ");
+        .add(deal.toJson())
+        .whenComplete(() {
+      Fluttertoast.showToast(msg: "Item added Successfully to cart :) ");});
   }
 }
 
@@ -38,8 +39,8 @@ Future<void> addDealToSaved(DealModel deal) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedDeals")
-        .add(deal.toJson());
-    Fluttertoast.showToast(msg: "Item added successfully to Saved");
+        .add(deal.toJson()).whenComplete(() {
+          Fluttertoast.showToast(msg: "Item added successfully to Saved");});
   }
 }
 
@@ -49,8 +50,9 @@ Future<void> removeDealFromSaved(String id) async {
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection("savedDeals")
       .doc(id)
-      .delete();
-  Fluttertoast.showToast(msg: "Item removed successfully from Saved");
+      .delete().whenComplete(() {
+    Fluttertoast.showToast(msg: "Item removed successfully from Saved");
+  });
 }
 
 Future<void> addRestaurantToSaved(restaurant) async {
@@ -61,8 +63,8 @@ Future<void> addRestaurantToSaved(restaurant) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedRestaurants")
-        .add(restaurant.toJson());
-    Fluttertoast.showToast(msg: "Restaurant added successfully to Saved");
+        .add(restaurant.toJson()).whenComplete(() {
+      Fluttertoast.showToast(msg: "Restaurant added successfully to Saved");});
   }
 }
 
@@ -72,8 +74,8 @@ Future<void> removeRestaurantFromSaved(String id) async {
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection("savedRestaurants")
       .doc(id)
-      .delete();
-  Fluttertoast.showToast(msg: "Restaurant removed successfully from Saved");
+      .delete().whenComplete(() {  Fluttertoast.showToast(msg: "Restaurant removed successfully from Saved");
+  });
 }
 
 Future<bool> exist(String source, String photoUrl) async {
@@ -81,8 +83,8 @@ Future<bool> exist(String source, String photoUrl) async {
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection(source)
-      .snapshots()
-      .every((element) {
+      .get()
+      .then((element) {
     return element.docs.any((element) {
       return element.data()["photoUrl"] == photoUrl;
     });

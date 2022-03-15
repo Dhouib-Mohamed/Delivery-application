@@ -51,7 +51,7 @@ class RestaurantModel {
   RestaurantModel.fromJson(json)
       : this(
           name: json["name"]! as String,
-          photoUrl: json["url"]! as String,
+          photoUrl: json["photoUrl"]! as String,
           location: json["location"]! as GeoPoint,
         );
   Map<String, Object?> toJson() {
