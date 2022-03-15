@@ -122,6 +122,7 @@ class _Feed extends State<Feed> {
                     stream: FirebaseFirestore.instance
                         .collection("restaurants")
                         .orderBy("location")
+                        .limit(3)
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -163,6 +164,7 @@ class _Feed extends State<Feed> {
                                                               .instance
                                                               .collection(
                                                                   "restaurants")
+                                                              .orderBy("location")
                                                               .snapshots())));
                                         },
                                       ),
@@ -188,6 +190,7 @@ class _Feed extends State<Feed> {
                     stream: FirebaseFirestore.instance
                         .collection("restaurants")
                         .orderBy("name")
+                        .limit(3)
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -229,6 +232,7 @@ class _Feed extends State<Feed> {
                                                                 .instance
                                                                 .collection(
                                                                     "restaurants")
+                                                                    .orderBy("name")
                                                                 .snapshots())));
                                           },
                                         ),
@@ -255,6 +259,7 @@ class _Feed extends State<Feed> {
                     stream: FirebaseFirestore.instance
                         .collection("restaurants")
                         .orderBy("name")
+                        .limit(10)
                         .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -296,6 +301,7 @@ class _Feed extends State<Feed> {
                                                               .instance
                                                               .collection(
                                                                   "restaurants")
+                                                                  .orderBy("name")
                                                               .snapshots())));
                                         },
                                       ),

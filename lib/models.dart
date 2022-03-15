@@ -119,3 +119,21 @@ class DealModel {
     };
   }
 }
+@JsonSerializable()
+class CategoryModel {
+  String name;
+
+  CategoryModel(
+      {required this.name});
+
+  // receiving data from server
+  CategoryModel.fromJson(json)
+      : this(
+          name: json['name']! as String,
+        );
+  Map<String, Object?> toJson() {
+    return {
+      'name': name,
+    };
+  }
+}

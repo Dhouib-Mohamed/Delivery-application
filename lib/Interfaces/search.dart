@@ -2,11 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iac_project/Interfaces/restaurant.dart';
 import 'package:iac_project/Widgets/parts.dart';
-import '../Widgets/contents.dart';
-import '../Widgets/tapped.dart';
-import '../models.dart';
 import 'package:search_widget/search_widget.dart';
-// TODO add search
+import '../models.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -63,7 +60,7 @@ class _SearchState extends State<Search> {
                           },
                           child: SizedBox(
                               height: 50,
-                              width:MediaQuery.of(context).size.width,
+                              width:MediaQuery.of(context).size.width *0.95,
                               child: Row(
                                 children: [
                                   Image.network(
