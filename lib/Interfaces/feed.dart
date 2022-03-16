@@ -18,17 +18,25 @@ class Feed extends StatefulWidget {
 class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
-  @override
-  void initState() {
-    FirebaseFirestore.instance
+  Future<UserModel>? user;
+  Future<UserModel>? getUser() async {
+    late UserModel user ;
+    await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       setState(() {
+        user = UserModel.fromJson(value.data());
         globals.user = UserModel.fromJson(value.data());
       });
     });
+    return user;
+  }
+
+  @override
+  void initState() {
+    user = getUser();
     super.initState();
   }
 
@@ -74,15 +82,16 @@ class _Feed extends State<Feed> {
             .collection("addresses")
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.data!.docs.isNotEmpty) {
+          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             AddressModel address =
                 AddressModel.fromJson(snapshot.data!.docs.first.data());
-            return FutureBuilder<void>(
-              future: address.getLocation(),
+            address.description=address.getLocation();
+            return FutureBuilder<String>(
+              future: address.description,
               builder: (context, snapshot) {
                 return TappedPosition(
                     text: "Deliver To :  ",
-                    tapped: address.description!,
+                    tapped: snapshot.data??"",
                     role: '/address');
               }
             );
@@ -115,108 +124,43 @@ class _Feed extends State<Feed> {
           ),
         ),
         SliverToBoxAdapter(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection("restaurants")
-                        .orderBy("location")
-                        .limit(3)
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        "Close Places",
-                                        style: TextStyle(fontSize: 25),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: IconButton(
-                                        icon: const Icon(
-                                            Icons.arrow_forward_rounded),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => RestaurantList(
-                                                      text: "Close Places",
-                                                      snapshot:
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  "restaurants")
-                                                              .orderBy("location")
-                                                              .snapshots())));
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                  children: snapshot.data!.docs.map((document) {
-                                RestaurantModel r =
-                                    RestaurantModel.fromJson(document.data());
-                                return FeedElement(
-                                  restaurant: r,
-                                  id: document.reference.id,
-                                );
-                              }).toList()),
-                            ],
-                          ),
-                        );
-                      }
-                    }),
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection("restaurants")
-                        .orderBy("name")
-                        .limit(3)
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 35.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("restaurants")
+                          .orderBy("location")
+                          .limit(3)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       const Padding(
                                         padding: EdgeInsets.only(left: 15),
                                         child: Text(
-                                          "Popular Restaurants",
+                                          "Close Places",
                                           style: TextStyle(fontSize: 25),
                                         ),
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 20),
+                                        padding: const EdgeInsets.only(right: 20),
                                         child: IconButton(
                                           icon: const Icon(
                                               Icons.arrow_forward_rounded),
@@ -225,8 +169,144 @@ class _Feed extends State<Feed> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) => RestaurantList(
-                                                        text:
-                                                            "Popular Restaurants",
+                                                        text: "Close Places",
+                                                        snapshot:
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "restaurants")
+                                                                .orderBy("location")
+                                                                .snapshots())));
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                    children: snapshot.data!.docs.map((document) {
+                                  RestaurantModel r =
+                                      RestaurantModel.fromJson(document.data());
+                                  return FeedElement(
+                                    restaurant: r,
+                                    id: document.reference.id,
+                                  );
+                                }).toList()),
+                              ],
+                            ),
+                          );
+                        }
+                      }),
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("restaurants")
+                          .orderBy("name")
+                          .limit(3)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 15),
+                                          child: Text(
+                                            "Popular Restaurants",
+                                            style: TextStyle(fontSize: 25),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 20),
+                                          child: IconButton(
+                                            icon: const Icon(
+                                                Icons.arrow_forward_rounded),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => RestaurantList(
+                                                          text:
+                                                              "Popular Restaurants",
+                                                          snapshot:
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "restaurants")
+                                                                      .orderBy("name")
+                                                                  .snapshots())));
+                                            },
+                                          ),
+                                        ),
+                                      ]),
+                                ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                        children: snapshot.data!.docs.map((document) {
+                                      RestaurantModel r =
+                                          RestaurantModel.fromJson(document.data());
+                                      return ListElement(
+                                        restaurant: r,
+                                        id: document.reference.id,
+                                      );
+                                    }).toList()),
+                              ),
+                            ],
+                          );
+                        }
+                      }),
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("restaurants")
+                          .orderBy("name")
+                          .limit(10)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 15),
+                                        child: Text(
+                                          "All Restaurants",
+                                          style: TextStyle(fontSize: 25),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 20),
+                                        child: IconButton(
+                                          icon: const Icon(
+                                              Icons.arrow_forward_rounded),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => RestaurantList(
+                                                        text: "All Restaurants",
                                                         snapshot:
                                                             FirebaseFirestore
                                                                 .instance
@@ -237,201 +317,138 @@ class _Feed extends State<Feed> {
                                           },
                                         ),
                                       ),
-                                    ]),
-                              ),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                      children: snapshot.data!.docs.map((document) {
-                                    RestaurantModel r =
-                                        RestaurantModel.fromJson(document.data());
-                                    return ListElement(
-                                      restaurant: r,
-                                      id: document.reference.id,
-                                    );
-                                  }).toList()),
-                            ),
-                          ],
-                        );
-                      }
-                    }),
-                StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection("restaurants")
-                        .orderBy("name")
-                        .limit(10)
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        "All Restaurants",
-                                        style: TextStyle(fontSize: 25),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: IconButton(
-                                        icon: const Icon(
-                                            Icons.arrow_forward_rounded),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => RestaurantList(
-                                                      text: "All Restaurants",
-                                                      snapshot:
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  "restaurants")
-                                                                  .orderBy("name")
-                                                              .snapshots())));
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Column(
-                                  children: snapshot.data!.docs.map((document) {
-                                RestaurantModel r =
-                                    RestaurantModel.fromJson(document.data());
-                                return FeedElement(
-                                  restaurant: r,
-                                  id: document.reference.id,
-                                );
-                              }).toList()),
-                            ],
-                          ),
-                        );
-                      }
-                    }),
-              ],
+                                Column(
+                                    children: snapshot.data!.docs.map((document) {
+                                  RestaurantModel r =
+                                      RestaurantModel.fromJson(document.data());
+                                  return FeedElement(
+                                    restaurant: r,
+                                    id: document.reference.id,
+                                  );
+                                }).toList()),
+                              ],
+                            ),
+                          );
+                        }
+                      }),
+                ],
+              ),
             ),
           ),
         ),
       ]),
-      drawer: Container(
-        color: Colors.white,
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 100.0, right: 10),
-              child: Text(
-                "${globals.user!.name[0].toUpperCase()}${globals.user!.name.substring(1)}",
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
+      drawer: FutureBuilder<UserModel>(
+        future: user,
+        builder: (context, snapshot) {
+          return Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 100.0, right: 10),
+                  child: Text(
+                    "${snapshot.data?.name[0].toUpperCase()}${snapshot.data?.name.substring(1)}",
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 40),
-              child: Text(
-                globals.user!.email,
-                style: const TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
+                Padding(
+                  padding: const EdgeInsets.only(right: 10, bottom: 40),
+                  child: Text(
+                    snapshot.data!.email,
+                    style: const TextStyle(
+                      color: Colors.blueGrey,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      right: 32, top: 6, left: 32, bottom: 13),
+                  child: OutlinedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          fixedSize: MaterialStateProperty.all(const Size(250, 48)),
+                          shape: MaterialStateProperty.all(
+                              const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ))),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Profile(),
+                            ));
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.black,
+                                size: 30,
+                              ),
+                            ),
+                            Text(
+                              "Profile",
+                              style: TextStyle(color: Colors.black, fontSize: 17),
+                            )
+                          ])),
+                ),
+                const ProfileButton(
+                    name: "My Addresses",
+                    role: "/address",
+                    icon: Icons.location_on),
+                const ProfileButton(
+                    name: "Settings",
+                    role: "/settings",
+                    icon: Icons.settings_sharp),
+                const ProfileButton(
+                    name: "Help & FAQ", role: "/help", icon: Icons.help_rounded),
+                Padding(
+                    padding: const EdgeInsets.only(top: 100, bottom: 13),
+                    child: TextButton(
+                        style: ButtonStyle(
+                            fixedSize:
+                                MaterialStateProperty.all(const Size(200, 48)),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color(0xffbd2005)),
+                            shape: MaterialStateProperty.all(
+                                const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ))),
+                        onPressed: () {
+                          logout(context);
+                          Navigator.pushNamed(context, '/opening');
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.power_settings_new,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              Text(
+                                "Log Out",
+                                style: TextStyle(color: Colors.white, fontSize: 17),
+                              )
+                            ])))
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  right: 32, top: 6, left: 32, bottom: 13),
-              child: OutlinedButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                      fixedSize: MaterialStateProperty.all(const Size(250, 48)),
-                      shape: MaterialStateProperty.all(
-                          const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ))),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Profile(),
-                        ));
-                  },
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.only(right: 8.0),
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.black,
-                            size: 30,
-                          ),
-                        ),
-                        Text(
-                          "Profile",
-                          style: TextStyle(color: Colors.black, fontSize: 17),
-                        )
-                      ])),
-            ),
-            const ProfileButton(
-                name: "My Addresses",
-                role: "/address",
-                icon: Icons.location_on),
-            const ProfileButton(
-                name: "Settings",
-                role: "/settings",
-                icon: Icons.settings_sharp),
-            const ProfileButton(
-                name: "Help & FAQ", role: "/help", icon: Icons.help_rounded),
-            Padding(
-                padding: const EdgeInsets.only(top: 100, bottom: 13),
-                child: TextButton(
-                    style: ButtonStyle(
-                        fixedSize:
-                            MaterialStateProperty.all(const Size(200, 48)),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            const Color(0xffbd2005)),
-                        shape: MaterialStateProperty.all(
-                            const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ))),
-                    onPressed: () {
-                      logout(context);
-                      Navigator.pushNamed(context, '/opening');
-                    },
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.power_settings_new,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          Text(
-                            "Log Out",
-                            style: TextStyle(color: Colors.white, fontSize: 17),
-                          )
-                        ])))
-          ],
-        ),
+          );
+        }
       ),
       endDrawer: const EndDrawer(),
     );

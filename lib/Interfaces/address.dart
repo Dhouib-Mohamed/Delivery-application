@@ -9,7 +9,6 @@ import 'address_map.dart';
 
 class Address extends StatelessWidget {
   Address({Key? key}) : super(key: key);
-  int i = 0;
   int x = 0;
 
   @override
@@ -66,7 +65,6 @@ class Address extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else {
-              i = 0;
               x = 0;
               return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -74,12 +72,9 @@ class Address extends StatelessWidget {
                     children: snapshot.data!.docs.map((document) {
                       AddressModel address =
                           AddressModel.fromJson(document.data());
+                      address.description = address.getLocation();
                       x++;
-                      return FutureBuilder<void>(
-                          future: address.getLocation(),
-                          builder: (context, snapshot) {
-                            i++;
-                            return Padding(
+                      return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Center(
                                     child: GestureDetector(
@@ -110,7 +105,7 @@ class Address extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   left: 8.0),
                                               child: Text(
-                                                "ADDRESS ${i - x} :",
+                                                "ADDRESS ${x} :",
                                                 style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 22,
@@ -129,23 +124,27 @@ class Address extends StatelessWidget {
                                           child: Padding(
                                             padding: const EdgeInsets.only(
                                                 left: 8.0),
-                                            child: Text(
-                                              address.description!,
-                                              overflow: TextOverflow.clip,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                            child: FutureBuilder<String>(
+                                              future: address.description,
+                                              builder: (context, snapshot) {
+                                                return Text(
+                                                  snapshot.data??"",
+                                                  overflow: TextOverflow.clip,
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                );
+                                              }
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                )));
-                          });
-                    }).toList(),
+                                ))
+                      );}).toList(),
                   ));
             }
           }),

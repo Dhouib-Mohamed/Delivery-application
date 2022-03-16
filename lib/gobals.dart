@@ -25,9 +25,8 @@ Future<void> addToCart(DealModel deal) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("cart")
-        .add(deal.toJson())
-        .whenComplete(() {
-      Fluttertoast.showToast(msg: "Item added Successfully to cart :) ");});
+        .add(deal.toJson());
+      Fluttertoast.showToast(msg: "Item added Successfully to cart :) ");
   }
 }
 
@@ -39,8 +38,8 @@ Future<void> addDealToSaved(DealModel deal) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedDeals")
-        .add(deal.toJson()).whenComplete(() {
-          Fluttertoast.showToast(msg: "Item added successfully to Saved");});
+        .add(deal.toJson());
+          Fluttertoast.showToast(msg: "Item added successfully to Saved");
   }
 }
 
@@ -50,9 +49,7 @@ Future<void> removeDealFromSaved(String id) async {
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection("savedDeals")
       .doc(id)
-      .delete().whenComplete(() {
-    Fluttertoast.showToast(msg: "Item removed successfully from Saved");
-  });
+      .delete().then((value) {Fluttertoast.showToast(msg: "Item removed successfully from Saved");});
 }
 
 Future<void> addRestaurantToSaved(restaurant) async {
@@ -63,8 +60,8 @@ Future<void> addRestaurantToSaved(restaurant) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedRestaurants")
-        .add(restaurant.toJson()).whenComplete(() {
-      Fluttertoast.showToast(msg: "Restaurant added successfully to Saved");});
+        .add(restaurant.toJson());
+      Fluttertoast.showToast(msg: "Restaurant added successfully to Saved");
   }
 }
 
@@ -74,8 +71,14 @@ Future<void> removeRestaurantFromSaved(String id) async {
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection("savedRestaurants")
       .doc(id)
-      .delete().whenComplete(() {  Fluttertoast.showToast(msg: "Restaurant removed successfully from Saved");
-  });
+      .delete().then((value) {
+        Fluttertoast.showToast(msg: "Restaurant removed successfully from Saved");});
+  print(FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .collection("savedRestaurants")
+      .doc(id));
+
 }
 
 Future<bool> exist(String source, String photoUrl) async {

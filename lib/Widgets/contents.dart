@@ -160,6 +160,7 @@ class _FeedElementState extends State<FeedElement> {
   void initState() {
     super.initState();
     setRestaurantSource(widget.restaurant.photoUrl);
+    widget.restaurant.description = widget.restaurant.getLocation();
   }
 
   @override
@@ -240,11 +241,11 @@ class _FeedElementState extends State<FeedElement> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0),
-                          child: FutureBuilder<void>(
-                            future: widget.restaurant.getLocation(),
+                          child: FutureBuilder<String>(
+                            future: widget.restaurant.description,
                             builder: (context, snapshot) {
                               return Text(
-                                widget.restaurant.description!,
+                                snapshot.data??"",
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
                                   color: Colors.black,
@@ -289,6 +290,8 @@ class _ListElementState extends State<ListElement> {
   @override
   void initState() {
     super.initState();
+    setRestaurantSource(widget.restaurant.photoUrl);
+    widget.restaurant.description = widget.restaurant.getLocation();
   }
 
   @override
@@ -369,11 +372,11 @@ class _ListElementState extends State<ListElement> {
                   ),
                 ),
                 Flexible(
-                  child: FutureBuilder<void>(
-                    future: widget.restaurant.getLocation(),
+                  child: FutureBuilder<String>(
+                    future: widget.restaurant.description,
                     builder: (context, snapshot) {
                       return Text(
-                        widget.restaurant.description!,
+                        snapshot.data??"",
                         overflow: TextOverflow.clip,
                         maxLines: 2,
                         style: const TextStyle(

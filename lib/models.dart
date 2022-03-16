@@ -34,17 +34,19 @@ class RestaurantModel {
   String name;
   String photoUrl;
   GeoPoint location;
-  String? description;
+  Future<String>? description;
   String? id;
 
   RestaurantModel(
       {required this.name, required this.photoUrl, required this.location});
-  Future<void> getLocation() async {
+  Future<String> getLocation() async {
+    late String d;
     await placemarkFromCoordinates(location.latitude, location.longitude)
         .then((value) {
-      description =
-          "${value[0].subLocality} ${value[0].subAdministrativeArea} ${value.first.administrativeArea}";
+      d =
+          "${value[0].subAdministrativeArea} ${value.first.administrativeArea} ${value.first.country}";
     });
+    return d;
   }
 
   // receiving data from server
@@ -66,15 +68,17 @@ class RestaurantModel {
 @JsonSerializable()
 class AddressModel {
   GeoPoint location;
-  String? description;
+  Future<String>? description;
 
   AddressModel({required this.location});
-  getLocation() async {
+  Future<String> getLocation() async {
+    late String d;
     await placemarkFromCoordinates(location.latitude, location.longitude)
         .then((value) {
-      description =
-          "${value[0].subLocality} ${value[0].subAdministrativeArea} ${value.first.administrativeArea}";
+      d =
+      "${value[0].subAdministrativeArea} ${value.first.administrativeArea} ${value.first.country}";
     });
+    return d;
   }
 
   // receiving data from server

@@ -23,6 +23,7 @@ class _MappState extends State<Mapp> {
 
   gpsPermission() async {
     await Geolocator.requestPermission();
+    await Geolocator.checkPermission();
   }
 
   @override

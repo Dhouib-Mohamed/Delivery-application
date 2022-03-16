@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:iac_project/Widgets/tapped.dart';
 
 import '../models.dart';
 
@@ -47,6 +45,7 @@ class _CheckoutState extends State<Checkout> {
                         children: snapshot.data!.docs.map((document) {
                           AddressModel address =
                               AddressModel.fromJson(document.data());
+                          address.description = address.getLocation();
                           return Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
@@ -68,11 +67,11 @@ class _CheckoutState extends State<Checkout> {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(left: 8.0),
-                                        child: FutureBuilder<void>(
-                                            future: address.getLocation(),
+                                        child: FutureBuilder<String>(
+                                            future: address.description,
                                             builder: (context, snapshot) {
                                               return Text(
-                                                address.description!,
+                                                snapshot.data??"",
                                                 style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 20,

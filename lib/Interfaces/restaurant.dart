@@ -52,11 +52,11 @@ class _RestaurantState extends State<Restaurant> {
                         fontWeight: FontWeight.w800,
                         color: Color.fromARGB(255, 63, 11, 4)),
                   ),
-                  FutureBuilder<void>(
-                      future: widget.restaurant.getLocation(),
+                  FutureBuilder<String>(
+                      future: widget.restaurant.description,
                       builder: (context, snapshot) {
                         return Text(
-                          widget.restaurant.description!,
+                          snapshot.data??"",
                           style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w500,
@@ -74,7 +74,8 @@ class _RestaurantState extends State<Restaurant> {
               ),
             ),
             actions: [
-              Padding(
+              Flexible(
+                child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
@@ -93,11 +94,9 @@ class _RestaurantState extends State<Restaurant> {
                   child: ImageIcon(
                     AssetImage(source),
                     color: const Color(0xffbd2005),
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+                  ),),),),
+                  const Padding(
+                padding: EdgeInsets.only(left:15,right: 20,top: 8,bottom: 8),
                 child: Icon(
                   Icons.share,
                   color: Color(0xffbd2005),
@@ -106,114 +105,117 @@ class _RestaurantState extends State<Restaurant> {
             ],
           ),
           SliverToBoxAdapter(
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('restaurants')
-                    .doc(widget.id)
-                    .collection('category')
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 45),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Column(
-                            children: snapshot.data!.docs.map((document) {
-                          CategoryModel c =
-                              CategoryModel.fromJson(document.data());
-                          return SingleChildScrollView(
-                            child: StreamBuilder(
-                                stream: FirebaseFirestore.instance
-                                    .collection("restaurants")
-                                    .doc(widget.id)
-                                    .collection('category')
-                                    .doc(document.reference.id)
-                                    .collection("deals")
-                                    .snapshots(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  } else {
-                                    return SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(left: 15),
-                                                  child: Text(
-                                                    c.name,
-                                                    style:
-                                                        const TextStyle(fontSize: 25),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 50.0),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('restaurants')
+                      .doc(widget.id)
+                      .collection('category')
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 45),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Column(
+                              children: snapshot.data!.docs.map((document) {
+                            CategoryModel c =
+                                CategoryModel.fromJson(document.data());
+                            return SingleChildScrollView(
+                              child: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection("restaurants")
+                                      .doc(widget.id)
+                                      .collection('category')
+                                      .doc(document.reference.id)
+                                      .collection("deals")
+                                      .snapshots(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else {
+                                      return SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                   Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(left: 15),
+                                                    child: Text(
+                                                      c.name,
+                                                      style:
+                                                          const TextStyle(fontSize: 25),
+                                                    ),
                                                   ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 20),
-                                                  child: IconButton(
-                                                    icon: const Icon(Icons
-                                                        .arrow_forward_rounded),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) => DealList(
-                                                                  text:
-                                                                      c.name,
-                                                                  snapshot: FirebaseFirestore.instance
-                                    .collection("restaurants")
-                                    .doc(widget.id)
-                                    .collection('category')
-                                    .doc(document.reference.id)
-                                    .collection("deals")
-                                    .snapshots())));
-                                                    },
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 20),
+                                                    child: IconButton(
+                                                      icon: const Icon(Icons
+                                                          .arrow_forward_rounded),
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) => DealList(
+                                                                    text:
+                                                                        c.name,
+                                                                    snapshot: FirebaseFirestore.instance
+                                      .collection("restaurants")
+                                      .doc(widget.id)
+                                      .collection('category')
+                                      .doc(document.reference.id)
+                                      .collection("deals")
+                                      .snapshots())));
+                                                      },
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          Column(
-                                              children: snapshot.data!.docs
-                                                  .map((document) {
-                                            DealModel d =
-                                                DealModel.fromJson(
-                                                    document.data());
-                                            return RestaurantElement(
-                                              deal: d,
-                                              id: document.reference.id, buttonRole: () { globals.addToCart(d); }, buttonText: 'Add To Cart',
-                                            );
-                                          }).toList()),
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                }),
-                          );
-                        }).toList()),
-                      ),
-                    );
-                  }
-                }),
+                                            Column(
+                                                children: snapshot.data!.docs
+                                                    .map((document) {
+                                              DealModel d =
+                                                  DealModel.fromJson(
+                                                      document.data());
+                                              return RestaurantElement(
+                                                deal: d,
+                                                id: document.reference.id, buttonRole: () { globals.addToCart(d); }, buttonText: 'Add To Cart',
+                                              );
+                                            }).toList()),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            );
+                          }).toList()),
+                        ),
+                      );
+                    }
+                  }),
+            ),
           ),
         ],
       ),

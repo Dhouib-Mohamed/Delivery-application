@@ -39,69 +39,72 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? initialisation;
+  late Future<String> initialisation;
 
-  init() async {
+
+  Future<String> init() async {
+    late String i;
     if (FirebaseAuth.instance.currentUser != null) {
       await globals.getsign();
       if (globals.signedIn == true) {
-        setState(() {
-          initialisation = '/feed';
-        });
+          i = '/feed';
       } else {
-        setState(() {
-          initialisation = '/opening';
-        });
+          i = '/opening';
       }
     } else {
-      setState(() {
-        initialisation = '/opening';
-      });
+        i = '/opening';
     }
+    return i;
   }
 
   @override
   void initState() {
-    init();
+    initialisation = init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-      return MaterialApp(
-        title: "App",
-        initialRoute: initialisation!,
-        routes: {
-          '/opening': (context) => const Opening(),
-          '/signup': (context) => const SignUp(),
-          '/signin': (context) => const SignIn(),
-          '/forgot_password': (context) => const ForgotPassword(),
-          '/otp': (context) => const OTP(),
-          '/new_password': (context) => const NewPassword(),
-          '/gps': (context) => const GPS(),
-          '/settings': (context) => const Setting(),
-          '/address': (context) => Address(),
-          '/help': (context) => const Help(),
-          '/map': (context) => const Mapp(),
-          '/end_order': (context) => const EndOrder(),
-          '/cart': (context) => const Cart(),
-          '/search': (context) => const Search(),
-          '/saved': (context) => const Saved(),
-          '/feed': (context) => const Feed(),
-        },
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          brightness: Brightness.light,
-          appBarTheme: const AppBarTheme(
-            color: Colors.white,
-            iconTheme: IconThemeData(
-              color: Colors.black,
+      return FutureBuilder<String>(
+        future: initialisation,
+        builder: (context, snapshot) {
+          return snapshot.hasData?
+          MaterialApp(
+            title: "App",
+            initialRoute: snapshot.data??"",
+            routes: {
+              '/opening': (context) => const Opening(),
+              '/signup': (context) => const SignUp(),
+              '/signin': (context) => const SignIn(),
+              '/forgot_password': (context) => const ForgotPassword(),
+              '/otp': (context) => const OTP(),
+              '/new_password': (context) => const NewPassword(),
+              '/gps': (context) => const GPS(),
+              '/settings': (context) => const Setting(),
+              '/address': (context) => Address(),
+              '/help': (context) => const Help(),
+              '/map': (context) => const Mapp(),
+              '/end_order': (context) => const EndOrder(),
+              '/cart': (context) => const Cart(),
+              '/search': (context) => const Search(),
+              '/saved': (context) => const Saved(),
+              '/feed': (context) => const Feed(),
+            },
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              brightness: Brightness.light,
+              appBarTheme: const AppBarTheme(
+                color: Colors.white,
+                iconTheme: IconThemeData(
+                  color: Colors.black,
+                ),
+              ),
+              iconTheme: const IconThemeData(
+                color: Colors.black87,
+              ),
             ),
-          ),
-          iconTheme: const IconThemeData(
-            color: Colors.black87,
-          ),
-        ),
+          ):const Center();
+        }
       );
   }
 }
