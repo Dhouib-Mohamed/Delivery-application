@@ -28,8 +28,11 @@ class _RestaurantElementState extends State<RestaurantElement> {
         if (await globals.exist("savedDeals", photoUrl)) {
           setState(() {
             source = "assets/icons/heart1.png";
-          });
-        }
+          });}
+          else {setState(() {
+          source = "assets/icons/heart.png";
+        });}
+
   }
 
   @override
@@ -154,6 +157,9 @@ class _FeedElementState extends State<FeedElement> {
             source = "assets/icons/heart1.png";
           });
         }
+  else {setState(() {
+  source = "assets/icons/heart.png";
+  });}
   }
 
   @override
@@ -279,10 +285,13 @@ class _ListElementState extends State<ListElement> {
   late String source = "assets/icons/heart.png";
   Future<void> setRestaurantSource(String photoUrl) async {
     if (await globals.exist("savedRestaurants", photoUrl)) {
-          setState(() {
-            source = "assets/icons/heart1.png";
-          });
-        }
+      setState(() {
+        source = "assets/icons/heart1.png";
+      });
+    }
+    else {setState(() {
+      source = "assets/icons/heart.png";
+    });}
   }
 
   @override

@@ -20,11 +20,14 @@ class _RestaurantState extends State<Restaurant> {
   String source = "assets/icons/heart.png";
 
   Future<void> setRestaurantSource(String photoUrl) async {
-    if (await globals.exist('savedRestaurants', photoUrl)) {
-      setState(() {source = "assets/icons/heart1.png";});
-    }else {
-      setState(() {source = "assets/icons/heart.png";});
+    if (await globals.exist("savedRestaurants", photoUrl)) {
+      setState(() {
+        source = "assets/icons/heart1.png";
+      });
     }
+    else {setState(() {
+      source = "assets/icons/heart.png";
+    });}
   }
 
   @override
