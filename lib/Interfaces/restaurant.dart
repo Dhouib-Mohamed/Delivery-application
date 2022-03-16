@@ -117,8 +117,7 @@ class _RestaurantState extends State<Restaurant> {
                   color: Color(0xffbd2005),
                 ),
               ),
-            ],
-          ),
+              ]),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 50.0),
