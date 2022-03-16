@@ -24,12 +24,12 @@ class RestaurantElement extends StatefulWidget {
 class _RestaurantElementState extends State<RestaurantElement> {
   String source = "assets/icons/heart.png";
   Future<void> setDealSource(String photoUrl) async {
-    
+
         if (await globals.exist("savedDeals", photoUrl)) {
           setState(() {
             source = "assets/icons/heart1.png";
           });
-        } 
+        }
   }
 
   @override
@@ -153,7 +153,7 @@ class _FeedElementState extends State<FeedElement> {
           setState(() {
             source = "assets/icons/heart1.png";
           });
-        } 
+        }
   }
 
   @override
@@ -234,10 +234,8 @@ class _FeedElementState extends State<FeedElement> {
                                   color: const Color(0xffbd2005),
                                 );
                               }
-                            ),
                           ),
-                        ],
-                      ),
+                          ),]),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8.0),
@@ -284,7 +282,7 @@ class _ListElementState extends State<ListElement> {
           setState(() {
             source = "assets/icons/heart1.png";
           });
-        } 
+        }
   }
 
   @override

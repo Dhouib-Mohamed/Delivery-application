@@ -19,6 +19,21 @@ class Restaurant extends StatefulWidget {
 class _RestaurantState extends State<Restaurant> {
   String source = "assets/icons/heart.png";
 
+  Future<void> setRestaurantSource(String photoUrl) async {
+    if (await globals.exist('savedRestaurants', photoUrl)) {
+      setState(() {source = "assets/icons/heart1.png";});
+    }else {
+      setState(() {source = "assets/icons/heart.png";});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setRestaurantSource(widget.restaurant.photoUrl);
+    widget.restaurant.description = widget.restaurant.getLocation();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
