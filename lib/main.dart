@@ -50,6 +50,8 @@ class _MyAppState extends State<MyApp> {
           i = '/feed';
       } else {
           i = '/opening';
+          await FirebaseAuth.instance.signOut();
+          globals.user = null;
       }
     } else {
         i = '/opening';
