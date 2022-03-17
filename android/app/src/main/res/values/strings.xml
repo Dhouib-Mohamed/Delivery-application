@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Flutter Facebook Auth Example</string>
-    <string name="facebook_app_id">192522236397222</string>
-    <string name="fb_login_protocol_scheme">fb192522236397222</string>
-    <string name="facebook_client_token">a71d6c30525eddad98139969caf9b493</string>
+    <string name="app_name">Delivery</string>
+    <string name="facebook_app_id">736850987690266</string>
+    <string name="fb_login_protocol_scheme">fb736850987690266</string>
+    <string name="facebook_client_token">fada28b62e1426c7cbce40bbee38dc20</string>
 </resources>

@@ -7,7 +7,7 @@ import 'package:iac_project/Widgets/parts.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import '../models.dart';
 import 'restaurant_list.dart';
-import "../gobals.dart" as globals;
+import "../globals.dart" as globals;
 
 class Feed extends StatefulWidget {
   const Feed({Key? key}) : super(key: key);
@@ -362,7 +362,7 @@ class _Feed extends State<Feed> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10, bottom: 40),
                   child: Text(
-                    snapshot.data!.email,
+                    snapshot.data?.email??"",
                     style: const TextStyle(
                       color: Colors.blueGrey,
                       fontSize: 20,
@@ -370,42 +370,10 @@ class _Feed extends State<Feed> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 32, top: 6, left: 32, bottom: 13),
-                  child: OutlinedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          fixedSize: MaterialStateProperty.all(const Size(250, 48)),
-                          shape: MaterialStateProperty.all(
-                              const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ))),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Profile(),
-                            ));
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.black,
-                                size: 30,
-                              ),
-                            ),
-                            Text(
-                              "Profile",
-                              style: TextStyle(color: Colors.black, fontSize: 17),
-                            )
-                          ])),
-                ),
+          const ProfileButton(
+          name: "My Profile",
+          role: "/profile",
+          icon: Icons.location_on),
                 const ProfileButton(
                     name: "My Addresses",
                     role: "/address",

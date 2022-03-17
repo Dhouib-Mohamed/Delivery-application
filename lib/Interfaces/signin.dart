@@ -25,6 +25,7 @@ class _SignIn extends State<SignIn> {
     text: 'Stay Signed in',
   );
   final _auth = FirebaseAuth.instance;
+
   String? emailValidator(String? value) {
     if (value!.isEmpty) {
       return ("Please Enter Your Email");
@@ -49,7 +50,9 @@ class _SignIn extends State<SignIn> {
 
   // string for displaying the error Message
   String? errorMessage;
+
   _SignIn() : super();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,15 +144,16 @@ class _SignIn extends State<SignIn> {
       try {
         await _auth
             .signInWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text)
-            .then((uid) => {
-                  Fluttertoast.showToast(msg: "Login Successful"),
-                  Navigator.pushNamed(context, '/feed'),
-                });
-          await FirebaseFirestore.instance
-              .collection("users")
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .update({"autoSigned": t.val});
+            email: emailController.text, password: passwordController.text)
+            .then((uid) =>
+        {
+          Fluttertoast.showToast(msg: "Login Successful"),
+          Navigator.pushNamed(context, '/feed'),
+        });
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({"autoSigned": t.val});
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case "invalid-email":
@@ -182,47 +186,76 @@ class _SignIn extends State<SignIn> {
   void signInWithFacebook() async {
     String? message = "Error";
     try {
-      final LoginResult loginResult = await FacebookAuth.instance.login();
-      final userData = await FacebookAuth.instance.getUserData();
+      final LoginResult result = await FacebookAuth.instance.login();
+      if (result.status == LoginStatus.success) {
+        final userData = await FacebookAuth.instance.getUserData();
+        UserModel user = UserModel(email: userData["email"], name: userData["name"],);
+        user.phone = "";
+        user.autoSigned = true;
+        final facebookCredential = FacebookAuthProvider.credential(result.accessToken!.token);
+        await
+          _auth.signInWithCredential(facebookCredential).then((value) {Fluttertoast.showToast(msg: "Login Successful");
+            Navigator.pushNamed(context, '/feed');});
+        await FirebaseFirestore
+            .instance
+            .collection("users")
+            .doc(_auth.currentUser?.uid)
+            .set(user.toJson());
+        Fluttertoast.showToast(msg: "Connected successfully :) ");
 
-      // Create a credential from the access token
-      final facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.token);
+        Navigator.pushNamed(context, '/feed');
+      }
+      else {
+        Fluttertoast.showToast(msg: "Try again");
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        // The account already exists with a different credential
+        String email = e.email!;
+        AuthCredential pendingCredential = e.credential!;
 
-      // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-      User? user = FirebaseAuth.instance.currentUser;
+        // Fetch a list of what sign-in methods exist for the conflicting user
+        List<String> userSignInMethods = await _auth.fetchSignInMethodsForEmail(email);
 
-      UserModel userModel =
-          UserModel(email: userData["email"], name: userData["name"]);
+        // If the user has several sign-in methods,
+        // the first method in the list will be the "recommended" method to use.
+        if (userSignInMethods.first == 'password') {
+          // Prompt the user to enter their password
+          String password = '...';
 
-      userModel.phone = "";
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(user!.uid)
-          .set(userModel.toJson());
+          // Sign the user in to their account with the password
+          UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
 
-      Fluttertoast.showToast(msg: "Connected successfully :) ");
-
-      Navigator.pushNamed(context, '/feed');
-    } on FirebaseAuthException catch (error) {
-      switch (error.code) {
-        case "invalid-credential":
-          message = "unknown Error have occurred";
+          // Link the pending credential with the existing account
+          await userCredential.user?.linkWithCredential(pendingCredential);
+        }
+      }
+      switch (e.code) {
+        case "invalid-email":
+          errorMessage = "Your email address appears to be malformed.";
           break;
-        case "operation-not-allowed":
-          message = "Not allowed";
+        case "wrong-password":
+          errorMessage = "Your password is wrong.";
+          break;
+        case "user-not-found":
+          errorMessage = "User with this email doesn't exist.";
           break;
         case "user-disabled":
-          message = "User with this email has been disabled.";
+          errorMessage = "User with this email has been disabled.";
           break;
         case "too-many-requests":
-          message = "Too many requests";
+          errorMessage = "Too many requests";
+          break;
+        case "operation-not-allowed":
+          errorMessage = "Signing in with Email and Password is not enabled.";
           break;
         default:
-          message = "I just don't know :(";
+          errorMessage = e.code;
       }
-      Fluttertoast.showToast(msg: message);
+      Fluttertoast.showToast(msg: errorMessage!);
     }
   }
 }

@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../Widgets/tapped.dart';
-// TODO auth
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -13,16 +14,14 @@ class _ForgotPassword extends State<ForgotPassword> {
   String? errorMessage;
 
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController passwordEmailController = TextEditingController();
-  String? passwordEmailValidator(String? value) {
-    RegExp regex0 = RegExp('^[0-9]');
-    RegExp regex1 = RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]");
+  final TextEditingController emailController = TextEditingController();
+  String? emailValidator(String? value) {
+    RegExp email = RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]");
     if (value!.isEmpty) {
-      return ("Code is required for login");
+      return ("Email is required for reset");
     }
-    if ((!regex0.hasMatch(value) && !regex1.hasMatch(value)) ||
-        (regex0.hasMatch(value) && value.length != 8)) {
-      return ("Enter Valid Code( 4 Numbers Only)");
+    if (!email.hasMatch(value)){
+      return ("Invalid Email");
     }
     return null;
   }
@@ -34,6 +33,7 @@ class _ForgotPassword extends State<ForgotPassword> {
         padding: const EdgeInsets.only(top: 100),
         child: SingleChildScrollView(
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 const Padding(
@@ -57,7 +57,7 @@ class _ForgotPassword extends State<ForgotPassword> {
                     width: 328,
                     height: 24,
                     child: Text(
-                      "Enter your Email or phone number to request reset",
+                      "Enter your Email to request reset",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontFamily: "Inter",
@@ -69,8 +69,8 @@ class _ForgotPassword extends State<ForgotPassword> {
                 ),
                 Input(
                   field: '',
-                  control: passwordEmailController,
-                  valid: passwordEmailValidator,
+                  control: emailController,
+                  valid: emailValidator,
                 ),
                 AuthLoginButton(
                     name: "SEND NOW",
@@ -88,9 +88,17 @@ class _ForgotPassword extends State<ForgotPassword> {
     );
   }
 
-  void password() {
+  Future<void> password() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushNamed(context, '/otp');
-    }
-  }
+      try{
+        await FirebaseAuth.instance
+            .sendPasswordResetEmail(email: emailController.text)
+            .then((value) => Fluttertoast.showToast(
+                msg: "We have sent you a reset link on your mail"));
+      } on FirebaseAuthException catch(e) {
+        Fluttertoast.showToast(msg: e.code);
+      }
+      Navigator.pushNamed(context, '/signin');
+      }
+}
 }

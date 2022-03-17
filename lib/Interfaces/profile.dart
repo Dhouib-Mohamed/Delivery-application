@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iac_project/Widgets/parts.dart';
 import '../Widgets/tapped.dart';
-import '../gobals.dart' as globals;
+import '../globals.dart' as globals;
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);

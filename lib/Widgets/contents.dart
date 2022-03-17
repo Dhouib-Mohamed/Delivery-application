@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iac_project/Interfaces/restaurant.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import '../models.dart';
-import '../gobals.dart' as globals;
+import '../globals.dart' as globals;
 
 class RestaurantElement extends StatefulWidget {
   final String buttonText, id;
@@ -320,7 +320,7 @@ class _ListElementState extends State<ListElement> {
                 color: Color.fromARGB(255, 232, 237, 240),
                 borderRadius: BorderRadius.all(Radius.circular(20))),
             height: 240,
-            width: 260,
+            width: 280,
             child: 
             Column(
               children: [

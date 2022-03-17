@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../Widgets/contents.dart';
 import '../../models.dart';
-import '../gobals.dart' as globals;
+import '../globals.dart' as globals;
 
 class DealList extends StatefulWidget {
   final String text;
@@ -25,7 +25,9 @@ class _DealListState extends State<DealList> {
           style: const TextStyle(color: Colors.white, fontSize: 23),
         ),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Center(
         child: StreamBuilder(
             stream:
             widget.snapshot,
@@ -36,9 +38,7 @@ class _DealListState extends State<DealList> {
                   child: CircularProgressIndicator(),
                 );
               } else {
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
+                return Column(
                       children: snapshot.data!.docs.map((document) {
                         DealModel d =
                         DealModel.fromJson(
@@ -47,10 +47,11 @@ class _DealListState extends State<DealList> {
                           deal: d,
                           id: document.reference.id, buttonRole: () { globals.addToCart(d); }, buttonText: 'Add To Cart',
                         );
-                      }).toList()),
+                      }).toList()
                 );
               }
             }),
+      ),
       ),
     );
   }

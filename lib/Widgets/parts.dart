@@ -56,11 +56,7 @@ class _BotBarState extends State<BotBar> {
           break;
         case 4:
           setState(() {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Profile(),
-                ));
+            Navigator.pushNamed(context, '/profile');
           });
           break;
       }

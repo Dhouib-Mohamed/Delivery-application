@@ -15,6 +15,9 @@ class Opening extends StatefulWidget {
 }
 
 class _Opening extends State<Opening> {
+
+  final _auth = FirebaseAuth.instance;
+  String? errorMessage;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,9 +26,9 @@ class _Opening extends State<Opening> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.65,
+            height: MediaQuery.of(context).size.height * 0.7,
             child: const Image(
-              image: AssetImage("assets/Images/img1.png"),
+              image: AssetImage("assets/Images/welcome.webp"),
             ),
           ),
           AuthLoginButtonColored(
@@ -45,53 +48,56 @@ class _Opening extends State<Opening> {
         ],
       ),
     );
-  }
-
-  Future<void> signInWithFacebook() async {
+  }void signInWithFacebook() async {
     String? message = "Error";
     try {
-      final LoginResult loginResult = await FacebookAuth.instance.login();
-      final userData = await FacebookAuth.instance.getUserData();
-      Fluttertoast.showToast(msg: "Connected successfully :) ");
+      final LoginResult result = await FacebookAuth.instance.login();
+      if (result.status == LoginStatus.success) {
+        final userData = await FacebookAuth.instance.getUserData();
+        UserModel user = UserModel(email: userData["email"], name: userData["name"],);
+        user.phone = "";
+        user.autoSigned = true;
+        final facebookCredential = FacebookAuthProvider.credential(result.accessToken!.token);
+        print(facebookCredential);
+        await
+        _auth.signInWithCredential(facebookCredential).then((value) {Fluttertoast.showToast(msg: "Login Successful");
+        Navigator.pushNamed(context, '/feed');});
+        await FirebaseFirestore
+            .instance
+            .collection("users")
+            .doc(_auth.currentUser?.uid)
+            .set(user.toJson());
+        Fluttertoast.showToast(msg: "Connected successfully :) ");
 
-      // Create a credential from the access token
-      final facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-      // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-      User? user = FirebaseAuth.instance.currentUser;
-
-      UserModel userModel =
-          UserModel(email: userData["email"], name: userData["name"]);
-
-      userModel.phone = "";
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(user!.uid)
-          .set(userModel.toJson());
-
-      Fluttertoast.showToast(msg: "Connected successfully :) ");
-
-      Navigator.pushNamed(context, '/feed');
-    } on FirebaseAuthException catch (error) {
-      switch (error.code) {
-        case "invalid-credential":
-          message = "unknown Error have occurred";
+        Navigator.pushNamed(context, '/feed');
+      }
+      else {
+        Fluttertoast.showToast(msg: "Try again");
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "invalid-email":
+          errorMessage = "Your email address appears to be malformed.";
           break;
-        case "operation-not-allowed":
-          message = "Not allowed";
+        case "wrong-password":
+          errorMessage = "Your password is wrong.";
+          break;
+        case "user-not-found":
+          errorMessage = "User with this email doesn't exist.";
           break;
         case "user-disabled":
-          message = "User with this email has been disabled.";
+          errorMessage = "User with this email has been disabled.";
           break;
         case "too-many-requests":
-          message = "Too many requests";
+          errorMessage = "Too many requests";
+          break;
+        case "operation-not-allowed":
+          errorMessage = "Signing in with Email and Password is not enabled.";
           break;
         default:
-          message = "Unknown Error";
+          errorMessage = e.code;
       }
-      Fluttertoast.showToast(msg: message);
+      Fluttertoast.showToast(msg: errorMessage!);
     }
   }
 }

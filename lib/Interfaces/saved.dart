@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iac_project/Widgets/parts.dart';
 import '../Widgets/contents.dart';
 import '../models.dart';
-import '../gobals.dart' as globals;
+import '../globals.dart' as globals;
 
 class Saved extends StatefulWidget {
   const Saved({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class _SavedState extends State<Saved> {
       appBar: AppBar(
         backgroundColor: const Color(0xffbd2005),
         title: const Text(
-          "Saved Items",
+          "Favorites",
           style: TextStyle(color: Colors.white, fontSize: 23),
         ),
       ),

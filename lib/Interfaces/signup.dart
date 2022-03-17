@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../Widgets/tapped.dart';
 import '../models.dart';
-//TODO buttoncross
 
 class SignUp extends StatefulWidget {
    const SignUp({Key? key}) : super(key: key);
@@ -135,18 +134,8 @@ class _SignUp extends State<SignUp> {
                 ),
                 AuthLoginButton(
                     name: "SIGN UP", c: const Color(0xffbd2005), role: signUp),
-                    Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
                     t,
                     const TappedText(
-                        c: Colors.black,
-                        text: "",
-                        tapped: "Forgot Password ?",
-                        role: '/forgot_password'),
-                  ],
-                ),
-                const TappedText(
                     text: "Already have An Account ? ",
                     tapped: "Sign In Here",
                     role: '/signin')

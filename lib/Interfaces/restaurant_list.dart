@@ -24,32 +24,34 @@ class _RestaurantListState extends State<RestaurantList> {
           style: const TextStyle(color: Colors.white, fontSize: 23),
         ),
       ),
-      body: Center(
-        child: StreamBuilder(
-            stream:
-                widget.snapshot,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: 
-                      Column(
-                          children: snapshot.data!.docs.map((document) {
-                        RestaurantModel r =
-                            RestaurantModel.fromJson(document.data());
-                        return FeedElement(
-                          restaurant: r,
-                          id: document.reference.id,
-                        );
-                      }).toList()),
-                );
-              }
-            }),
+      body: SingleChildScrollView(
+        child: Center(
+          child: StreamBuilder(
+              stream:
+                  widget.snapshot,
+              builder:
+                  (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: 
+                        Column(
+                            children: snapshot.data!.docs.map((document) {
+                          RestaurantModel r =
+                              RestaurantModel.fromJson(document.data());
+                          return FeedElement(
+                            restaurant: r,
+                            id: document.reference.id,
+                          );
+                        }).toList()),
+                  );
+                }
+              }),
+        ),
       ),
     );
   }

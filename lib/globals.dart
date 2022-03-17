@@ -32,14 +32,14 @@ Future<void> addToCart(DealModel deal) async {
 
 Future<void> addDealToSaved(DealModel deal) async {
   if (await exist("savedDeals", deal.photoUrl)) {
-    Fluttertoast.showToast(msg: "Item already in saved");
+    Fluttertoast.showToast(msg: "Item already in favorites");
   } else {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedDeals")
         .add(deal.toJson());
-          Fluttertoast.showToast(msg: "Item added successfully to Saved");
+          Fluttertoast.showToast(msg: "Item added successfully to favorites");
   }
 }
 
@@ -49,19 +49,19 @@ Future<void> removeDealFromSaved(String id) async {
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection("savedDeals")
       .doc(id)
-      .delete().then((value) {Fluttertoast.showToast(msg: "Item removed successfully from Saved");});
+      .delete().then((value) {Fluttertoast.showToast(msg: "Item removed successfully from favorites");});
 }
 
 Future<void> addRestaurantToSaved(restaurant) async {
   if (await exist("savedRestaurants", restaurant.photoUrl)) {
-    Fluttertoast.showToast(msg: "Restaurant already in saved");
+    Fluttertoast.showToast(msg: "Restaurant already in favorites");
   } else {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedRestaurants")
         .add(restaurant.toJson());
-      Fluttertoast.showToast(msg: "Restaurant added successfully to Saved");
+      Fluttertoast.showToast(msg: "Restaurant added successfully to favorites");
   }
 }
 
@@ -72,7 +72,7 @@ Future<void> removeRestaurantFromSaved(String id) async {
       .collection("savedRestaurants")
       .doc(id)
       .delete().then((value) {
-        Fluttertoast.showToast(msg: "Restaurant removed successfully from Saved");});
+        Fluttertoast.showToast(msg: "Restaurant removed successfully from favorites");});
   print(FirebaseFirestore.instance
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -93,3 +93,4 @@ Future<bool> exist(String source, String photoUrl) async {
     });
   });
 }
+

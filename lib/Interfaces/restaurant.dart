@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iac_project/models.dart';
 import '../Widgets/contents.dart';
 import 'deal_list.dart';
-import '../gobals.dart' as globals;
+import '../globals.dart' as globals;
 
 class Restaurant extends StatefulWidget {
   final RestaurantModel restaurant;
