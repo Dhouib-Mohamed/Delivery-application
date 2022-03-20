@@ -81,7 +81,7 @@ class _RestaurantElementState extends State<RestaurantElement> {
                                 setState(() {
                                   source = "assets/icons/heart1.png";
                                 });
-                                globals.addDealToSaved(widget.deal);
+                                globals.addDealToSaved(widget.deal,widget.id);
                               } else {
                                 setState(() {
                                   source = "assets/icons/heart.png";
@@ -224,7 +224,7 @@ class _FeedElementState extends State<FeedElement> {
                                 setState(() {
                                   source = "assets/icons/heart1.png";
                                 });
-                                globals.addRestaurantToSaved(widget.restaurant);
+                                globals.addRestaurantToSaved(widget.restaurant,widget.id);
                               } else {
                                 setState(() {
                                   source = "assets/icons/heart.png";
@@ -232,14 +232,9 @@ class _FeedElementState extends State<FeedElement> {
                                 globals.removeRestaurantFromSaved(widget.id);
                               }
                             },
-                            child: FutureBuilder<void>(
-                              future: setRestaurantSource(widget.restaurant.photoUrl),
-                              builder: (context, snapshot) {
-                                return ImageIcon(
+                            child: ImageIcon(
                                   AssetImage(source),
                                   color: const Color(0xffbd2005),
-                                );
-                              }
                           ),
                           ),]),
                       Flexible(
@@ -354,7 +349,7 @@ class _ListElementState extends State<ListElement> {
                             setState(() {
                               source = "assets/icons/heart1.png";
                             });
-                            globals.addRestaurantToSaved(widget.restaurant);
+                            globals.addRestaurantToSaved(widget.restaurant,widget.id);
                           } else {
                             setState(() {
                               source = "assets/icons/heart.png";
@@ -364,15 +359,10 @@ class _ListElementState extends State<ListElement> {
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10),
-                          child: FutureBuilder<void>(
-                            future: setRestaurantSource(widget.restaurant.photoUrl),
-                            builder: (context, snapshot) {
-                              return ImageIcon(
+                          child: ImageIcon(
                                 AssetImage(source),
                                 color: const Color(0xffbd2005),
-                              );
-                            }
-                          ),
+                              ),
                         ),
                       ),
                     ],

@@ -30,7 +30,7 @@ Future<void> addToCart(DealModel deal) async {
   }
 }
 
-Future<void> addDealToSaved(DealModel deal) async {
+Future<void> addDealToSaved(DealModel deal,String id) async {
   if (await exist("savedDeals", deal.photoUrl)) {
     Fluttertoast.showToast(msg: "Item already in favorites");
   } else {
@@ -38,7 +38,8 @@ Future<void> addDealToSaved(DealModel deal) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedDeals")
-        .add(deal.toJson());
+        .doc(id)
+        .set(deal.toJson());
           Fluttertoast.showToast(msg: "Item added successfully to favorites");
   }
 }
@@ -52,7 +53,7 @@ Future<void> removeDealFromSaved(String id) async {
       .delete().then((value) {Fluttertoast.showToast(msg: "Item removed successfully from favorites");});
 }
 
-Future<void> addRestaurantToSaved(restaurant) async {
+Future<void> addRestaurantToSaved(restaurant,String id) async {
   if (await exist("savedRestaurants", restaurant.photoUrl)) {
     Fluttertoast.showToast(msg: "Restaurant already in favorites");
   } else {
@@ -60,7 +61,8 @@ Future<void> addRestaurantToSaved(restaurant) async {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("savedRestaurants")
-        .add(restaurant.toJson());
+        .doc(id)
+        .set(restaurant.toJson());
       Fluttertoast.showToast(msg: "Restaurant added successfully to favorites");
   }
 }

@@ -101,7 +101,7 @@ class _RestaurantState extends State<Restaurant> {
                       setState(() {
                         source = "assets/icons/heart1.png";
                       });
-                      globals.addRestaurantToSaved(widget.restaurant);
+                      globals.addRestaurantToSaved(widget.restaurant,widget.id);
                     } else {
                       setState(() {
                         source = "assets/icons/heart.png";
