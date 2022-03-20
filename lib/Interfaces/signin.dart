@@ -184,7 +184,6 @@ class _SignIn extends State<SignIn> {
   }
 
   void signInWithFacebook() async {
-    String? message = "Error";
     try {
       final LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {

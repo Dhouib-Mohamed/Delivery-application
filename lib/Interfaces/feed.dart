@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iac_project/Interfaces/profile.dart';
 import 'package:iac_project/Widgets/contents.dart';
 import 'package:iac_project/Widgets/parts.dart';
 import 'package:iac_project/Widgets/tapped.dart';
@@ -113,6 +112,7 @@ class _Feed extends State<Feed> {
       ),
       body: CustomScrollView(slivers: [
         const SliverAppBar(
+          floating: true,
           automaticallyImplyLeading: false,
           toolbarHeight: 0,
           expandedHeight: 80,
@@ -345,7 +345,7 @@ class _Feed extends State<Feed> {
         builder: (context, snapshot) {
           return Container(
             color: Colors.white,
-            width: MediaQuery.of(context).size.width * 0.9,
+            width: MediaQuery.of(context).size.width * 0.93,
             child: Column(
               children: [
                 Padding(
@@ -386,10 +386,10 @@ class _Feed extends State<Feed> {
                     name: "Help & FAQ", role: "/help", icon: Icons.help_rounded),
                 Padding(
                     padding: const EdgeInsets.only(top: 100, bottom: 13),
-                    child: TextButton(
+                    child: OutlinedButton(
                         style: ButtonStyle(
                             fixedSize:
-                                MaterialStateProperty.all(const Size(200, 48)),
+                                MaterialStateProperty.all(const Size(220, 48)),
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 const Color(0xffbd2005)),
                             shape: MaterialStateProperty.all(
@@ -418,7 +418,7 @@ class _Feed extends State<Feed> {
           );
         }
       ),
-      endDrawer: const EndDrawer(),
+      endDrawer: EndDrawer(),
     );
   }
 }

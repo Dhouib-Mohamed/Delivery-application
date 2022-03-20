@@ -120,7 +120,7 @@ class _SearchState extends State<Search> {
         ),
       ),
       bottomNavigationBar: const BotBar(i: 1),
-      endDrawer: const EndDrawer(),
+      endDrawer: EndDrawer(),
     );
   }
 }

@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-import '../Widgets/tapped.dart';
+import '../Widgets/parts.dart';
 import '../models.dart';
-import 'address_map.dart';
 
 class Address extends StatelessWidget {
   Address({Key? key}) : super(key: key);
@@ -57,6 +54,7 @@ class Address extends StatelessWidget {
               .collection("users")
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .collection("addresses")
+              .orderBy("selected")
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -74,90 +72,11 @@ class Address extends StatelessWidget {
                           AddressModel.fromJson(document.data());
                       address.description = address.getLocation();
                       x++;
-                      return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                    child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => AddressMap(
-                                                location: address.location)));
-                                  },
-                                  child: Container(
-                                    color: const Color.fromARGB(
-                                        255, 232, 237, 240),
-                                    height: 90,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.95,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Text(
-                                                "ADDRESS ${x} :",
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                              ),
-                                            ),
-                                            SimplButton(
-                                                buttonRole: () {
-                                                  removeAdress(document.id);
-                                                },
-                                                buttonText: "Remove address"),
-                                          ],
-                                        ),
-                                        Flexible(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
-                                            child: FutureBuilder<String>(
-                                              future: address.description,
-                                              builder: (context, snapshot) {
-                                                return Text(
-                                                  snapshot.data??"",
-                                                  overflow: TextOverflow.clip,
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                );
-                                              }
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ))
-                      );}).toList(),
+                      return AddressWidget(address: address, x: x, document: document,);}).toList(),
                   ));
             }
           }),
     );
   }
-
-  removeAdress(String id) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("addresses")
-        .doc(id)
-        .delete();
-    Fluttertoast.showToast(msg: "Address Successfully removed ");
-  }
 }
+

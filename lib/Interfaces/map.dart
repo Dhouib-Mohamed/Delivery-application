@@ -40,6 +40,7 @@ class _MappState extends State<Mapp> {
     }
     await Geolocator.requestPermission();
     await Geolocator.checkPermission();
+    return await Geolocator.getCurrentPosition();
   }
 
   @override
@@ -65,7 +66,8 @@ class _MappState extends State<Mapp> {
                 .doc()
                 .set({
               "location": GeoPoint(markers.first.position.latitude,
-                  markers.first.position.longitude)
+                  markers.first.position.longitude),
+              "selected":true,
             });
             Navigator.pushNamed(context, "/address");
           }

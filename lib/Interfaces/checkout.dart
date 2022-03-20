@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Widgets/tapped.dart';
 import '../models.dart';
 
 class Checkout extends StatefulWidget {
@@ -14,6 +16,8 @@ class Checkout extends StatefulWidget {
 
 class _CheckoutState extends State<Checkout> {
   Color c = const Color.fromARGB(255, 232, 237, 240);
+  bool b = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,69 +30,73 @@ class _CheckoutState extends State<Checkout> {
       ),
       body: ListView(
         children: [
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .collection("addresses")
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Column(
-                        children: snapshot.data!.docs.map((document) {
-                          AddressModel address =
-                              AddressModel.fromJson(document.data());
-                          address.description = address.getLocation();
-                          return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                  child: GestureDetector(
-                                onTap: () {
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  color: c,
-                                  height: 50,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.95,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: FutureBuilder<String>(
-                                            future: address.description,
-                                            builder: (context, snapshot) {
-                                              return Text(
-                                                snapshot.data??"",
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              );
-                                            }),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )));
-                        }).toList(),
-                      ));
-                }
-              }),
-          PaiementButton(name: "PAY NOW", c: c, role: '/end_order')
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection("addresses")
+                    .orderBy("selected")
+                    .limit(1)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                    b = true;
+                    AddressModel address =
+                    AddressModel.fromJson(snapshot.data!.docs.first.data());
+                    address.description = address.getLocation();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceAround,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(bottom:20),
+                              child: Text(
+                                "Delivery Address",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500
+                                  ,)
+                                ,),
+                            ),
+                            FutureBuilder<String>(
+                                future: address.description,
+                                builder: (context, snapshot) {
+                                  return Text(
+                                    snapshot.data ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  );
+                                }),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0,left: 4),
+                          child: IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/address');},
+                                icon:const ImageIcon(AssetImage("assets/icons/change.png")),
+                              ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const TappedPosition(
+                        text: "",
+                        tapped: "Please add a location to continue",
+                        role: '/address');
+                  }
+                }),
+          ),
         ],
       ),
     );

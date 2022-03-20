@@ -49,7 +49,6 @@ class _Opening extends State<Opening> {
       ),
     );
   }void signInWithFacebook() async {
-    String? message = "Error";
     try {
       final LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {
@@ -58,7 +57,6 @@ class _Opening extends State<Opening> {
         user.phone = "";
         user.autoSigned = true;
         final facebookCredential = FacebookAuthProvider.credential(result.accessToken!.token);
-        print(facebookCredential);
         await
         _auth.signInWithCredential(facebookCredential).then((value) {Fluttertoast.showToast(msg: "Login Successful");
         Navigator.pushNamed(context, '/feed');});

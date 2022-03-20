@@ -68,9 +68,10 @@ class RestaurantModel {
 @JsonSerializable()
 class AddressModel {
   GeoPoint location;
+  bool selected = true;
   Future<String>? description;
 
-  AddressModel({required this.location});
+  AddressModel({required this.location, required this.selected});
   Future<String> getLocation() async {
     late String d;
     await placemarkFromCoordinates(location.latitude, location.longitude)
@@ -85,10 +86,12 @@ class AddressModel {
   AddressModel.fromJson(json)
       : this(
           location: json['location'] as GeoPoint,
+           selected: json['selected'] as bool,
         );
   Map<String, Object?> toJson() {
     return {
       'location': location,
+      'selected': selected,
     };
   }
 }

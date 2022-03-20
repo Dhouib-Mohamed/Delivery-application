@@ -73,11 +73,6 @@ Future<void> removeRestaurantFromSaved(String id) async {
       .doc(id)
       .delete().then((value) {
         Fluttertoast.showToast(msg: "Restaurant removed successfully from favorites");});
-  print(FirebaseFirestore.instance
-      .collection("users")
-      .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection("savedRestaurants")
-      .doc(id));
 
 }
 
