@@ -147,6 +147,7 @@ class _SignIn extends State<SignIn> {
             .then((uid) =>
         {
           Fluttertoast.showToast(msg: "Login Successful"),
+        Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName)),
           Navigator.pushNamed(context, '/feed'),
         });
         await FirebaseFirestore.instance
@@ -200,7 +201,7 @@ class _SignIn extends State<SignIn> {
             .doc(_auth.currentUser?.uid)
             .set(user.toJson());
         Fluttertoast.showToast(msg: "Connected successfully :) ");
-
+        Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
         Navigator.pushNamed(context, '/feed');
       }
       else {

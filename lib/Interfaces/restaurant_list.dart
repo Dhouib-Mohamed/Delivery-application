@@ -17,15 +17,15 @@ class RestaurantList extends StatefulWidget {
 class _RestaurantListState extends State<RestaurantList> {
   setSaved(FeedElement x) async {
     if (x.source == "assets/icons/heart.png") {
+      await globals.addRestaurantToSaved(x.restaurant,x.id);
       setState(() {
         x.source = "assets/icons/heart1.png";
       });
-      globals.addRestaurantToSaved(x.restaurant,x.id);
     } else {
+      await globals.removeRestaurantFromSaved(x.id);
       setState(() {
         x.source = "assets/icons/heart.png";
       });
-      globals.removeRestaurantFromSaved(x.id);
     }
   }
   @override

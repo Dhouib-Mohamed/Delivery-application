@@ -202,7 +202,7 @@ class _SignUp extends State<SignUp> {
         .doc(user?.uid)
         .set(userModel.toJson());
     Fluttertoast.showToast(msg: "Account created successfully :) ");
-
+    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
     Navigator.pushNamed(context, '/gps');
   }
 }

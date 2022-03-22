@@ -56,7 +56,7 @@ class _RestaurantElementState extends State<RestaurantElement> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.network(widget.deal.photoUrl, width: 110, height: 110),
+              Image.network(widget.deal.photoUrl, width: 110, height: 110,errorBuilder: (a,b,c){return Image.asset("assets/Images/placeholder.png",width: 110, height: 110);},),
               Padding(
                 padding: const EdgeInsets.only(right: 8.0, left: 2.0),
                 child: SizedBox(
@@ -82,12 +82,12 @@ class _RestaurantElementState extends State<RestaurantElement> {
                                 setState(() {
                                   source = "assets/icons/heart1.png";
                                 });
-                                globals.addDealToSaved(widget.deal,widget.id);
+                                await globals.addDealToSaved(widget.deal,widget.id);
                               } else {
                                 setState(() {
                                   source = "assets/icons/heart.png";
                                 });
-                                globals.removeDealFromSaved(widget.id);
+                                await globals.removeDealFromSaved(widget.id);
                               }
                             },
                             child: ImageIcon(
@@ -194,6 +194,10 @@ class _FeedElementState extends State<FeedElement> {
                   width: 85,
                   height: 88,
                   fit: BoxFit.fill,
+                  errorBuilder: (a,b,c){
+                    return Image.asset("assets/Images/placeholder.png",
+                      width: 85,
+                      height: 88,);}
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9 - 100,
@@ -309,13 +313,15 @@ class _ListElementState extends State<ListElement> {
             child: 
             Column(
               children: [
-                SizedBox(
-                  child: Image.network(
-                    widget.restaurant.photoUrl,
-                    width: 220,
-                    height: 160,
-                    fit: BoxFit.cover,
-                  ),
+                Image.network(
+                  widget.restaurant.photoUrl,
+                  width: 220,
+                  height: 160,
+                  fit: BoxFit.cover,
+                  errorBuilder: (a,b,c){return
+                    Image.asset("assets/Images/placeholder.png",
+                      width: 220,
+                      height: 160,);}
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top:8.0),

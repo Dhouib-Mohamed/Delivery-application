@@ -93,6 +93,7 @@ class _MappState extends State<Mapp> {
                   markers.first.position.longitude),
               "selected":true,
             });
+              Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
             Navigator.pushNamed(context, "/address");
           }
         }, name: "ADD ADDRESS",

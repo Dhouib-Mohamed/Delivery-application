@@ -12,96 +12,99 @@ class Address extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: const Color(0xffbd2005),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            Text(
-              "My Addresses",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            SizedBox(
-              height: 4,
-            ),
-            Text(
-              "You can choose your preferred location by dragging it to the top",
-              maxLines: 2,
-              style: TextStyle(color: Colors.white, fontSize: 14,fontWeight: FontWeight.w300),
-            ),
-          ],
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushNamed(context, '/feed');
-          },
-        ),
-      ),
-      floatingActionButton: TextButton(
-          style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(const Size(170, 48)),
-              shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                side: BorderSide(color: Colors.blueGrey),
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-              ))),
-          onPressed: () {
-            Navigator.pushNamed(context, "/map");
-          },
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
-            Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: Icon(
-                Icons.add_location_alt,
-                size: 30,
-                color: Colors.black,
+    return WillPopScope(
+      onWillPop: () async => Navigator.canPop(context),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 80,
+          backgroundColor: const Color(0xffbd2005),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: const [
+              Text(
+                "My Addresses",
+                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
-            ),
-            Text(
-              "Add Location",
-              style: TextStyle(color: Colors.black, fontSize: 15),
-            )
-          ])),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection("users")
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .collection("addresses")
-              .orderBy("selected",descending: true)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              x = 0;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 65),
-                child: ReorderableListView(
-                    onReorder: (int oldIndex, int newIndex) async {
-                      print(newIndex);
-                      if(oldIndex!=newIndex){
-                      if (newIndex == 0) {
-                        await updateSelected(oldIndex, newIndex);
+              SizedBox(
+                height: 4,
+              ),
+              Text(
+                "You can choose your preferred location by dragging it to the top",
+                maxLines: 2,
+                style: TextStyle(color: Colors.white, fontSize: 14,fontWeight: FontWeight.w300),
+              ),
+            ],
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushNamed(context, '/feed');
+            },
+          ),
+        ),
+        floatingActionButton: TextButton(
+            style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(const Size(170, 48)),
+                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.blueGrey),
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ))),
+            onPressed: () {
+              Navigator.pushNamed(context, "/map");
+            },
+            child:
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+              Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: Icon(
+                  Icons.add_location_alt,
+                  size: 30,
+                  color: Colors.black,
+                ),
+              ),
+              Text(
+                "Add Location",
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              )
+            ])),
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection("addresses")
+                .orderBy("selected",descending: true)
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                x = 0;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 65),
+                  child: ReorderableListView(
+                      onReorder: (int oldIndex, int newIndex) async {
+                        print(newIndex);
+                        if(oldIndex!=newIndex){
+                        if (newIndex == 0) {
+                          await updateSelected(oldIndex, newIndex);
+                        }
                       }
-                    }
-                  },
-                      children: snapshot.data!.docs.map((document) {
-                        AddressModel address =
-                            AddressModel.fromJson(document.data());
-                        address.description = address.getLocation();
-                        x++;
-                        return AddressWidget(key: ValueKey("$x"),address: address, x: x, document: document,);}).toList(),
-                    ),
-              );
-            }
-          }),
+                    },
+                        children: snapshot.data!.docs.map((document) {
+                          AddressModel address =
+                              AddressModel.fromJson(document.data());
+                          address.description = address.getLocation();
+                          x++;
+                          return AddressWidget(key: ValueKey("$x"),address: address, x: x, document: document,);}).toList(),
+                      ),
+                );
+              }
+            }),
+      ),
     );
   }
 }
