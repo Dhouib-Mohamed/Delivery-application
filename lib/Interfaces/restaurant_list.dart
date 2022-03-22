@@ -38,29 +38,32 @@ class _RestaurantListState extends State<RestaurantList> {
           style: const TextStyle(color: Colors.white, fontSize: 23),
         ),
       ),
-      body: Center(
-        child: StreamBuilder(
-            stream:
-                widget.snapshot,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return ListView(
-                    children: snapshot.data!.docs.map((document) {
-                  RestaurantModel r =
-                      RestaurantModel.fromJson(document.data());
-                  return FeedElement(
-                    restaurant: r,
-                    id: document.reference.id, setSaved: setSaved,
-                  );
-                }).toList());
-              }
-            }),
-      ),
+      body: StreamBuilder(
+          stream:
+              widget.snapshot,
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                      children: snapshot.data!.docs.map((document) {
+                    RestaurantModel r =
+                        RestaurantModel.fromJson(document.data());
+                    return FeedElement(
+                      restaurant: r,
+                      id: document.reference.id, setSaved: setSaved,
+                    );
+                  }).toList()),
+                ),
+              );
+            }
+          }),
     );
   }
 }

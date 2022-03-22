@@ -27,18 +27,19 @@ class _DealListState extends State<DealList> {
       ),
       body: SingleChildScrollView(
     scrollDirection: Axis.horizontal,
-    child: Center(
-        child: StreamBuilder(
-            stream:
-            widget.snapshot,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return Column(
+    child: StreamBuilder(
+        stream:
+        widget.snapshot,
+        builder:
+            (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return SingleChildScrollView(
+              child: Center(
+                child: Column(
                       children: snapshot.data!.docs.map((document) {
                         DealModel d =
                         DealModel.fromJson(
@@ -48,10 +49,11 @@ class _DealListState extends State<DealList> {
                           id: document.reference.id, buttonRole: () { globals.addToCart(d); }, buttonText: 'Add To Cart',
                         );
                       }).toList()
-                );
-              }
-            }),
-      ),
+                ),
+              ),
+            );
+          }
+        }),
       ),
     );
   }

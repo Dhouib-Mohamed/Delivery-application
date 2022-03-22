@@ -87,7 +87,6 @@ class Address extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 65),
                   child: ReorderableListView(
                       onReorder: (int oldIndex, int newIndex) async {
-                        print(newIndex);
                         if(oldIndex!=newIndex){
                         if (newIndex == 0) {
                           await updateSelected(oldIndex, newIndex);
@@ -228,7 +227,6 @@ removeAdress(String id,bool selected) async {
 Future<void> updateSelected(int? oldPosition,int? newPosition) async {
   String? oldId;
   String? newId;
-  print("hi");
   await FirebaseFirestore.instance
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -239,7 +237,6 @@ Future<void> updateSelected(int? oldPosition,int? newPosition) async {
     oldId =value.docs.elementAt(0).id;
     if(value.size>1){newId = value.docs.elementAt(oldPosition!).id;}
   });
-  print(newId);
   await FirebaseFirestore.instance
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser!.uid)

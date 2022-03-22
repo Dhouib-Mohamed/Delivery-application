@@ -10,7 +10,7 @@ class Restaurant extends StatefulWidget {
   final String id;
 
 
-  Restaurant({Key? key, required this.id, required this.restaurant})
+  const Restaurant({Key? key, required this.id, required this.restaurant})
       : super(key: key);
 
   @override

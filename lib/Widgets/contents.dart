@@ -47,8 +47,8 @@ class _RestaurantElementState extends State<RestaurantElement> {
       padding: const EdgeInsets.all(8.0),
       child: Container(
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 232, 237, 240),
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: const Color.fromARGB(255, 232, 237, 240),
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
             border: Border.all(color:Colors.black)
           ),
           height: 150,
@@ -306,7 +306,7 @@ class _ListElementState extends State<ListElement> {
         },
         child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
                 border: Border.all(color:Colors.black)),
             height: 240,
             width: 280,

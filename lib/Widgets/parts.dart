@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import 'package:iac_project/models.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -403,7 +402,6 @@ class CategoryFlex extends StatelessWidget{
                             .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
-                          print(snapshot.data?.docs.length);
                           if (!snapshot.hasData) {
                             return const Center(
                               child: CircularProgressIndicator(),

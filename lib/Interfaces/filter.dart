@@ -22,7 +22,6 @@ class _FilterState extends State<Filter> {
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
-              print("hello");
               return const Center(
                 child: CircularProgressIndicator(),
               );

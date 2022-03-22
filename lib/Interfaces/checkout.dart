@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -340,7 +339,6 @@ class _CheckoutState extends State<Checkout> {
                             color: const Color(0xffbd2005),
                             role: () async {
                             if (_formKey.currentState?.validate()??true) {
-                              print('ho');
                               if(b){
                               await FirebaseFirestore.instance
                                   .collection("users")

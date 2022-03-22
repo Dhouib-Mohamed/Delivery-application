@@ -66,7 +66,7 @@ class ProfileButton extends StatelessWidget {
             side: MaterialStateProperty.all(const BorderSide(color: Colors.blueGrey,width: 0.3)),
               backgroundColor: MaterialStateProperty.all<Color>(color??Colors.white),
               fixedSize: MaterialStateProperty.all(Size(width??200, 60)),
-          shape: MaterialStateProperty.all(ContinuousRectangleBorder())),
+          shape: MaterialStateProperty.all(const ContinuousRectangleBorder())),
           onPressed: role,
           child:
           Padding(
