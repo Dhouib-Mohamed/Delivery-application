@@ -16,7 +16,32 @@ class Feed extends StatefulWidget {
 
 class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
-
+    setSavedFeedElement(FeedElement x) async {
+    if (x.source == "assets/icons/heart.png") {
+      setState(() {
+        x.source = "assets/icons/heart1.png";
+      });
+      globals.addRestaurantToSaved(x.restaurant,x.id);
+    } else {
+      setState(() {
+        x.source = "assets/icons/heart.png";
+      });
+      globals.removeRestaurantFromSaved(x.id);
+    }
+  }
+  setSavedListElement(ListElement x) async {
+    if (x.source == "assets/icons/heart.png") {
+      setState(() {
+        x.source = "assets/icons/heart1.png";
+      });
+      globals.addRestaurantToSaved(x.restaurant,x.id);
+    } else {
+      setState(() {
+        x.source = "assets/icons/heart.png";
+      });
+      globals.removeRestaurantFromSaved(x.id);
+    }
+  }
   Future<UserModel>? user;
   Future<UserModel>? getUser() async {
     late UserModel user ;
@@ -79,6 +104,8 @@ class _Feed extends State<Feed> {
             .collection("users")
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection("addresses")
+            .orderBy("selected",descending: true)
+            .limit(1)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
@@ -189,7 +216,7 @@ class _Feed extends State<Feed> {
                                       RestaurantModel.fromJson(document.data());
                                   return FeedElement(
                                     restaurant: r,
-                                    id: document.reference.id,
+                                    id: document.reference.id, setSaved: setSavedFeedElement,
                                   );
                                 }).toList()),
                               ],
@@ -258,7 +285,7 @@ class _Feed extends State<Feed> {
                                           RestaurantModel.fromJson(document.data());
                                       return ListElement(
                                         restaurant: r,
-                                        id: document.reference.id,
+                                        id: document.reference.id, setSaved: setSavedListElement,
                                       );
                                     }).toList()),
                               ),
@@ -326,7 +353,7 @@ class _Feed extends State<Feed> {
                                       RestaurantModel.fromJson(document.data());
                                   return FeedElement(
                                     restaurant: r,
-                                    id: document.reference.id,
+                                    id: document.reference.id, setSaved: setSavedFeedElement,
                                   );
                                 }).toList()),
                               ],
@@ -347,72 +374,61 @@ class _Feed extends State<Feed> {
             color: Colors.white,
             width: MediaQuery.of(context).size.width * 0.93,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 100.0, right: 10),
+                  padding: const EdgeInsets.only(top: 130.0, right: 10,left: 50,bottom: 10),
                   child: Text(
                     "${snapshot.data?.name[0].toUpperCase()}${snapshot.data?.name.substring(1)}",
                     style: const TextStyle(
                       color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 10, bottom: 40),
+                  padding: const EdgeInsets.only(right: 10, bottom: 90,left: 50),
                   child: Text(
                     snapshot.data?.email??"",
                     style: const TextStyle(
                       color: Colors.blueGrey,
-                      fontSize: 20,
+                      fontSize: 17,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                 ),
-          const ProfileButton(
-          name: "My Profile",
-          role: "/profile",
-          icon: Icons.location_on),
-                const ProfileButton(
-                    name: "My Addresses",
-                    role: "/address",
-                    icon: Icons.location_on),
-                const ProfileButton(
-                    name: "Settings",
-                    role: "/settings",
-                    icon: Icons.settings_sharp),
-                const ProfileButton(
-                    name: "Help & FAQ", role: "/help", icon: Icons.help_rounded),
+                ProfileButton(
+                  name: "My Profile",
+                    role: ()=>Navigator.pushNamed(context, "/profile"),
+                    icon: const Icon(Icons.account_circle_outlined,color: Colors.black,),
+                    width: MediaQuery.of(context).size.width,),
+                ProfileButton(
+                  name: "My Addresses",
+                  role: ()=>Navigator.pushNamed(context, "/address"),
+                  icon: const Icon(Icons.location_on ,color: Colors.black),
+                    width: MediaQuery.of(context).size.width),
+                ProfileButton(
+                  name: "Settings",
+                  role: ()=>Navigator.pushNamed(context, "/settings"),
+                  icon: const Icon(Icons.settings_sharp ,color: Colors.black,),
+                    width: MediaQuery.of(context).size.width),
+                ProfileButton(
+                  name: "Help & FAQ",
+                  role: ()=>Navigator.pushNamed(context, "/help"),
+                  icon: const Icon(Icons.help_rounded ,color: Colors.black,),
+                    width: MediaQuery.of(context).size.width),
                 Padding(
-                    padding: const EdgeInsets.only(top: 100, bottom: 13),
-                    child: OutlinedButton(
-                        style: ButtonStyle(
-                            fixedSize:
-                                MaterialStateProperty.all(const Size(220, 48)),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xffbd2005)),
-                            shape: MaterialStateProperty.all(
-                                const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ))),
-                        onPressed: () {
-                          logout(context);
-                          Navigator.pushNamed(context, '/opening');
-                        },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(
-                                Icons.power_settings_new,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                              Text(
-                                "Log Out",
-                                style: TextStyle(color: Colors.white, fontSize: 17),
-                              )
-                            ])))
+                    padding: const EdgeInsets.only(top: 100),
+                    child: ProfileButton(role: () {
+                      logout(context);
+                      Navigator.pushNamed(context, '/opening'); },
+                      name: "Log Out",icon: const Icon(
+                      Icons.power_settings_new,
+                      color: Colors.black,
+                      size: 30,),width: MediaQuery.of(context).size.width
+                    ),
+                   )
               ],
             ),
           );

@@ -38,8 +38,9 @@ class EndOrder extends StatelessWidget {
               ],
             ),
           ),
-          const LoginButton(
-              name: "Return to Feed", c: Color(0xffbd2005), role: '/feed')
+          ColoredButton(
+              name: "Return to Feed",
+              role: ()=>Navigator.pushNamed(context, '/feed'))
         ],
       ),
     );

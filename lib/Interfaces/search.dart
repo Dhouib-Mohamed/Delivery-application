@@ -36,7 +36,7 @@ class _SearchState extends State<Search> {
                     onItemSelected: ((item) {
                     }),
                     selectedItemBuilder: (item, deleteSelectedItem) {
-                      return const Center();
+                      return const SizedBox();
                     },
                     dataList: snapshot.data!.docs.map((document) {
                       RestaurantModel r =
@@ -62,6 +62,7 @@ class _SearchState extends State<Search> {
                               height: 50,
                               width:MediaQuery.of(context).size.width *0.95,
                               child: Row(
+                                mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Image.network(
                                     item.photoUrl,

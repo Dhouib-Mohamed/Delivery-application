@@ -72,9 +72,8 @@ class _ForgotPassword extends State<ForgotPassword> {
                   control: emailController,
                   valid: emailValidator,
                 ),
-                AuthLoginButton(
+                ColoredButton(
                     name: "SEND NOW",
-                    c: const Color(0xffbd2005),
                     role: password),
                 const TappedText(
                     text: "Having Problem ? ",

@@ -132,9 +132,12 @@ class _SignUp extends State<SignUp> {
                   control: phoneController,
                   valid: phoneValidator,
                 ),
-                AuthLoginButton(
-                    name: "SIGN UP", c: const Color(0xffbd2005), role: signUp),
-                    t,
+                ColoredButton(
+                    name: "SIGN UP", role: signUp),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: t,
+                    ),
                     const TappedText(
                     text: "Already have An Account ? ",
                     tapped: "Sign In Here",

@@ -9,7 +9,8 @@ class Restaurant extends StatefulWidget {
   final RestaurantModel restaurant;
   final String id;
 
-  const Restaurant({Key? key, required this.id, required this.restaurant})
+
+  Restaurant({Key? key, required this.id, required this.restaurant})
       : super(key: key);
 
   @override
@@ -17,23 +18,23 @@ class Restaurant extends StatefulWidget {
 }
 
 class _RestaurantState extends State<Restaurant> {
+
   String source = "assets/icons/heart.png";
 
   Future<void> setRestaurantSource(String photoUrl) async {
-    if (await globals.exist("savedRestaurants", photoUrl)) {
+    if (await globals.exist("savedRestaurants", photoUrl)&& source != "assets/icons/heart1.png") {
       setState(() {
         source = "assets/icons/heart1.png";
+      });}
+    if (!await globals.exist("savedRestaurants", photoUrl)&& source != "assets/icons/heart.png") {
+      setState(() {
+        source = "assets/icons/heart.png";
       });
-    }
-    else {setState(() {
-      source = "assets/icons/heart.png";
-    });}
-  }
+    }}
 
   @override
   void initState() {
     super.initState();
-    setRestaurantSource(widget.restaurant.photoUrl);
     widget.restaurant.description = widget.restaurant.getLocation();
   }
 
@@ -109,9 +110,14 @@ class _RestaurantState extends State<Restaurant> {
                       globals.removeRestaurantFromSaved(widget.id);
                     }
                   },
-                  child: ImageIcon(
-                    AssetImage(source),
-                    color: const Color(0xffbd2005),
+                  child: FutureBuilder<void>(
+                      future: setRestaurantSource(widget.restaurant.photoUrl),
+                      builder: (context, snapshot) {
+                        return ImageIcon(
+                          AssetImage(source),
+                          color: const Color(0xffbd2005),
+                        );
+                      }
                   ),),),),
                   const Padding(
                 padding: EdgeInsets.only(left:15,right: 20,top: 8,bottom: 8),

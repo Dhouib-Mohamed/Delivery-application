@@ -14,6 +14,19 @@ class Saved extends StatefulWidget {
 }
 
 class _SavedState extends State<Saved> {
+  setSaved(FeedElement x) async {
+    if (x.source == "assets/icons/heart.png") {
+      setState(() {
+        x.source = "assets/icons/heart1.png";
+      });
+      globals.addRestaurantToSaved(x.restaurant,x.id);
+    } else {
+      setState(() {
+        x.source = "assets/icons/heart.png";
+      });
+      globals.removeRestaurantFromSaved(x.id);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +70,7 @@ class _SavedState extends State<Saved> {
                               RestaurantModel.fromJson(document.data());
                           return FeedElement(
                             restaurant: restaurant,
-                            id: document.id,
+                            id: document.id, setSaved: setSaved,
                           );
                         }).toList()),
                       ),

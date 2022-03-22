@@ -14,7 +14,7 @@ class RestaurantElement extends StatefulWidget {
       required this.buttonText,
       required this.buttonRole,
       required this.id,
-      required this.deal})
+      required this.deal,})
       : super(key: key);
 
   @override
@@ -46,9 +46,10 @@ class _RestaurantElementState extends State<RestaurantElement> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Color.fromARGB(255, 232, 237, 240),
             borderRadius: BorderRadius.all(Radius.circular(20)),
+            border: Border.all(color:Colors.black)
           ),
           height: 150,
           width: MediaQuery.of(context).size.width * 0.96,
@@ -89,17 +90,12 @@ class _RestaurantElementState extends State<RestaurantElement> {
                                 globals.removeDealFromSaved(widget.id);
                               }
                             },
-                            child: FutureBuilder<void>(
-                              future: setDealSource(widget.deal.photoUrl),
-                              builder: (context, snapshot) {
-                                return ImageIcon(
+                            child: ImageIcon(
                                   AssetImage(source),
                                   color: const Color(0xffbd2005),
-                                );
-                              }
-                            ),
+
                           ),
-                        ],
+                          )],
                       ),
                       Text(
                         widget.deal.description,
@@ -120,7 +116,7 @@ class _RestaurantElementState extends State<RestaurantElement> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          SimplButton(
+                          SimpleButton(
                               buttonRole: widget.buttonRole,
                               buttonText: widget.buttonText),
                         ],
@@ -138,11 +134,13 @@ class _RestaurantElementState extends State<RestaurantElement> {
 class FeedElement extends StatefulWidget {
   final String id;
   final RestaurantModel restaurant;
+  final void Function(FeedElement) setSaved;
+  String source ="assets/icons/heart.png";
 
-  const FeedElement({
+  FeedElement({
     Key? key,
     required this.restaurant,
-    required this.id,
+    required this.id, required this.setSaved,
   }) : super(key: key);
 
   @override
@@ -150,22 +148,20 @@ class FeedElement extends StatefulWidget {
 }
 
 class _FeedElementState extends State<FeedElement> {
-  String source ="assets/icons/heart.png";
   Future<void> setRestaurantSource(String photoUrl) async {
-    if (await globals.exist("savedRestaurants", photoUrl)) {
-          setState(() {
-            source = "assets/icons/heart1.png";
-          });
-        }
-  else {setState(() {
-  source = "assets/icons/heart.png";
-  });}
-  }
+    if (await globals.exist("savedRestaurants", photoUrl)&&widget.source != "assets/icons/heart1.png") {
+      setState(() {
+        widget.source = "assets/icons/heart1.png";
+      });}
+    if (!await globals.exist("savedRestaurants", photoUrl)&&widget.source != "assets/icons/heart.png") {
+      setState(() {
+        widget.source = "assets/icons/heart.png";
+      });
+    }}
 
   @override
   void initState() {
     super.initState();
-    setRestaurantSource(widget.restaurant.photoUrl);
     widget.restaurant.description = widget.restaurant.getLocation();
   }
 
@@ -174,19 +170,20 @@ class _FeedElementState extends State<FeedElement> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: () => {
+        onTap: () {
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => Restaurant(
                     restaurant: widget.restaurant,
                         id: widget.id,
-                      )))
+                      )));
         },
         child: Container(
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 232, 237, 240),
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+          clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+                border: Border.all(color:Colors.black,width: 1.5)
             ),
             height: 90,
             width: MediaQuery.of(context).size.width * 0.9,
@@ -194,8 +191,8 @@ class _FeedElementState extends State<FeedElement> {
               children: [
                 Image.network(
                   widget.restaurant.photoUrl,
-                  width: 90,
-                  height: 90,
+                  width: 85,
+                  height: 88,
                   fit: BoxFit.fill,
                 ),
                 SizedBox(
@@ -219,23 +216,16 @@ class _FeedElementState extends State<FeedElement> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () async {
-                              if (source == "assets/icons/heart.png") {
-                                setState(() {
-                                  source = "assets/icons/heart1.png";
-                                });
-                                globals.addRestaurantToSaved(widget.restaurant,widget.id);
-                              } else {
-                                setState(() {
-                                  source = "assets/icons/heart.png";
-                                });
-                                globals.removeRestaurantFromSaved(widget.id);
+                            onTap: ()=>widget.setSaved(widget),
+                            child: FutureBuilder<void>(
+                              future: setRestaurantSource(widget.restaurant.photoUrl),
+                              builder: (context, snapshot) {
+                                return ImageIcon(
+                                      AssetImage(widget.source),
+                                      color: const Color(0xffbd2005),
+                          );
                               }
-                            },
-                            child: ImageIcon(
-                                  AssetImage(source),
-                                  color: const Color(0xffbd2005),
-                          ),
+                            ),
                           ),]),
                       Flexible(
                         child: Padding(
@@ -269,7 +259,9 @@ class _FeedElementState extends State<FeedElement> {
 class ListElement extends StatefulWidget {
   final RestaurantModel restaurant;
   final String id;
-  const ListElement({Key? key, required this.id, required this.restaurant})
+  final void Function(ListElement) setSaved;
+  String source ="assets/icons/heart.png";
+  ListElement({Key? key, required this.id, required this.restaurant, required this.setSaved})
       : super(key: key);
 
   @override
@@ -277,43 +269,41 @@ class ListElement extends StatefulWidget {
 }
 
 class _ListElementState extends State<ListElement> {
-  late String source = "assets/icons/heart.png";
   Future<void> setRestaurantSource(String photoUrl) async {
-    if (await globals.exist("savedRestaurants", photoUrl)) {
+    if (await globals.exist("savedRestaurants", photoUrl)&&widget.source != "assets/icons/heart1.png") {
       setState(() {
-        source = "assets/icons/heart1.png";
-      });
-    }
-    else {setState(() {
-      source = "assets/icons/heart.png";
-    });}
-  }
+        widget.source = "assets/icons/heart1.png";
+      });}
+      if (!await globals.exist("savedRestaurants", photoUrl)&&widget.source != "assets/icons/heart.png") {
+        setState(() {
+          widget.source = "assets/icons/heart.png";
+        });
+  }}
 
   @override
   void initState() {
     super.initState();
-    setRestaurantSource(widget.restaurant.photoUrl);
     widget.restaurant.description = widget.restaurant.getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
+      padding: const EdgeInsets.only(right: 5.0,left: 5.0),
       child: GestureDetector(
-        onTap: () => {
+        onTap: () {
           Navigator.push(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute (
                   builder: (context) => Restaurant(
                         restaurant: widget.restaurant,
-                        id: widget.id,
-                      )))
+                        id: widget.id
+                      )));
         },
         child: Container(
-            decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 232, 237, 240),
-                borderRadius: BorderRadius.all(Radius.circular(20))),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                border: Border.all(color:Colors.black)),
             height: 240,
             width: 280,
             child: 
@@ -344,25 +334,18 @@ class _ListElementState extends State<ListElement> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () async {
-                          if (source == "assets/icons/heart.png") {
-                            setState(() {
-                              source = "assets/icons/heart1.png";
-                            });
-                            globals.addRestaurantToSaved(widget.restaurant,widget.id);
-                          } else {
-                            setState(() {
-                              source = "assets/icons/heart.png";
-                            });
-                            globals.removeRestaurantFromSaved(widget.id);
-                          }
-                        },
+                        onTap: ()=>widget.setSaved(widget),
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10),
-                          child: ImageIcon(
-                                AssetImage(source),
-                                color: const Color(0xffbd2005),
-                              ),
+                          child: FutureBuilder<void>(
+                              future: setRestaurantSource(widget.restaurant.photoUrl),
+                              builder: (context, snapshot) {
+                                return ImageIcon(
+                                  AssetImage(widget.source),
+                                  color: const Color(0xffbd2005),
+                                );
+                              }
+                          ),
                         ),
                       ),
                     ],

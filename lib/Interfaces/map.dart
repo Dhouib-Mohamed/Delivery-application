@@ -5,6 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../Widgets/tapped.dart';
+
 class Mapp extends StatefulWidget {
   const Mapp({Key? key}) : super(key: key);@override
   State<Mapp> createState() => _MappState();
@@ -54,11 +56,33 @@ class _MappState extends State<Mapp> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: TextButton(
-        onPressed: () async {
+      floatingActionButton: ColoredButton(
+        color:Colors.white,
+        textColor: Colors.blue,
+        width: 170,
+        role: () async {
           if (markers.isEmpty) {
             Fluttertoast.showToast(msg: 'No position Chosen');
           } else {
+              String? id;
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection("addresses")
+                  .orderBy("selected",descending: true)
+                  .limit(1)
+                  .get()
+                  .then((value) {
+                if(value.size>0)id = value.docs.first.id;
+              });
+              id==null?
+                  {}:
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection("addresses")
+                  .doc(id)
+                  .update({"selected": false});
             await FirebaseFirestore.instance
                 .collection("users")
                 .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -71,11 +95,28 @@ class _MappState extends State<Mapp> {
             });
             Navigator.pushNamed(context, "/address");
           }
-        },
-        child: const Text("ADD ADDRESS", style: TextStyle(fontSize: 20)),
+        }, name: "ADD ADDRESS",
       ),
       appBar: AppBar(
-        title: const Text('ADD LOCATION'),
+        toolbarHeight: 80,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: const [
+            Text(
+              "ADD LOCATION",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            Text(
+              "To add new location you should first mark it by long press then press the button down bellow",
+              maxLines: 2,
+              style: TextStyle(color: Colors.white, fontSize: 14,fontWeight: FontWeight.w300),
+            ),
+          ],
+        ),
         backgroundColor: const Color(0xffbd2005),
       ),
       body: FutureBuilder<Position?>(

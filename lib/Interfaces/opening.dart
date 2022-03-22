@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import '../Widgets/tapped.dart';
 import '../models.dart';
-// TODO facebook
 class Opening extends StatefulWidget {
   const Opening({Key? key}) : super(key: key);
 
@@ -31,16 +30,16 @@ class _Opening extends State<Opening> {
               image: AssetImage("assets/Images/welcome.webp"),
             ),
           ),
-          AuthLoginButtonColored(
+          ColoredButton(
             name: "SIGN IN WITH FACEBOOK",
-            icon: const AssetImage("assets/icons/Facebook.png"),
-            c: const Color(0xff3B5998),
+            icon: const ImageIcon(AssetImage("assets/icons/Facebook.png"),color: Colors.white,),
+            color: const Color(0xff3B5998),
+
             role: signInWithFacebook,
           ),
-          const LoginButton(
+          ColoredButton(
               name: "SIGN IN WITH EMAIL",
-              c: Color(0xffbd2005),
-              role: '/signin'),
+              role: () {Navigator.pushNamed(context, '/signin');},),
           const TappedText(
               text: "Or Start By ",
               tapped: "Creating An Account",
@@ -48,7 +47,8 @@ class _Opening extends State<Opening> {
         ],
       ),
     );
-  }void signInWithFacebook() async {
+  }
+  void signInWithFacebook() async {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {

@@ -2,12 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/Widgets/tapped.dart';
 import 'package:iac_project/models.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-
-import '../Interfaces/address_map.dart';
 import '../Interfaces/filter.dart';
 
 class BotBar extends StatefulWidget {
@@ -123,16 +120,24 @@ class EndDrawer extends StatefulWidget {
 
 class _EndDrawerState extends State<EndDrawer> {
   void addToRestaurants(String value) {
-    widget.restaurants?.add(value);
+    setState(() {
+      widget.restaurants?.add(value);
+    });
   }
   void addToCategories(String value) {
-    widget.categories?.add(value);
+    setState(() {
+      widget.categories?.add(value);
+    });
   }
   void removeFromRestaurants(String value) {
-    widget.restaurants?.remove(value);
+    setState(() {
+      widget.restaurants?.remove(value);
+    });
   }
   void removeFromCategories(String value) {
-    widget.categories?.remove(value);
+    setState(() {
+      widget.categories?.remove(value);
+    });
   }
   double getMaxPrice() {
     double x=19.2;
@@ -153,14 +158,22 @@ class _EndDrawerState extends State<EndDrawer> {
           widget.sort = name;
   }
 
-  String? getSort() {return widget.sort;}
+  setSort(SortIcon x) {
+    setState(() {
+      widget.sort = x.text;
+      x.color = const Color(0xffbd2005);
+    });
+  }
+
+  Color setColor(String s) {
+    return(s==widget.sort)?const Color(0xffbd2005):Colors.blueGrey;
+  }
   @override
   void initState() {
     setMaxPrice(getMaxPrice());
     setMinPrice(getMinPrice());
-    widget.restaurants ??= [];
-    widget.categories ??= [];
-
+    widget.restaurants = [];
+    widget.categories = [];
     super.initState();
   }
 
@@ -186,11 +199,13 @@ class _EndDrawerState extends State<EndDrawer> {
                   ),
                   GestureDetector(
                     onTap: () {
-                        setMaxPrice(getMaxPrice());
-                        setMinPrice(getMinPrice());
-                        widget.restaurants ??= [];
-                        widget.categories ??= [];
-                        widget.sort = null;
+                        setState(() {
+                          setMaxPrice(getMaxPrice());
+                          setMinPrice(getMinPrice());
+                          widget.restaurants = [];
+                          widget.categories = [];
+                          widget.sort = null;
+                        });
                     },
                     child: const Text(
                       "Reset all",
@@ -207,10 +222,10 @@ class _EndDrawerState extends State<EndDrawer> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                SortIcon(text: 'Name', icon: const AssetImage("assets/icons/name.png"), getSort: getSort,setSortIcon: setSortIcon,),
-                SortIcon(text: 'Rating', icon: const AssetImage("assets/icons/rating.png"), getSort: getSort,setSortIcon: setSortIcon,),
-                SortIcon(text: 'Delivery Time', icon: const AssetImage("assets/icons/timer.png"), getSort: getSort,setSortIcon: setSortIcon,),
-                SortIcon(text: 'Price', icon: const AssetImage("assets/icons/price.png"), getSort: getSort,setSortIcon: setSortIcon,),
+                SortIcon(text: 'Name', icon: const AssetImage("assets/icons/name.png"), setSort: setSort, color: setColor('Name'),),
+                SortIcon(text: 'Rating', icon: const AssetImage("assets/icons/rating.png"), setSort: setSort, color: setColor('Rating'),),
+                SortIcon(text: 'Delivery Time', icon: const AssetImage("assets/icons/timer.png"), setSort: setSort, color: setColor('Delivery Time'),),
+                SortIcon(text: 'Price', icon: const AssetImage("assets/icons/price.png"), setSort: setSort ,color: setColor('Price'),),
               ],
             ),
             const Padding(
@@ -275,26 +290,9 @@ class _EndDrawerState extends State<EndDrawer> {
               ),
             ),
             CategoryFlex(list: widget.categories!, removeFromList: removeFromCategories, addToList: addToCategories),
-            Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 13),
-                child: Center(
-                  child: OutlinedButton(
-                      style: ButtonStyle(
-                          fixedSize: MaterialStateProperty.all(const Size(220, 48)),
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xffbd2005)),
-                          shape: MaterialStateProperty.all(
-                              const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                              ))),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) =>const Filter()));
-                      },
-                      child: const Text(
-                        "Get Results",
-                        style: TextStyle(color: Colors.white, fontSize: 17),
-                      )),
-                ))
+            ColoredButton(width :220,name: "Get Results", role: () {  Navigator.push(context, MaterialPageRoute(builder: (context) =>const Filter()));},
+
+            ),
           ],
         ),
       ),
@@ -302,29 +300,12 @@ class _EndDrawerState extends State<EndDrawer> {
   }
 }
 
-class SortIcon extends StatefulWidget{
-  const SortIcon({Key? key, required this.icon, required this.text, required this.getSort, required this.setSortIcon}) : super(key: key);
+class SortIcon extends StatelessWidget {
+  SortIcon({Key? key, required this.icon, required this.text, required this.color, required this.setSort}) : super(key: key);
   final ImageProvider icon;
   final String text;
-  final String? Function() getSort;
-  final void Function(String) setSortIcon ;
-
-  @override
-  State<SortIcon> createState() => _SortIconState();
-
-}
-
-class _SortIconState extends State<SortIcon> {
-  late Color color ;
-  setColor() {
-    String? x = widget.getSort();
-    color = (x??"")==widget.text?const Color(0xffbd2005):Colors.blueGrey;
-  }
-  @override
-  void initState() {
-    super.initState();
-    setColor();
-  }
+  final Function(SortIcon) setSort ;
+  Color color ;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -334,14 +315,12 @@ class _SortIconState extends State<SortIcon> {
         children: [
           IconButton(
               onPressed: (){
-                  widget.setSortIcon(widget.text);
-                  setState(() {
-                  setColor();
-                });},
-              icon: ImageIcon(widget.icon,size: 30,color: color,)),
+                setSort(this);
+              },
+              icon: ImageIcon(icon,size: 30,color: color,)),
           Flexible(
               child: Text(
-                widget.text,
+                text,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.blueGrey,
@@ -355,7 +334,6 @@ class _SortIconState extends State<SortIcon> {
 }
 class RestaurantFlex extends StatelessWidget{
   final List<String> list;
-
   final void Function(String) removeFromList;
   final void Function(String) addToList;
   const RestaurantFlex({Key? key, required this.list, required this.removeFromList, required this.addToList}) : super(key: key);
@@ -379,7 +357,8 @@ class RestaurantFlex extends StatelessWidget{
           child: Wrap(
               direction: Axis.horizontal,
             children: snapshot.data!.docs.map((e) {
-              return FlexListElement(text: e.get("name"), list: list, addToList: addToList, removeFromList: removeFromList);
+              return FlexListElement(text: e.get("name"), list: list, addToList: addToList, removeFromList: removeFromList, backgroundColor: (list.contains(e.get("name")))?const Color(0xffbd2005):Colors.white,
+    textColor: (list.contains(e.get("name")))?Colors.white:Colors.black,);
             }).toList(),
           ),
         );}
@@ -394,11 +373,12 @@ class CategoryFlex extends StatelessWidget{
   final void Function(String) removeFromList;
   final void Function(String) addToList;
 
-  List<String> categories = [];
+  List<String>? categories ;
   CategoryFlex({Key? key, required this.list, required this.removeFromList, required this.addToList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    categories = [];
     return StreamBuilder(
         stream: FirebaseFirestore
             .instance
@@ -423,6 +403,7 @@ class CategoryFlex extends StatelessWidget{
                             .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
+                          print(snapshot.data?.docs.length);
                           if (!snapshot.hasData) {
                             return const Center(
                               child: CircularProgressIndicator(),
@@ -431,13 +412,16 @@ class CategoryFlex extends StatelessWidget{
                             return Wrap(
                                 children: snapshot.data!.docs
                                     .map((document) {
-                                    if(!categories.contains(document.get("name"))) {
-                                      categories.add(document.get("name"));
-                                      return FlexListElement(text: document.get("name"),
+                                      if (!categories!.contains(document.get("name")))
+                                      {
+                                        categories!.add(document.get("name"));
+                                        return FlexListElement(text: document.get("name"),
                                         list: list,
                                         addToList: addToList,
-                                        removeFromList: removeFromList);}
-                                    else {return const SizedBox();}
+                                        removeFromList: removeFromList,
+                                          backgroundColor: (list.contains(document.get("name")))?const Color(0xffbd2005):Colors.white,
+                                          textColor: (list.contains(document.get("name")))?Colors.white:Colors.black,);}
+                                      else {return const SizedBox();}
                                 }).toList());
                           }
                         });
@@ -453,27 +437,17 @@ class FlexListElement extends StatefulWidget{
   final List<String> list;
   final void Function(String) addToList ;
   final void Function(String) removeFromList ;
+  Color backgroundColor;
+  Color textColor ;
 
-  const FlexListElement({Key? key, required this.text,required this.list, required this.addToList, required this.removeFromList}) : super(key: key);
+  FlexListElement({Key? key, required this.text,required this.textColor,required this.backgroundColor,required this.list, required this.addToList, required this.removeFromList}) : super(key: key);
 
   @override
   State<FlexListElement> createState() => _FlexListElementState();
 }
 
 class _FlexListElementState extends State<FlexListElement> {
-  late Color backgroundColor ;
 
-  late Color textColor ;
-
-  setColor() {
-    if(widget.list.contains(widget.text)) {
-      backgroundColor=const Color(0xffbd2005);
-      textColor=Colors.white;
-    } else {
-      backgroundColor=Colors.white;
-      textColor=Colors.black;
-    }
-  }
   setList() {
     if(widget.list.contains(widget.text)) {
       widget.removeFromList(widget.text);
@@ -481,10 +455,15 @@ class _FlexListElementState extends State<FlexListElement> {
       widget.addToList(widget.text);
     }
   }
+
+  setColor() {
+    widget.backgroundColor = (widget.list.contains(widget.text))?const Color(0xffbd2005):Colors.white;
+    widget.textColor = (widget.list.contains(widget.text))?Colors.white:Colors.black;
+  }
   @override
   void initState() {
-    super.initState();
     setColor();
+    super.initState();
   }
 
   @override
@@ -493,7 +472,7 @@ class _FlexListElementState extends State<FlexListElement> {
       padding: const EdgeInsets.only(left: 8.0,top: 4,bottom: 4,right:2),
       child: TextButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(backgroundColor),
+          backgroundColor: MaterialStateProperty.all<Color>(widget.backgroundColor),
           shape: MaterialStateProperty.all(const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             side: BorderSide(color: Colors.blueGrey))),
@@ -507,104 +486,9 @@ class _FlexListElementState extends State<FlexListElement> {
         child: Text(
             widget.text,
           maxLines: 1,
-          style: TextStyle(color: textColor),
+          style: TextStyle(color: widget.textColor),
         ),
       ),
     );
-  }
-}
-class AddressWidget extends StatefulWidget {
-  final AddressModel address;
-  final int x;
-  final QueryDocumentSnapshot document;
-  const AddressWidget({Key? key, required this.address, required this.x, required this.document}) : super(key: key);
-
-  @override
-  State<AddressWidget> createState() => _AddressWidgetState();
-}
-
-class _AddressWidgetState extends State<AddressWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddressMap(
-                            location: widget.address.location)));
-              },
-              child: Container(
-                color: widget.address.selected?const Color(0xffbd2005):const Color(0xaaeee3e3),
-                height: 90,
-                width: MediaQuery.of(context).size.width *
-                    0.95,
-                child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8.0),
-                          child: Text(
-                            "ADDRESS ${widget.x} :",
-                            style: TextStyle(
-                              color: widget.address.selected?Colors.white:Colors.black,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        SimplButton(
-                            buttonRole: () {
-                              removeAdress(widget.document.id);
-                            },
-                            buttonText: "Remove address"),
-                      ],
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 8.0),
-                        child: FutureBuilder<String>(
-                            future: widget.address.description,
-                            builder: (context, snapshot) {
-                              return Text(
-                                snapshot.data??"",
-                                overflow: TextOverflow.clip,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              );
-                            }
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ))
-    );
-  }
-
-  removeAdress(String id) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("addresses")
-        .doc(id)
-        .delete();
-    Fluttertoast.showToast(msg: "Address Successfully removed ");
   }
 }

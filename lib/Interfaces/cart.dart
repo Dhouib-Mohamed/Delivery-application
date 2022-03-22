@@ -159,8 +159,9 @@ class _CartState extends State<Cart> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => Checkout(
+                                                
                                                     price: num.parse(price
-                                                        .toStringAsFixed(2)),
+                                                        .toStringAsFixed(2)), deliveryPrice: deliveryFee,
                                                   )));
                                     },
                                     child: const Text(

@@ -5,7 +5,6 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../Widgets/tapped.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../models.dart';
-// TODO facebook
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -116,15 +115,15 @@ class _SignIn extends State<SignIn> {
                         role: '/forgot_password'),
                   ],
                 ),
-                AuthLoginButton(
-                    name: "SIGN IN", c: const Color(0xffbd2005), role: signIn),
+                ColoredButton(
+                    name: "SIGN IN", color: const Color(0xffbd2005), role: signIn),
                 const SizedBox(
                   height: 70,
                 ),
-                AuthLoginButtonColored(
+                ColoredButton(
                   name: "SIGN IN WITH FACEBOOK",
-                  icon: const AssetImage("assets/icons/Facebook.png"),
-                  c: const Color(0xff3B5998),
+                  icon: const ImageIcon(AssetImage("assets/icons/Facebook.png"),color: Colors.white,),
+                  color: const Color(0xff3B5998),
                   role: signInWithFacebook,
                 ),
                 const TappedText(

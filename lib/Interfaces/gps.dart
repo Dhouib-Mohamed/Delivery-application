@@ -18,8 +18,8 @@ class GPS extends StatelessWidget {
               image: AssetImage("assets/Images/location.webp"),
             ),
           ),
-          const LoginButton(
-              name: "ADD LOCATION", c: Color(0xffbd2005), role: '/map'),
+          ColoredButton(
+              name: "ADD LOCATION", role: ()=>Navigator.pushNamed(context, '/map')),
           const TappedText(text: "", tapped: "Skip for now", role: '/feed')
         ],
       ),

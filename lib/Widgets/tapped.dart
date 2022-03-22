@@ -1,85 +1,18 @@
 import 'package:flutter/material.dart';
 
-class LoginButton extends StatelessWidget {
-  final String? name;
-  final Color? c;
-  final String role;
-  const LoginButton(
-      {Key? key, required this.name, required this.c, required this.role})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding:
-            const EdgeInsets.only(right: 32, top: 10, left: 32, bottom: 13),
-        child: OutlinedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(c!),
-                fixedSize: MaterialStateProperty.all(const Size(330, 48)),
-                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ))),
-            onPressed: () {
-              Navigator.pushNamed(context, role);
-            },
-            child: Text(
-              name!,
-              style: const TextStyle(color: Colors.white, fontSize: 17),
-            )));
-  }
-}
-class ProfileButton extends StatelessWidget {
-  final String? name;
-  final String role;
-  final IconData? icon;
-  const ProfileButton(
-      {Key? key, required this.name, required this.role, required this.icon})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 32, top: 6, left: 32, bottom: 13),
-      child: OutlinedButton(
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              fixedSize: MaterialStateProperty.all(const Size(250, 48)),
-              shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ))),
-          onPressed: () {
-            Navigator.pushNamed(context, role);
-          },
-          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(
-                icon,
-                color: Colors.black,
-                size: 30,
-              ),
-            ),
-            Text(
-              name!,
-              style: const TextStyle(color: Colors.black, fontSize: 17),
-            )
-          ])),
-    );
-  }
-}
-
-class AuthLoginButtonColored extends StatelessWidget {
-  final ImageProvider<Object>? icon;
-  final String? name;
-  final Color? c;
-  final void Function()? role;
-  const AuthLoginButtonColored(
+class ColoredButton extends StatelessWidget {
+  final Widget? icon;
+  final String name;
+  final double? width;
+  final Color? color;
+  final Color? textColor;
+  final void Function() role;
+  const ColoredButton(
       {Key? key,
       required this.name,
-      required this.icon,
-      required this.c,
-      required this.role})
+      this.icon,
+      this.color,
+      required this.role, this.width, this.textColor})
       : super(key: key);
 
   @override
@@ -88,59 +21,70 @@ class AuthLoginButtonColored extends StatelessWidget {
       padding: const EdgeInsets.only(right: 32, top: 6, left: 32, bottom: 13),
       child: OutlinedButton(
           style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(c!),
-              fixedSize: MaterialStateProperty.all(const Size(330, 48)),
+              backgroundColor: MaterialStateProperty.all<Color>(color??const Color(0xffbd2005)),
+              fixedSize: MaterialStateProperty.all(Size(width??330, 48)),
               shape: MaterialStateProperty.all(const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ))),
-          onPressed: () {
-            if (role != null) role!();
-          },
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          onPressed: role,
+          child:
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: ImageIcon(
-                icon,
-                color: Colors.white,
-                size: 30,
-              ),
+              child: icon ?? const SizedBox(),
             ),
             Text(
-              name!,
-              style: const TextStyle(color: Colors.white, fontSize: 17),
+              name,
+              style: TextStyle(color: textColor??Colors.white, fontSize: 17),
             )
-          ])),
-    );
+          ]),
+    ));
   }
 }
 
-class AuthLoginButton extends StatelessWidget {
-  final String? name;
-  final Color? c;
-  final void Function()? role;
-  const AuthLoginButton(
-      {Key? key, required this.name, required this.c, required this.role})
+class ProfileButton extends StatelessWidget {
+  final Widget? icon;
+  final String name;
+  final double? width;
+  final Color? color;
+  final Color? textColor;
+  final void Function() role;
+  const ProfileButton(
+      {Key? key,
+        required this.name,
+        this.icon,
+        this.color,
+        required this.role, this.width, this.textColor})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding:
-            const EdgeInsets.only(right: 32, top: 10, left: 32, bottom: 13),
-        child: OutlinedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(c!),
-                fixedSize: MaterialStateProperty.all(const Size(330, 48)),
-                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ))),
-            onPressed: () {
-              if (role != null) role!();
-            },
-            child: Text(
-              name!,
-              style: const TextStyle(color: Colors.white, fontSize: 17),
-            )));
+    return OutlinedButton(
+          style: ButtonStyle(
+            side: MaterialStateProperty.all(const BorderSide(color: Colors.blueGrey,width: 0.3)),
+              backgroundColor: MaterialStateProperty.all<Color>(color??Colors.white),
+              fixedSize: MaterialStateProperty.all(Size(width??200, 60)),
+          shape: MaterialStateProperty.all(ContinuousRectangleBorder())),
+          onPressed: role,
+          child:
+          Padding(
+            padding: const EdgeInsets.only(left:30),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: icon ?? const SizedBox(),
+                  ),
+                  Text(
+                    name,
+                    style: TextStyle(color: textColor??Colors.black, fontSize: 17),
+                  )
+                ]),
+
+        ));
   }
 }
 
@@ -170,40 +114,6 @@ class Input extends StatelessWidget {
                         ? TextInputType.phone
                         : TextInputType.text,
         obscureText: field == 'Password',
-        strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
-        decoration: InputDecoration(
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              gapPadding: 4.0,
-            ),
-            labelText: field),
-        validator: valid,
-        onSaved: (value) {
-          control?.text = value!;
-        },
-      ),
-    );
-  }
-}
-
-class FeedInput extends StatelessWidget {
-  final String field;
-  final TextEditingController? control;
-  final String? Function(String?)? valid;
-  const FeedInput({
-    Key? key,
-    required this.field,
-    this.control,
-    this.valid,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16, top: 28, left: 16, bottom: 18),
-      child: TextFormField(
-        controller: control,
-        autofocus: true,
         strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
         decoration: InputDecoration(
             border: const OutlineInputBorder(
@@ -352,12 +262,12 @@ class _TappedBoxState extends State<TappedBox> {
   }
 }
 
-class SimplButton extends StatelessWidget {
+class SimpleButton extends StatelessWidget {
   final void Function()? buttonRole;
 
   final String buttonText;
 
-  const SimplButton(
+  const SimpleButton(
       {Key? key, required this.buttonRole, required this.buttonText})
       : super(key: key);
 
@@ -366,7 +276,7 @@ class SimplButton extends StatelessWidget {
     return OutlinedButton(
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-            fixedSize: MaterialStateProperty.all(const Size(141, 40)),
+            fixedSize: MaterialStateProperty.all(const Size(145, 40)),
             shape: MaterialStateProperty.all(const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ))),

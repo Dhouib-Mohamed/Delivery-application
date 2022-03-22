@@ -80,7 +80,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left:20,bottom:15),
+                    padding: const EdgeInsets.only(left:20,bottom:40),
                     child: Row(
                       children: [
                         const Text(
@@ -102,14 +102,14 @@ class _ProfileState extends State<Profile> {
                       ],
                     ),
                   ),
-                  const ProfileButton(
-                    name: "Change Password", role: "/forgot_password", icon: Icons.password),
-                const ProfileButton(
-                    name: "My Addresses", role: "/address", icon: Icons.location_on),
-                const ProfileButton(
-                    name: "Settings", role: "/settings", icon: Icons.settings_sharp),
-                const ProfileButton(
-                    name: "Help & FAQ", role: "/help", icon: Icons.help_rounded),
+                  ProfileButton(
+                    name: "Change Password",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/forgot_password"), icon: const Icon(Icons.password,color: Colors.black,)),
+                  ProfileButton(
+                    name: "My Addresses   ",width: MediaQuery.of(context).size.width,role: ()=>Navigator.pushNamed(context, "/address"), icon: const Icon(Icons.location_on,color: Colors.black)),
+                  ProfileButton(
+                    name: "Settings       ",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/settings"), icon: const Icon(Icons.settings_sharp ,color: Colors.black)),
+                  ProfileButton(
+                    name: "Help & FAQ     ",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/help") , icon: const Icon(Icons.help_rounded,color: Colors.black)),
               ],
             ),
           ),
