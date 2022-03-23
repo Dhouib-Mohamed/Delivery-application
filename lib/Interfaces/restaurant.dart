@@ -135,6 +135,7 @@ class _RestaurantState extends State<Restaurant> {
                       .collection('restaurants')
                       .doc(widget.id)
                       .collection('category')
+                      .orderBy("name")
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -159,6 +160,8 @@ class _RestaurantState extends State<Restaurant> {
                                       .collection('category')
                                       .doc(document.reference.id)
                                       .collection("deals")
+                                      .orderBy("name")
+                                      .limit(4)
                                       .snapshots(),
                                   builder: (BuildContext context,
                                       AsyncSnapshot<QuerySnapshot> snapshot) {

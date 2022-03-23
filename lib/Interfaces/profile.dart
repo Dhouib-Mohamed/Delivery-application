@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iac_project/Widgets/parts.dart';
 import '../Widgets/tapped.dart';
 import '../globals.dart' as globals;
@@ -114,13 +116,20 @@ class _ProfileState extends State<Profile> {
               ),
             ),
               ProfileButton(
-                name: "Change Password",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/forgot_password"), icon: const Icon(Icons.password,color: Colors.black,)),
+                name: "Change Password",width: MediaQuery.of(context).size.width, role: () async {try{
+        await FirebaseAuth.instance
+            .sendPasswordResetEmail(email: globals.user!.email)
+            .then((value) => Fluttertoast.showToast(
+                msg: "We have sent you a reset link on your mail"));
+      } on FirebaseAuthException catch(e) {
+        Fluttertoast.showToast(msg: e.code);
+      }}, icon: const Icon(Icons.password,color: Colors.black,)),
               ProfileButton(
-                name: "My Addresses   ",width: MediaQuery.of(context).size.width,role: ()=>Navigator.pushNamed(context, "/address"), icon: const Icon(Icons.location_on,color: Colors.black)),
+                name: "My Addresses",width: MediaQuery.of(context).size.width,role: ()=>Navigator.pushNamed(context, "/address"), icon: const Icon(Icons.location_on,color: Colors.black)),
               ProfileButton(
-                name: "Settings       ",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/settings"), icon: const Icon(Icons.settings_sharp ,color: Colors.black)),
+                name: "Settings",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/settings"), icon: const Icon(Icons.settings_sharp ,color: Colors.black)),
               ProfileButton(
-                name: "Help & FAQ     ",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/help") , icon: const Icon(Icons.help_rounded,color: Colors.black)),
+                name: "Help & FAQ",width: MediaQuery.of(context).size.width, role: ()=>Navigator.pushNamed(context, "/help") , icon: const Icon(Icons.help_rounded,color: Colors.black)),
           ],
         ),
       ),
