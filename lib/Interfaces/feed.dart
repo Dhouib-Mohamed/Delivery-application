@@ -18,28 +18,20 @@ class _Feed extends State<Feed> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
     setSavedFeedElement(FeedElement x) async {
     if (x.source == "assets/icons/heart.png") {
-      setState(() {
-        x.source = "assets/icons/heart1.png";
-      });
       await globals.addRestaurantToSaved(x.restaurant,x.id);
+      setState(() {});
     } else {
-      setState(() {
-        x.source = "assets/icons/heart.png";
-      });
       await globals.removeRestaurantFromSaved(x.id);
+      setState(() {});
     }
   }
   setSavedListElement(ListElement x) async {
     if (x.source == "assets/icons/heart.png") {
       await globals.addRestaurantToSaved(x.restaurant,x.id);
-      setState(() {
-        x.source = "assets/icons/heart1.png";
-      });
+      setState(() {});
     } else {
       await globals.removeRestaurantFromSaved(x.id);
-      setState(() {
-        x.source = "assets/icons/heart.png";
-      });
+      setState(() {});
     }
   }
   Future<UserModel>? user;

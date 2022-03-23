@@ -55,7 +55,7 @@ class _CheckoutState extends State<Checkout> {
                         .collection("users")
                         .doc(FirebaseAuth.instance.currentUser!.uid)
                         .collection("addresses")
-                        .orderBy("selected")
+                        .orderBy("selected",descending: true)
                         .limit(1)
                         .snapshots(),
                     builder: (BuildContext context,

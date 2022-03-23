@@ -9,7 +9,6 @@ class Restaurant extends StatefulWidget {
   final RestaurantModel restaurant;
   final String id;
 
-
   const Restaurant({Key? key, required this.id, required this.restaurant})
       : super(key: key);
 
@@ -18,29 +17,90 @@ class Restaurant extends StatefulWidget {
 }
 
 class _RestaurantState extends State<Restaurant> {
-
   String source = "assets/icons/heart.png";
 
   Future<void> setRestaurantSource(String photoUrl) async {
-    if (await globals.exist("savedRestaurants", photoUrl)&& source != "assets/icons/heart1.png") {
+    if (await globals.exist("savedRestaurants", photoUrl)) {
       setState(() {
         source = "assets/icons/heart1.png";
-      });}
-    if (!await globals.exist("savedRestaurants", photoUrl)&& source != "assets/icons/heart.png") {
+      });
+    } else {
       setState(() {
         source = "assets/icons/heart.png";
       });
-    }}
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    setRestaurantSource(widget.restaurant.photoUrl);
     widget.restaurant.description = widget.restaurant.getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 1,
+        shadowColor: Colors.white,
+        toolbarHeight: 80,
+        actions: [
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: GestureDetector(
+                onTap: () async {
+                  if (source == "assets/icons/heart.png") {
+                    await globals.addRestaurantToSaved(widget.restaurant, widget.id);
+                  } else {
+                    await globals.removeRestaurantFromSaved(widget.id);
+                  }
+                  await setRestaurantSource(widget.restaurant.photoUrl);
+                },
+                child: ImageIcon(
+                  AssetImage(source),
+                  color: const Color(0xffbd2005),
+                ),
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 15, right: 20, top: 8, bottom: 8),
+            child: Icon(
+              Icons.share,
+              color: Color(0xffbd2005),
+            ),
+          ),
+        ],
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                widget.restaurant.name,
+                style: const TextStyle(
+                    fontSize: 27,
+                    fontWeight: FontWeight.w800,
+                    color: Color.fromARGB(255, 63, 11, 4)),
+              ),
+              FutureBuilder<String>(
+                  future: widget.restaurant.description,
+                  builder: (context, snapshot) {
+                    return Text(
+                      snapshot.data ?? "",
+                      style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 63, 11, 4)),
+                    );
+                  }),
+            ],
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xffbd2005),
         onPressed: () {
@@ -54,37 +114,11 @@ class _RestaurantState extends State<Restaurant> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            toolbarHeight: 80,
-            expandedHeight: 230,
+            expandedHeight: 250,
+            toolbarHeight: 0,
+            collapsedHeight: 0,
             pinned: true,
             elevation: 0,
-            title: Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    widget.restaurant.name,
-                    style: const TextStyle(
-                        fontSize: 27,
-                        fontWeight: FontWeight.w800,
-                        color: Color.fromARGB(255, 63, 11, 4)),
-                  ),
-                  FutureBuilder<String>(
-                      future: widget.restaurant.description,
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.data??"",
-                          style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w500,
-                              color: Color.fromARGB(255, 63, 11, 4)),
-                        );
-                      }),
-                ],
-              ),
-            ),
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -92,41 +126,7 @@ class _RestaurantState extends State<Restaurant> {
                     fit: BoxFit.cover),
               ),
             ),
-            actions: [
-              Flexible(
-                child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    if (source == "assets/icons/heart.png") {
-                      setState(() {
-                        source = "assets/icons/heart1.png";
-                      });
-                      globals.addRestaurantToSaved(widget.restaurant,widget.id);
-                    } else {
-                      setState(() {
-                        source = "assets/icons/heart.png";
-                      });
-                      globals.removeRestaurantFromSaved(widget.id);
-                    }
-                  },
-                  child: FutureBuilder<void>(
-                      future: setRestaurantSource(widget.restaurant.photoUrl),
-                      builder: (context, snapshot) {
-                        return ImageIcon(
-                          AssetImage(source),
-                          color: const Color(0xffbd2005),
-                        );
-                      }
-                  ),),),),
-                  const Padding(
-                padding: EdgeInsets.only(left:15,right: 20,top: 8,bottom: 8),
-                child: Icon(
-                  Icons.share,
-                  color: Color(0xffbd2005),
-                ),
-              ),
-              ]),
+          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 50.0),
@@ -180,13 +180,14 @@ class _RestaurantState extends State<Restaurant> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                   Padding(
+                                                  Padding(
                                                     padding:
-                                                        const EdgeInsets.only(left: 15),
+                                                        const EdgeInsets.only(
+                                                            left: 15),
                                                     child: Text(
                                                       c.name,
-                                                      style:
-                                                          const TextStyle(fontSize: 25),
+                                                      style: const TextStyle(
+                                                          fontSize: 25),
                                                     ),
                                                   ),
                                                   Padding(
@@ -203,13 +204,20 @@ class _RestaurantState extends State<Restaurant> {
                                                                 builder: (context) => DealList(
                                                                     text:
                                                                         c.name,
-                                                                    snapshot: FirebaseFirestore.instance
-                                      .collection("restaurants")
-                                      .doc(widget.id)
-                                      .collection('category')
-                                      .doc(document.reference.id)
-                                      .collection("deals")
-                                      .snapshots())));
+                                                                    snapshot: FirebaseFirestore
+                                                                        .instance
+                                                                        .collection(
+                                                                            "restaurants")
+                                                                        .doc(widget
+                                                                            .id)
+                                                                        .collection(
+                                                                            'category')
+                                                                        .doc(document
+                                                                            .reference
+                                                                            .id)
+                                                                        .collection(
+                                                                            "deals")
+                                                                        .snapshots())));
                                                       },
                                                     ),
                                                   ),
@@ -219,12 +227,15 @@ class _RestaurantState extends State<Restaurant> {
                                             Column(
                                                 children: snapshot.data!.docs
                                                     .map((document) {
-                                              DealModel d =
-                                                  DealModel.fromJson(
-                                                      document.data());
+                                              DealModel d = DealModel.fromJson(
+                                                  document.data());
                                               return RestaurantElement(
                                                 deal: d,
-                                                id: document.reference.id, buttonRole: () { globals.addToCart(d); }, buttonText: 'Add To Cart',
+                                                id: document.reference.id,
+                                                buttonRole: () {
+                                                  globals.addToCart(d);
+                                                },
+                                                buttonText: 'Add To Cart',
                                               );
                                             }).toList()),
                                           ],

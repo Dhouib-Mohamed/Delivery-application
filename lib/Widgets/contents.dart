@@ -79,16 +79,11 @@ class _RestaurantElementState extends State<RestaurantElement> {
                           GestureDetector(
                             onTap: () async {
                               if (source == "assets/icons/heart.png") {
-                                setState(() {
-                                  source = "assets/icons/heart1.png";
-                                });
                                 await globals.addDealToSaved(widget.deal,widget.id);
                               } else {
-                                setState(() {
-                                  source = "assets/icons/heart.png";
-                                });
                                 await globals.removeDealFromSaved(widget.id);
                               }
+                              await setDealSource(widget.deal.photoUrl);
                             },
                             child: ImageIcon(
                                   AssetImage(source),
@@ -305,18 +300,19 @@ class _ListElementState extends State<ListElement> {
                       )));
         },
         child: Container(
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
                 border: Border.all(color:Colors.black)),
-            height: 240,
+            height: 270,
             width: 280,
             child: 
             Column(
               children: [
                 Image.network(
                   widget.restaurant.photoUrl,
-                  width: 220,
-                  height: 160,
+                  width: 280,
+                  height: 200,
                   fit: BoxFit.cover,
                   errorBuilder: (a,b,c){return
                     Image.asset("assets/Images/placeholder.png",

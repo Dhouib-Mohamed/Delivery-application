@@ -15,17 +15,7 @@ class Saved extends StatefulWidget {
 
 class _SavedState extends State<Saved> {
   setSaved(FeedElement x) async {
-    if (x.source == "assets/icons/heart.png") {
-      await globals.addRestaurantToSaved(x.restaurant,x.id);
-      setState(() {
-        x.source = "assets/icons/heart1.png";
-      });
-    } else {
       await globals.removeRestaurantFromSaved(x.id);
-      setState(() {
-        x.source = "assets/icons/heart.png";
-      });
-    }
   }
   @override
   Widget build(BuildContext context) {
