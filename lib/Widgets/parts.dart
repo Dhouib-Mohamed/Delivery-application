@@ -16,7 +16,7 @@ class BotBar extends StatefulWidget {
 }
 
 class _BotBarState extends State<BotBar> {
-  
+
   User? user = FirebaseAuth.instance.currentUser;
   late final UserModel loggedInUser;
   @override
@@ -145,9 +145,11 @@ class _EndDrawerState extends State<EndDrawer> {
     double x = 5.3;
     return x;
   }
+
   setMinPrice(double x) {
     widget.minPrice = x;
   }
+
   setSortIcon(String name) {
     widget.sort = name;
   }
@@ -165,14 +167,15 @@ class _EndDrawerState extends State<EndDrawer> {
 
   @override
   void initState() {
-    if (widget.maxPrice == 0) {
+    if (widget.maxPrice == null) {
       setMaxPrice(getMaxPrice());
     }
-    if (widget.minPrice == 0) {
+    if (widget.minPrice == null) {
       setMinPrice(getMinPrice());
     }
     widget.restaurants ??= [];
     widget.categories ??= [];
+    widget.sort ??= 'Name';
     super.initState();
   }
 
@@ -202,7 +205,7 @@ class _EndDrawerState extends State<EndDrawer> {
                         setMinPrice(getMinPrice());
                         widget.restaurants = [];
                         widget.categories = [];
-                        widget.sort = null;
+                        widget.sort = 'Name';
                       });
                     },
                     child: const Text(
@@ -504,6 +507,7 @@ class _FlexListElementState extends State<FlexListElement> {
     widget.textColor =
         (widget.list.contains(widget.text)) ? Colors.white : Colors.black;
   }
+
   @override
   void initState() {
     setColor();
