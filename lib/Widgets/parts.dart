@@ -415,12 +415,10 @@ class CategoryFlex extends StatelessWidget{
   final void Function(String) removeFromList;
   final void Function(String) addToList;
 
-  List<String>? categories ;
   CategoryFlex({Key? key, required this.list, required this.removeFromList, required this.addToList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    categories = [];
     return StreamBuilder(
         stream: FirebaseFirestore
             .instance
