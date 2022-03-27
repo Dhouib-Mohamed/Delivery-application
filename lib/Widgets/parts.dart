@@ -119,60 +119,60 @@ class EndDrawer extends StatefulWidget {
 
 class _EndDrawerState extends State<EndDrawer> {
   void addToRestaurants(String value) {
-    setState(() {
       widget.restaurants?.add(value);
-    });
   }
   void addToCategories(String value) {
-    setState(() {
       widget.categories?.add(value);
-    });
   }
   void removeFromRestaurants(String value) {
-    setState(() {
-      widget.restaurants?.remove(value);
-    });
+    widget.restaurants?.remove(value);
   }
+
   void removeFromCategories(String value) {
-    setState(() {
-      widget.categories?.remove(value);
-    });
+    widget.categories?.remove(value);
   }
+
   double getMaxPrice() {
-    double x=19.2;
+    double x = 19.2;
     return x;
   }
+
   setMaxPrice(double x) {
-      widget.maxPrice = x;
+    widget.maxPrice = x;
   }
 
   double getMinPrice() {
-    double x=5.3;
+    double x = 5.3;
     return x;
   }
   setMinPrice(double x) {
-      widget.minPrice = x;
+    widget.minPrice = x;
   }
   setSortIcon(String name) {
-          widget.sort = name;
+    widget.sort = name;
   }
 
   setSort(SortIcon x) {
+    widget.sort = x.text;
     setState(() {
-      widget.sort = x.text;
       x.color = const Color(0xffbd2005);
     });
   }
 
   Color setColor(String s) {
-    return(s==widget.sort)?const Color(0xffbd2005):Colors.blueGrey;
+    return (s == widget.sort) ? const Color(0xffbd2005) : Colors.blueGrey;
   }
+
   @override
   void initState() {
-    setMaxPrice(getMaxPrice());
-    setMinPrice(getMinPrice());
-    widget.restaurants = [];
-    widget.categories = [];
+    if (widget.maxPrice == 0) {
+      setMaxPrice(getMaxPrice());
+    }
+    if (widget.minPrice == 0) {
+      setMinPrice(getMinPrice());
+    }
+    widget.restaurants ??= [];
+    widget.categories ??= [];
     super.initState();
   }
 
@@ -185,32 +185,31 @@ class _EndDrawerState extends State<EndDrawer> {
         padding: const EdgeInsets.only(left: 8.0),
         child: ListView(
           children: [
-              Padding(
-              padding: const EdgeInsets.only(top: 20,bottom: 18,left: 10,right: 20),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 18, left: 10, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
                     "Sort by",
-                    style: TextStyle(
-                        fontSize: 22
-                    ),
+                    style: TextStyle(fontSize: 22),
                   ),
                   GestureDetector(
                     onTap: () {
-                        setState(() {
-                          setMaxPrice(getMaxPrice());
-                          setMinPrice(getMinPrice());
-                          widget.restaurants = [];
-                          widget.categories = [];
-                          widget.sort = null;
-                        });
+                      setState(() {
+                        setMaxPrice(getMaxPrice());
+                        setMinPrice(getMinPrice());
+                        widget.restaurants = [];
+                        widget.categories = [];
+                        widget.sort = null;
+                      });
                     },
                     child: const Text(
                       "Reset all",
                       style: TextStyle(
                         fontFamily: "Inter",
-                        color:Color(0xffbd2005),
+                        color: Color(0xffbd2005),
                         fontSize: 13,
                       ),
                     ),
@@ -221,28 +220,44 @@ class _EndDrawerState extends State<EndDrawer> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                SortIcon(text: 'Name', icon: const AssetImage("assets/icons/name.png"), setSort: setSort, color: setColor('Name'),),
-                SortIcon(text: 'Rating', icon: const AssetImage("assets/icons/rating.png"), setSort: setSort, color: setColor('Rating'),),
-                SortIcon(text: 'Delivery Time', icon: const AssetImage("assets/icons/timer.png"), setSort: setSort, color: setColor('Delivery Time'),),
-                SortIcon(text: 'Price', icon: const AssetImage("assets/icons/price.png"), setSort: setSort ,color: setColor('Price'),),
+                SortIcon(
+                  text: 'Name',
+                  icon: const AssetImage("assets/icons/name.png"),
+                  setSort: setSort,
+                  color: setColor('Name'),
+                ),
+                SortIcon(
+                  text: 'Rating',
+                  icon: const AssetImage("assets/icons/rating.png"),
+                  setSort: setSort,
+                  color: setColor('Rating'),
+                ),
+                SortIcon(
+                  text: 'Delivery Time',
+                  icon: const AssetImage("assets/icons/timer.png"),
+                  setSort: setSort,
+                  color: setColor('Delivery Time'),
+                ),
+                SortIcon(
+                  text: 'Price',
+                  icon: const AssetImage("assets/icons/price.png"),
+                  setSort: setSort,
+                  color: setColor('Price'),
+                ),
               ],
             ),
             const Padding(
               padding: EdgeInsets.all(10),
               child: Text(
                 "Filter by",
-                style: TextStyle(
-                    fontSize: 22
-                ),
+                style: TextStyle(fontSize: 22),
               ),
             ),
             const Padding(
               padding: EdgeInsets.all(10),
               child: Text(
                 "Budget",
-                style: TextStyle(
-                    fontSize: 18
-                ),
+                style: TextStyle(fontSize: 18),
               ),
             ),
         Padding(
@@ -273,24 +288,31 @@ class _EndDrawerState extends State<EndDrawer> {
               padding: EdgeInsets.all(10),
               child: Text(
                 "Restaurants",
-                style: TextStyle(
-                    fontSize: 18
-                ),
+                style: TextStyle(fontSize: 18),
               ),
             ),
-            RestaurantFlex(list: widget.restaurants!, removeFromList: removeFromRestaurants, addToList: addToRestaurants),
+            RestaurantFlex(
+                list: widget.restaurants!,
+                removeFromList: removeFromRestaurants,
+                addToList: addToRestaurants),
             const Padding(
               padding: EdgeInsets.all(10),
               child: Text(
                 "Category",
-                style: TextStyle(
-                    fontSize: 18
-                ),
+                style: TextStyle(fontSize: 18),
               ),
             ),
-            CategoryFlex(list: widget.categories!, removeFromList: removeFromCategories, addToList: addToCategories),
-            ColoredButton(width :220,name: "Get Results", role: () {  Navigator.push(context, MaterialPageRoute(builder: (context) =>const Filter()));},
-
+            CategoryFlex(
+                list: widget.categories!,
+                removeFromList: removeFromCategories,
+                addToList: addToCategories),
+            ColoredButton(
+              width: 220,
+              name: "Get Results",
+              role: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Filter()));
+              },
             ),
           ],
         ),
@@ -300,11 +322,17 @@ class _EndDrawerState extends State<EndDrawer> {
 }
 
 class SortIcon extends StatelessWidget {
-  SortIcon({Key? key, required this.icon, required this.text, required this.color, required this.setSort}) : super(key: key);
+  SortIcon(
+      {Key? key,
+      required this.icon,
+      required this.text,
+      required this.color,
+      required this.setSort})
+      : super(key: key);
   final ImageProvider icon;
   final String text;
-  final Function(SortIcon) setSort ;
-  Color color ;
+  final Function(SortIcon) setSort;
+  Color color;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -313,56 +341,71 @@ class SortIcon extends StatelessWidget {
       child: Column(
         children: [
           IconButton(
-              onPressed: (){
+              onPressed: () {
                 setSort(this);
               },
-              icon: ImageIcon(icon,size: 30,color: color,)),
+              icon: ImageIcon(
+                icon,
+                size: 30,
+                color: color,
+              )),
           Flexible(
-              child: Text(
-                text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 14
-                ),
-              ),)
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.blueGrey, fontSize: 14),
+            ),
+          )
         ],
       ),
     );
   }
 }
-class RestaurantFlex extends StatelessWidget{
+
+class RestaurantFlex extends StatelessWidget {
   final List<String> list;
   final void Function(String) removeFromList;
   final void Function(String) addToList;
-  const RestaurantFlex({Key? key, required this.list, required this.removeFromList, required this.addToList}) : super(key: key);
+  const RestaurantFlex(
+      {Key? key,
+      required this.list,
+      required this.removeFromList,
+      required this.addToList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore
-          .instance
-          .collection("restaurants")
-          .snapshots(),
-      builder: (BuildContext context,
-          AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Wrap(
-              direction: Axis.horizontal,
-            children: snapshot.data!.docs.map((e) {
-              return FlexListElement(text: e.get("name"), list: list, addToList: addToList, removeFromList: removeFromList, backgroundColor: (list.contains(e.get("name")))?const Color(0xffbd2005):Colors.white,
-    textColor: (list.contains(e.get("name")))?Colors.white:Colors.black,);
-            }).toList(),
-          ),
-        );}
-      }
-    );
+        stream:
+            FirebaseFirestore.instance.collection("restaurants").snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Wrap(
+                direction: Axis.horizontal,
+                children: snapshot.data!.docs.map((e) {
+                  return FlexListElement(
+                    text: e.get("name"),
+                    list: list,
+                    addToList: addToList,
+                    removeFromList: removeFromList,
+                    backgroundColor: (list.contains(e.get("name")))
+                        ? const Color(0xffbd2005)
+                        : Colors.white,
+                    textColor: (list.contains(e.get("name")))
+                        ? Colors.white
+                        : Colors.black,
+                  );
+                }).toList(),
+              ),
+            );
+          }
+        });
   }
 }
 
@@ -394,36 +437,38 @@ class CategoryFlex extends StatelessWidget{
               padding: const EdgeInsets.all(8),
               child: Wrap(
                   children: snapshot.data!.docs.map((document) {
-                    return StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection("restaurants")
-                            .doc(document.reference.id)
-                            .collection('category')
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                return StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("restaurants")
+                        .doc(document.reference.id)
+                        .collection('category')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return Wrap(
+                            children: snapshot.data!.docs.map((document) {
+                            return FlexListElement(
+                              text: document.get("name"),
+                              list: list,
+                              addToList: addToList,
+                              removeFromList: removeFromList,
+                              backgroundColor:
+                                  (list.contains(document.get("name")))
+                                      ? const Color(0xffbd2005)
+                                      : Colors.white,
+                              textColor: (list.contains(document.get("name")))
+                                  ? Colors.white
+                                  : Colors.black,
                             );
-                          } else {
-                            return Wrap(
-                                children: snapshot.data!.docs
-                                    .map((document) {
-                                      if (!categories!.contains(document.get("name")))
-                                      {
-                                        categories!.add(document.get("name"));
-                                        return FlexListElement(text: document.get("name"),
-                                        list: list,
-                                        addToList: addToList,
-                                        removeFromList: removeFromList,
-                                          backgroundColor: (list.contains(document.get("name")))?const Color(0xffbd2005):Colors.white,
-                                          textColor: (list.contains(document.get("name")))?Colors.white:Colors.black,);}
-                                      else {return const SizedBox();}
-                                }).toList());
-                          }
-                        });
-                  }).toList()),
+                        }).toList());
+                      }
+                    });
+              }).toList()),
             );
           }
         });
@@ -455,8 +500,11 @@ class _FlexListElementState extends State<FlexListElement> {
   }
 
   setColor() {
-    widget.backgroundColor = (widget.list.contains(widget.text))?const Color(0xffbd2005):Colors.white;
-    widget.textColor = (widget.list.contains(widget.text))?Colors.white:Colors.black;
+    widget.backgroundColor = (widget.list.contains(widget.text))
+        ? const Color(0xffbd2005)
+        : Colors.white;
+    widget.textColor =
+        (widget.list.contains(widget.text)) ? Colors.white : Colors.black;
   }
   @override
   void initState() {
@@ -467,13 +515,14 @@ class _FlexListElementState extends State<FlexListElement> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0,top: 4,bottom: 4,right:2),
+      padding: const EdgeInsets.only(left: 8.0, top: 4, bottom: 4, right: 2),
       child: TextButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(widget.backgroundColor),
+          backgroundColor:
+              MaterialStateProperty.all<Color>(widget.backgroundColor),
           shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            side: BorderSide(color: Colors.blueGrey))),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              side: BorderSide(color: Colors.blueGrey))),
         ),
         onPressed: () {
           setList();
@@ -482,7 +531,7 @@ class _FlexListElementState extends State<FlexListElement> {
           });
         },
         child: Text(
-            widget.text,
+          widget.text,
           maxLines: 1,
           style: TextStyle(color: widget.textColor),
         ),
